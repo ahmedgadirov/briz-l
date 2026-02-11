@@ -257,14 +257,15 @@ curl -X POST https://selmedia.net/whatsapp/send-template \
 
 ### WhatsApp Not Working
 
-**Problem:** WhatsApp bot not responding
+**Problem:** WhatsApp bot not responding or returning 400 error
 
 **Solutions:**
 1. Verify WhatsApp credentials in `.env`
 2. Check if phone number is verified in Facebook console
-3. Ensure webhook is subscribed to `messages` field
-4. Check logs: `docker-compose logs whatsapp_webhook`
-5. Test the WhatsApp API directly using Graph API Explorer
+3. **Display Name Approval**: If logs show error `#131037`, you need to set or wait for display name approval in the WhatsApp Manager.
+4. Ensure webhook is subscribed to `messages` field
+5. Check logs: `docker-compose logs whatsapp_webhook`
+6. Test the WhatsApp API directly using Graph API Explorer
 
 ### 403 Forbidden / Signature Verification Failed
 

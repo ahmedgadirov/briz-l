@@ -524,6 +524,7 @@ def send_whatsapp_template_api():
 
 
 @app.route('/health', methods=['GET'])
+@app.route('/webhooks/health', methods=['GET'])
 def health_check():
     """Health check endpoint"""
     return jsonify({
@@ -545,14 +546,18 @@ if __name__ == '__main__':
     logger.info("=" * 60)
     logger.info(f"Rasa URL: {RASA_URL}")
     logger.info(f"Facebook/Instagram:")
-    logger.info(f"  - Verify Token: {bool(FB_VERIFY_TOKEN)}")
+    # Log only first character of verify token for security
+    fb_token_prefix = FB_VERIFY_TOKEN[0] if FB_VERIFY_TOKEN else "None"
+    logger.info(f"  - Verify Token: {bool(FB_VERIFY_TOKEN)} (starts with: {fb_token_prefix}...)")
     logger.info(f"  - Page Access Token: {bool(FB_PAGE_ACCESS_TOKEN)}")
     logger.info(f"  - App Secret: {bool(FB_APP_SECRET)}")
     logger.info(f"WhatsApp:")
-    logger.info(f"  - Verify Token: {bool(WA_VERIFY_TOKEN)}")
+    wa_token_prefix = WA_VERIFY_TOKEN[0] if WA_VERIFY_TOKEN else "None"
+    logger.info(f"  - Verify Token: {bool(WA_VERIFY_TOKEN)} (starts with: {wa_token_prefix}...)")
     logger.info(f"  - Access Token: {bool(WA_ACCESS_TOKEN)}")
     logger.info(f"  - Phone Number ID: {bool(WA_PHONE_NUMBER_ID)}")
     logger.info("=" * 60)
     
-    # Run Flask app on port 5000
-    app.run(host='0.0.0.0', port=5000, debug=False)
+    # Run Flask app
+    port = int(os.getenv("PORT", 5000))
+    app.run(host='0.0.0.0', port=port, debug=False)

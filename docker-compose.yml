@@ -88,6 +88,12 @@ services:
       - .env
     environment:
       - RASA_URL=http://rasa:3000/webhooks/rest/webhook
+      - FB_VERIFY_TOKEN=${FB_VERIFY_TOKEN}
+      - FB_PAGE_ACCESS_TOKEN=${FB_PAGE_ACCESS_TOKEN}
+      - FB_APP_SECRET=${FB_APP_SECRET}
+      - WA_VERIFY_TOKEN=${WA_VERIFY_TOKEN}
+      - WA_ACCESS_TOKEN=${WA_ACCESS_TOKEN}
+      - WA_PHONE_NUMBER_ID=${WA_PHONE_NUMBER_ID}
       - PYTHONWARNINGS=ignore::DeprecationWarning,ignore::PendingDeprecationWarning,ignore::ImportWarning
     entrypoint: []
     command:
@@ -97,6 +103,11 @@ services:
       - dokploy-network
     labels:
       - "com.dokploy.project=rasa-brizl"
+      - "traefik.enable=true"
+      - "traefik.http.routers.webhooks.rule=Host(`selmedia.net`) && PathPrefix(`/webhooks`)"
+      - "traefik.http.routers.webhooks.entrypoints=websecure"
+      - "traefik.http.routers.webhooks.tls.certresolver=letsencrypt"
+      - "traefik.http.services.webhooks.loadbalancer.server.port=5000"
 
 networks:
   dokploy-network:
