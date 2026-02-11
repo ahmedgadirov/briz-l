@@ -19,5 +19,6 @@ RUN chmod +x /app/start.sh
 
 USER 1001
 
-# Start all services using the startup script
+# Override the entrypoint and start all services using the startup script
+ENTRYPOINT []
 CMD ["/bin/bash", "/app/start.sh"]
