@@ -13,6 +13,47 @@ class MarketingAnalytics:
     def __init__(self):
         self.db = db
     
+    def get_lead_stats(self) -> Dict[str, Any]:
+        """
+        Get basic lead statistics for quick overview
+        
+        Returns:
+            Dict with total_leads, hot_leads, today_leads
+        """
+        try:
+            # Total leads
+            result = self.db.execute_query("""
+                SELECT COUNT(*) as count FROM marketing_leads;
+            """)
+            total_leads = result[0]['count'] if result else 0
+            
+            # Hot leads
+            result = self.db.execute_query("""
+                SELECT COUNT(*) as count FROM marketing_leads 
+                WHERE lead_status = 'hot';
+            """)
+            hot_leads = result[0]['count'] if result else 0
+            
+            # Today's leads
+            result = self.db.execute_query("""
+                SELECT COUNT(*) as count FROM marketing_leads 
+                WHERE DATE(first_contact) = CURRENT_DATE;
+            """)
+            today_leads = result[0]['count'] if result else 0
+            
+            return {
+                'total_leads': total_leads,
+                'hot_leads': hot_leads,
+                'today_leads': today_leads
+            }
+        except Exception as e:
+            print(f"❌ Error getting lead stats: {e}")
+            return {
+                'total_leads': 0,
+                'hot_leads': 0,
+                'today_leads': 0
+            }
+    
     def get_daily_stats(self, date: Optional[str] = None) -> Dict[str, Any]:
         """
         Get marketing stats for a specific date
