@@ -77,7 +77,7 @@ services:
     labels:
       - "com.dokploy.project=rasa-brizl"
 
-  facebook_instagram_webhook:
+  social_media_webhook:
     image: rasa-brizl:latest
     platform: linux/amd64
     ports:
@@ -92,28 +92,7 @@ services:
     entrypoint: []
     command:
       - /opt/venv/bin/python
-      - facebook_instagram_webhook.py
-    networks:
-      - dokploy-network
-    labels:
-      - "com.dokploy.project=rasa-brizl"
-
-  whatsapp_webhook:
-    image: rasa-brizl:latest
-    platform: linux/amd64
-    ports:
-      - "5001:5001"
-    depends_on:
-      - rasa
-    env_file:
-      - .env
-    environment:
-      - RASA_URL=http://rasa:3000/webhooks/rest/webhook
-      - PYTHONWARNINGS=ignore::DeprecationWarning,ignore::PendingDeprecationWarning,ignore::ImportWarning
-    entrypoint: []
-    command:
-      - /opt/venv/bin/python
-      - whatsapp_connector.py
+      - social_media_webhook.py
     networks:
       - dokploy-network
     labels:

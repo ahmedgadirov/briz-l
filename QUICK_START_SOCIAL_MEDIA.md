@@ -3,11 +3,13 @@
 ## What's Been Done ✅
 
 Your project now has:
-1. ✅ Facebook Messenger webhook handler
-2. ✅ Instagram DM webhook handler  
-3. ✅ WhatsApp webhook handler + report sender
-4. ✅ Docker configuration for all services
-5. ✅ Environment variables template
+1. ✅ **Unified webhook handler** (`social_media_webhook.py`) that handles:
+   - Facebook Messenger
+   - Instagram DMs
+   - WhatsApp (receive & send messages)
+2. ✅ Docker configuration (single service on port 5000)
+3. ✅ Environment variables template
+4. ✅ WhatsApp report sending API
 
 ## What You Need To Do Next 📋
 
