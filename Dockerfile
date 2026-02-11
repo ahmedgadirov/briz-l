@@ -10,3 +10,6 @@ RUN mkdir -p /app/models && chmod -R 777 /app/models
 COPY . /app
 
 USER 1001
+
+# Default command to run Rasa server
+CMD ["run", "--enable-api", "--cors", "*", "--debug"]
