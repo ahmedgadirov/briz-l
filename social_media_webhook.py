@@ -97,9 +97,7 @@ def verify_webhook_signature(payload, signature, secret):
     is_valid = hmac.compare_digest(expected_full, signature)
     
     if not is_valid:
-        if SKIP_VERIFY_SIGNATURE:
-            logger.info("Signature mismatch detected, but skipping verification as requested.")
-        else:
+        if not SKIP_VERIFY_SIGNATURE:
             logger.warning(f"Signature mismatch!")
             logger.warning(f"  Received: {signature[:15]}...")
             logger.warning(f"  Expected prefix: {expected_full[:15]}...")
