@@ -88,6 +88,7 @@ Open `/Users/bytelecom/Desktop/rasa-brizl/.env` and update these values:
 # Facebook/Instagram Configuration
 FB_VERIFY_TOKEN=vera_fb_verify_2024
 FB_PAGE_ACCESS_TOKEN=PASTE_YOUR_PAGE_ACCESS_TOKEN_HERE
+FB_PAGE_ID=PASTE_YOUR_PAGE_ID_HERE
 FB_APP_SECRET=84ed4b95cffb3e1666b5fa851906c91a
 
 # WhatsApp Configuration
@@ -98,6 +99,7 @@ WA_PHONE_NUMBER_ID=PASTE_YOUR_PHONE_NUMBER_ID_HERE
 
 **Where to find these values:**
 - **FB_PAGE_ACCESS_TOKEN:** From Step 3 above (Messenger Settings → Access Tokens)
+- **FB_PAGE_ID:** Found in Facebook Page Settings → About → Page ID
 - **WA_ACCESS_TOKEN:** From Step 5 above (WhatsApp → API Setup)
 - **WA_PHONE_NUMBER_ID:** From Step 5 above (WhatsApp → API Setup)
 
@@ -371,11 +373,16 @@ docker-compose logs --tail=50 -f
 ## 🎯 Next Steps
 
 1. **Complete Facebook Developer Console setup** (follow Part 1)
-2. **Get all required tokens** (Page Access Token, WhatsApp tokens)
+2. **Get all required tokens** (Page Access Token, FB_PAGE_ID, WhatsApp tokens)
 3. **Update `.env` file** with real tokens
 4. **Configure Dokploy routing** for webhook services
 5. **Deploy and test** each platform
-6. **Create WhatsApp message templates** for report notifications
+- [x] Analyze `social_media_webhook.py` to identify points for modification <!-- id: 0 -->
+- [x] Implement correct API node selection logic (revert "me" fallback) <!-- id: 1 -->
+- [x] Add guard for empty message text to prevent forwarding "." <!-- id: 2 -->
+- [x] Enhance logging for webhook events (sender/recipient IDs) <!-- id: 3 -->
+- [x] Verify `.env` configuration requirements <!-- id: 4 -->
+- [/] Review and update `FACEBOOK_INSTAGRAM_WHATSAPP_SETUP.md` if necessary <!-- id: 5 -->
 7. **Integrate WhatsApp sending** into your Rasa actions
 
 ---

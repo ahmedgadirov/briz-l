@@ -143,15 +143,20 @@ def forward_to_rasa(sender_id, message_text, platform="unknown"):
 def send_facebook_message(recipient_id, message_text, platform="facebook"):
     """Send a message back to Facebook Messenger or Instagram"""
     try:
-        # Determine the correct node (Account ID or 'me')
-        node = "me"
-        if platform == "instagram" and INSTAGRAM_ACCOUNT_ID:
-            # node = INSTAGRAM_ACCOUNT_ID
-            # node = INSTAGRAM_ACCOUNT_ID
-            logger.info("Using 'me' instead of Instagram Account ID")
-        elif platform == "facebook" and FB_PAGE_ID:
+        # Determine the correct node (Account ID or Page ID)
+        if platform == "instagram":
+            if not INSTAGRAM_ACCOUNT_ID:
+                logger.error("INSTAGRAM_ACCOUNT_ID missing")
+                return False
+            node = INSTAGRAM_ACCOUNT_ID
+        elif platform == "facebook":
+            if not FB_PAGE_ID:
+                logger.error("FB_PAGE_ID missing (required for Facebook sends)")
+                return False
             node = FB_PAGE_ID
-            logger.info(f"Using Facebook Page ID: {node}")
+        else:
+            logger.error(f"Unknown platform: {platform}")
+            return False
             
         url = f"https://graph.facebook.com/v18.0/{node}/messages"
         
@@ -181,14 +186,20 @@ def send_facebook_message(recipient_id, message_text, platform="facebook"):
 def send_facebook_buttons(recipient_id, text, buttons, platform="facebook"):
     """Send a message with buttons to Facebook Messenger or Instagram"""
     try:
-        # Determine the correct node (Account ID or 'me')
-        node = "me"
-        if platform == "instagram" and INSTAGRAM_ACCOUNT_ID:
-            # node = INSTAGRAM_ACCOUNT_ID
-            logger.info("Using 'me' instead of Instagram Account ID")
-        elif platform == "facebook" and FB_PAGE_ID:
+        # Determine the correct node (Account ID or Page ID)
+        if platform == "instagram":
+            if not INSTAGRAM_ACCOUNT_ID:
+                logger.error("INSTAGRAM_ACCOUNT_ID missing")
+                return False
+            node = INSTAGRAM_ACCOUNT_ID
+        elif platform == "facebook":
+            if not FB_PAGE_ID:
+                logger.error("FB_PAGE_ID missing (required for Facebook sends)")
+                return False
             node = FB_PAGE_ID
-            logger.info(f"Using Facebook Page ID: {node}")
+        else:
+            logger.error(f"Unknown platform: {platform}")
+            return False
             
         url = f"https://graph.facebook.com/v18.0/{node}/messages"
         
@@ -447,18 +458,28 @@ def facebook_webhook():
                 return 'OK', 200
             
             for entry in data.get('entry', []):
+                # Page/Instagram recipient (our side)
+                recipient_id = entry.get('id', 'unknown')
+                
                 # Instagram and Page events usually use 'messaging'
                 for messaging_event in entry.get('messaging', []):
                     sender_id = messaging_event['sender']['id']
+                    event_recipient_id = messaging_event['recipient']['id']
                     
                     # Determine platform
                     platform = "instagram" if obj == "instagram" else "facebook"
+                    
+                    logger.info(f"{platform} event: sender={sender_id} recipient={event_recipient_id} (entry_id={recipient_id})")
                     
                     # Handle message
                     if 'message' in messaging_event:
                         message = messaging_event['message']
                         if 'text' in message:
-                            text = message['text']
+                            text = (message.get('text') or "").strip()
+                            if not text:
+                                logger.info(f"Ignoring empty message from {sender_id}")
+                                continue
+                                
                             rasa_responses = forward_to_rasa(sender_id, text, platform)
                             handle_facebook_responses(sender_id, rasa_responses, platform)
                         elif 'attachments' in message:
