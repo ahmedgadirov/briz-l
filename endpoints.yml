@@ -1,9 +1,9 @@
 action_endpoint:
-  url: "http://action_server:5055/webhook"
+  url: "http://rasa-brizl-action_server-1:5055/webhook"
 
 tracker_store:
   type: sql
-  url: rasa-brizl-tbycs9
+  url: "db"
   db: briz-l
   username: postgres
   password: herahera
