@@ -31,15 +31,14 @@ except ImportError:
     ADMIN_HANDLER_AVAILABLE = False
     logger.warning("Admin handler not available")
 
-# Configure logging
-# Handled above
-
 app = Flask(__name__)
 
 # Configuration from environment variables
 FB_VERIFY_TOKEN = os.getenv("FB_VERIFY_TOKEN")
 FB_PAGE_ACCESS_TOKEN = os.getenv("FB_PAGE_ACCESS_TOKEN")
 FB_APP_SECRET = os.getenv("FB_APP_SECRET")
+FB_PAGE_ID = os.getenv("FB_PAGE_ID")
+INSTAGRAM_ACCOUNT_ID = os.getenv("INSTAGRAM_ACCOUNT_ID")
 
 WA_VERIFY_TOKEN = os.getenv("WA_VERIFY_TOKEN")
 WA_ACCESS_TOKEN = os.getenv("WA_ACCESS_TOKEN")
@@ -143,10 +142,19 @@ def forward_to_rasa(sender_id, message_text, platform="unknown"):
 # FACEBOOK & INSTAGRAM FUNCTIONS
 # ============================================================================
 
-def send_facebook_message(recipient_id, message_text):
+def send_facebook_message(recipient_id, message_text, platform="facebook"):
     """Send a message back to Facebook Messenger or Instagram"""
     try:
-        url = f"https://graph.facebook.com/v18.0/me/messages"
+        # Determine the correct node (Account ID or 'me')
+        node = "me"
+        if platform == "instagram" and INSTAGRAM_ACCOUNT_ID:
+            node = INSTAGRAM_ACCOUNT_ID
+            logger.info(f"Using Instagram Account ID: {node}")
+        elif platform == "facebook" and FB_PAGE_ID:
+            node = FB_PAGE_ID
+            logger.info(f"Using Facebook Page ID: {node}")
+            
+        url = f"https://graph.facebook.com/v18.0/{node}/messages"
         
         payload = {
             "messaging_type": "RESPONSE",
@@ -163,18 +171,27 @@ def send_facebook_message(recipient_id, message_text):
             
         response.raise_for_status()
         
-        logger.info(f"Message sent successfully to {recipient_id}")
+        logger.info(f"Message sent successfully to {recipient_id} ({platform})")
         return True
         
     except Exception as e:
-        logger.error(f"Error sending Facebook message: {e}")
+        logger.error(f"Error sending {platform} message: {e}")
         return False
 
 
-def send_facebook_buttons(recipient_id, text, buttons):
+def send_facebook_buttons(recipient_id, text, buttons, platform="facebook"):
     """Send a message with buttons to Facebook Messenger or Instagram"""
     try:
-        url = f"https://graph.facebook.com/v18.0/me/messages"
+        # Determine the correct node (Account ID or 'me')
+        node = "me"
+        if platform == "instagram" and INSTAGRAM_ACCOUNT_ID:
+            node = INSTAGRAM_ACCOUNT_ID
+            logger.info(f"Using Instagram Account ID: {node}")
+        elif platform == "facebook" and FB_PAGE_ID:
+            node = FB_PAGE_ID
+            logger.info(f"Using Facebook Page ID: {node}")
+            
+        url = f"https://graph.facebook.com/v18.0/{node}/messages"
         
         # Convert Rasa buttons to Facebook button format
         fb_buttons = []
@@ -216,11 +233,11 @@ def send_facebook_buttons(recipient_id, text, buttons):
             
         response.raise_for_status()
         
-        logger.info(f"Button message sent to {recipient_id}")
+        logger.info(f"Button message sent to {recipient_id} ({platform})")
         return True
         
     except Exception as e:
-        logger.error(f"Error sending buttons: {e}")
+        logger.error(f"Error sending buttons to {platform}: {e}")
         return False
 
 
@@ -230,16 +247,16 @@ def handle_facebook_responses(recipient_id, rasa_responses, platform="facebook")
         if "text" in rasa_msg:
             if "buttons" in rasa_msg and platform != "instagram":
                 # Only use button templates for Facebook (Messenger)
-                send_facebook_buttons(recipient_id, rasa_msg["text"], rasa_msg["buttons"])
+                send_facebook_buttons(recipient_id, rasa_msg["text"], rasa_msg["buttons"], platform)
             else:
                 # For instagram: turn buttons into a numbered text list (button templates often fail)
                 if "buttons" in rasa_msg and platform == "instagram":
                     btns = rasa_msg["buttons"][:3]
                     opts = "\n".join([f"{i+1}) {b['title']}" for i, b in enumerate(btns)])
                     text = f"{rasa_msg['text']}\n\n{opts}"
-                    send_facebook_message(recipient_id, text)
+                    send_facebook_message(recipient_id, text, platform)
                 else:
-                    send_facebook_message(recipient_id, rasa_msg["text"])
+                    send_facebook_message(recipient_id, rasa_msg["text"], platform)
         elif "image" in rasa_msg:
             logger.info(f"Image response not yet implemented: {rasa_msg['image']}")
 
@@ -446,7 +463,7 @@ def facebook_webhook():
                             rasa_responses = forward_to_rasa(sender_id, text, platform)
                             handle_facebook_responses(sender_id, rasa_responses, platform)
                         elif 'attachments' in message:
-                            send_facebook_message(sender_id, "I can only process text messages for now.")
+                            send_facebook_message(sender_id, "I can only process text messages for now.", platform)
                     
                     # Handle postback (button clicks)
                     elif 'postback' in messaging_event:
@@ -608,6 +625,7 @@ def health_check():
         "service": "social_media_webhook",
         "rasa_url": RASA_URL,
         "facebook_configured": bool(FB_PAGE_ACCESS_TOKEN),
+        "instagram_configured": bool(INSTAGRAM_ACCOUNT_ID),
         "whatsapp_configured": bool(WA_ACCESS_TOKEN and WA_PHONE_NUMBER_ID)
     }), 200
 
@@ -626,6 +644,8 @@ if __name__ == '__main__':
     fb_token_prefix = FB_VERIFY_TOKEN[0] if FB_VERIFY_TOKEN else "None"
     logger.info(f"  - Verify Token: {bool(FB_VERIFY_TOKEN)} (starts with: {fb_token_prefix}...)")
     logger.info(f"  - Page Access Token: {bool(FB_PAGE_ACCESS_TOKEN)} (starts with: {FB_PAGE_ACCESS_TOKEN[:4] if FB_PAGE_ACCESS_TOKEN else 'None'}...)")
+    logger.info(f"  - Page ID: {bool(FB_PAGE_ID)} ({FB_PAGE_ID if FB_PAGE_ID else 'Not set'})")
+    logger.info(f"  - Instagram Account ID: {bool(INSTAGRAM_ACCOUNT_ID)} ({INSTAGRAM_ACCOUNT_ID if INSTAGRAM_ACCOUNT_ID else 'Not set'})")
     logger.info(f"  - App Secret: {bool(FB_APP_SECRET)} (starts with: {FB_APP_SECRET[:4] if FB_APP_SECRET else 'None'}...)")
     logger.info(f"  - Skip Signature Verify: {SKIP_VERIFY_SIGNATURE}")
     logger.info(f"WhatsApp:")
