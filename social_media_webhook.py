@@ -14,6 +14,11 @@ from flask import Flask, request, jsonify
 import hashlib
 import hmac
 from dotenv import load_dotenv
+import json
+
+# Configure logging
+logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
+logger = logging.getLogger(__name__)
 
 # Load environment variables from .env file
 load_dotenv()
@@ -27,8 +32,7 @@ except ImportError:
     logger.warning("Admin handler not available")
 
 # Configure logging
-logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
-logger = logging.getLogger(__name__)
+# Handled above
 
 app = Flask(__name__)
 
@@ -73,18 +77,14 @@ def normalize_phone(phone):
     return clean_phone
 
 
-def verify_webhook_signature(req, secret):
+def verify_webhook_signature(payload, signature, secret):
     """Verify that the webhook request came from Facebook/WhatsApp"""
     if not secret:
         return True  # Skip verification if secret not configured
         
-    signature = req.headers.get('X-Hub-Signature-256', '')
     if not signature:
         logger.warning("Missing X-Hub-Signature-256 header")
         return False
-
-    # Get raw body bytes exactly, caching them so request.get_json() works later
-    payload = req.get_data(cache=True, as_text=False)
     
     expected_signature = hmac.new(
         secret.encode('utf-8'),
@@ -149,6 +149,7 @@ def send_facebook_message(recipient_id, message_text):
         url = f"https://graph.facebook.com/v18.0/me/messages"
         
         payload = {
+            "messaging_type": "RESPONSE",
             "recipient": {"id": recipient_id},
             "message": {"text": message_text}
         }
@@ -156,6 +157,10 @@ def send_facebook_message(recipient_id, message_text):
         params = {"access_token": FB_PAGE_ACCESS_TOKEN}
         
         response = requests.post(url, json=payload, params=params)
+        
+        if not response.ok:
+            logger.error(f"Graph send failed {response.status_code}: {response.text}")
+            
         response.raise_for_status()
         
         logger.info(f"Message sent successfully to {recipient_id}")
@@ -174,21 +179,22 @@ def send_facebook_buttons(recipient_id, text, buttons):
         # Convert Rasa buttons to Facebook button format
         fb_buttons = []
         for button in buttons[:3]:  # Facebook allows max 3 buttons
-            payload = button.get("payload", "")
-            if payload.startswith("http"):
+            button_payload = button.get("payload", "")
+            if button_payload.startswith("http"):
                 fb_buttons.append({
                     "type": "web_url",
-                    "url": payload,
+                    "url": button_payload,
                     "title": button["title"]
                 })
             else:
                 fb_buttons.append({
                     "type": "postback",
                     "title": button["title"],
-                    "payload": payload[:64]  # Telegram limit
+                    "payload": button_payload[:64]  # Limit
                 })
         
         message_payload = {
+            "messaging_type": "RESPONSE",
             "recipient": {"id": recipient_id},
             "message": {
                 "attachment": {
@@ -204,6 +210,10 @@ def send_facebook_buttons(recipient_id, text, buttons):
         
         params = {"access_token": FB_PAGE_ACCESS_TOKEN}
         response = requests.post(url, json=message_payload, params=params)
+        
+        if not response.ok:
+            logger.error(f"Graph buttons send failed {response.status_code}: {response.text}")
+            
         response.raise_for_status()
         
         logger.info(f"Button message sent to {recipient_id}")
@@ -214,14 +224,22 @@ def send_facebook_buttons(recipient_id, text, buttons):
         return False
 
 
-def handle_facebook_responses(recipient_id, rasa_responses):
+def handle_facebook_responses(recipient_id, rasa_responses, platform="facebook"):
     """Send Rasa responses back to Facebook/Instagram"""
     for rasa_msg in rasa_responses:
         if "text" in rasa_msg:
-            if "buttons" in rasa_msg:
+            if "buttons" in rasa_msg and platform != "instagram":
+                # Only use button templates for Facebook (Messenger)
                 send_facebook_buttons(recipient_id, rasa_msg["text"], rasa_msg["buttons"])
             else:
-                send_facebook_message(recipient_id, rasa_msg["text"])
+                # For instagram: turn buttons into a numbered text list (button templates often fail)
+                if "buttons" in rasa_msg and platform == "instagram":
+                    btns = rasa_msg["buttons"][:3]
+                    opts = "\n".join([f"{i+1}) {b['title']}" for i, b in enumerate(btns)])
+                    text = f"{rasa_msg['text']}\n\n{opts}"
+                    send_facebook_message(recipient_id, text)
+                else:
+                    send_facebook_message(recipient_id, rasa_msg["text"])
         elif "image" in rasa_msg:
             logger.info(f"Image response not yet implemented: {rasa_msg['image']}")
 
@@ -390,16 +408,21 @@ def facebook_webhook():
     
     elif request.method == 'POST':
         try:
+            # Capture raw data early
+            raw_data = request.get_data(cache=True)
+            signature = request.headers.get('X-Hub-Signature-256', '')
+            
             # Verify signature BEFORE parsing JSON
-            if FB_APP_SECRET and not verify_webhook_signature(request, FB_APP_SECRET):
+            if FB_APP_SECRET and not verify_webhook_signature(raw_data, signature, FB_APP_SECRET):
                 logger.warning("Invalid Facebook webhook signature!")
                 return 'Invalid signature', 403
                 
-            # Process webhook data
-            data = request.get_json(silent=True)
-            if data is None:
-                raw_data = request.get_data(cache=True)
-                logger.error(f"FB webhook 400: invalid JSON. raw={raw_data[:500]!r}")
+            # Process webhook data - Use json.loads for robustness against Content-Type issues
+            try:
+                data = json.loads(raw_data.decode('utf-8'))
+            except Exception as e:
+                logger.error(f"FB webhook 400: invalid JSON. content_type={request.content_type} raw={raw_data[:500]!r}")
+                logger.error(f"Headers: {dict(request.headers)}")
                 return 'Invalid JSON', 400
             
             obj = data.get('object')
@@ -421,7 +444,7 @@ def facebook_webhook():
                         if 'text' in message:
                             text = message['text']
                             rasa_responses = forward_to_rasa(sender_id, text, platform)
-                            handle_facebook_responses(sender_id, rasa_responses)
+                            handle_facebook_responses(sender_id, rasa_responses, platform)
                         elif 'attachments' in message:
                             send_facebook_message(sender_id, "I can only process text messages for now.")
                     
@@ -429,7 +452,7 @@ def facebook_webhook():
                     elif 'postback' in messaging_event:
                         payload = messaging_event['postback']['payload']
                         rasa_responses = forward_to_rasa(sender_id, payload, platform)
-                        handle_facebook_responses(sender_id, rasa_responses)
+                        handle_facebook_responses(sender_id, rasa_responses, platform)
                         
             return 'OK', 200
             
@@ -457,16 +480,21 @@ def whatsapp_webhook():
     
     elif request.method == 'POST':
         try:
+            # Capture raw data early
+            raw_data = request.get_data(cache=True)
+            signature = request.headers.get('X-Hub-Signature-256', '')
+            
             # Verify signature (optional) BEFORE parsing JSON
-            if FB_APP_SECRET and not verify_webhook_signature(request, FB_APP_SECRET):
+            if FB_APP_SECRET and not verify_webhook_signature(raw_data, signature, FB_APP_SECRET):
                 logger.warning("Invalid WhatsApp webhook signature!")
                 return 'Invalid signature', 403
                 
-            # Process webhook data
-            data = request.get_json(silent=True)
-            if data is None:
-                raw_data = request.get_data(cache=True)
-                logger.error(f"WA webhook 400: invalid JSON. raw={raw_data[:500]!r}")
+            # Process webhook data - Use json.loads for robustness against Content-Type issues
+            try:
+                data = json.loads(raw_data.decode('utf-8'))
+            except Exception as e:
+                logger.error(f"WA webhook 400: invalid JSON. content_type={request.content_type} raw={raw_data[:500]!r}")
+                logger.error(f"Headers: {dict(request.headers)}")
                 return 'Invalid JSON', 400
             
             if data.get('object') != 'whatsapp_business_account':
