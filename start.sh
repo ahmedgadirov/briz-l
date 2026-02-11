@@ -25,7 +25,7 @@ sleep 5
 
 # Start Rasa Server in background
 echo "🤖 Starting Rasa Server on port 3000..."
-rasa run --enable-api --cors "*" -p 3000 --log-config-file logging.yml &
+rasa run --enable-api --cors "*" -p 3000 --logging-config-file logging.yml &
 RASA_PID=$!
 
 # Wait for Rasa to be ready
