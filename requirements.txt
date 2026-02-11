@@ -8,3 +8,4 @@ pytest
 langdetect
 python-dotenv
 pyTelegramBotAPI
+flask
