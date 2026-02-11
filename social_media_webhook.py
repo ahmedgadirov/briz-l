@@ -58,6 +58,20 @@ if not WA_ACCESS_TOKEN:
 # COMMON FUNCTIONS
 # ============================================================================
 
+def normalize_phone(phone):
+    """Normalize phone number to E.164-like format (digits only)"""
+    if not phone:
+        return ""
+    # Remove +, spaces, dashes, and parentheses
+    clean_phone = "".join(filter(str.isdigit, str(phone)))
+    
+    # If it starts with 0 (local Azerbaijan format), replace with 994
+    if clean_phone.startswith("0") and len(clean_phone) == 10:
+        clean_phone = "994" + clean_phone[1:]
+    
+    return clean_phone
+
+
 def verify_webhook_signature(payload, signature, secret):
     """Verify that the webhook request came from Facebook/WhatsApp"""
     if not secret:
@@ -196,6 +210,10 @@ def send_whatsapp_message(recipient_phone, message_text):
             logger.error("WhatsApp credentials not configured!")
             return False
         
+        # Normalize phone number
+        normalized_phone = normalize_phone(recipient_phone)
+        logger.info(f"Sending WhatsApp to {normalized_phone} (original: {recipient_phone})")
+
         url = f"https://graph.facebook.com/v18.0/{WA_PHONE_NUMBER_ID}/messages"
         
         headers = {
@@ -206,7 +224,7 @@ def send_whatsapp_message(recipient_phone, message_text):
         payload = {
             "messaging_product": "whatsapp",
             "recipient_type": "individual",
-            "to": recipient_phone,
+            "to": normalized_phone,
             "type": "text",
             "text": {
                 "preview_url": False,
@@ -215,9 +233,13 @@ def send_whatsapp_message(recipient_phone, message_text):
         }
         
         response = requests.post(url, json=payload, headers=headers, timeout=10)
+        
+        if response.status_code != 200:
+            logger.error(f"WhatsApp API Error (Status {response.status_code}): {response.text}")
+            
         response.raise_for_status()
         
-        logger.info(f"WhatsApp message sent successfully to {recipient_phone}")
+        logger.info(f"WhatsApp message sent successfully to {normalized_phone}")
         return True
         
     except Exception as e:
@@ -232,6 +254,10 @@ def send_whatsapp_template(recipient_phone, template_name, language_code="en", p
             logger.error("WhatsApp credentials not configured!")
             return False
         
+        # Normalize phone number
+        normalized_phone = normalize_phone(recipient_phone)
+        logger.info(f"Sending WhatsApp Template '{template_name}' to {normalized_phone}")
+
         url = f"https://graph.facebook.com/v18.0/{WA_PHONE_NUMBER_ID}/messages"
         
         headers = {
@@ -243,13 +269,13 @@ def send_whatsapp_template(recipient_phone, template_name, language_code="en", p
         if parameters:
             template_components.append({
                 "type": "body",
-                "parameters": [{"type": "text", "text": param} for param in parameters]
+                "parameters": [{"type": "text", "text": str(param)} for param in parameters]
             })
         
         payload = {
             "messaging_product": "whatsapp",
             "recipient_type": "individual",
-            "to": recipient_phone,
+            "to": normalized_phone,
             "type": "template",
             "template": {
                 "name": template_name,
@@ -259,9 +285,13 @@ def send_whatsapp_template(recipient_phone, template_name, language_code="en", p
         }
         
         response = requests.post(url, json=payload, headers=headers, timeout=10)
+        
+        if response.status_code != 200:
+            logger.error(f"WhatsApp Template API Error (Status {response.status_code}): {response.text}")
+
         response.raise_for_status()
         
-        logger.info(f"WhatsApp template sent to {recipient_phone}")
+        logger.info(f"WhatsApp template sent to {normalized_phone}")
         return True
         
     except Exception as e:
