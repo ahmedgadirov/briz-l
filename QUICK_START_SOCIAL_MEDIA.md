@@ -48,33 +48,22 @@ The verify tokens are already set:
 
 ---
 
-### Step 3: Configure Dokploy Domains (5 minutes)
+### Step 3: Configure Dokploy Domain (5 minutes)
 
-You need to add routing for the webhook services:
+Add routing for the unified webhook service:
 
-#### Option A: Add New Services in Dokploy
-Create 2 new service entries:
-
-**Service 2: Facebook/Instagram Webhooks**
+**Social Media Webhook Service**
 - Host: `selmedia.net`
-- Path: `/webhooks/facebook`
+- Path: `/webhooks` (or `/`)
 - Container Port: `5000`
 - HTTPS: ✅
+- Strip Path: ❌ Disabled
 
-**Service 3: WhatsApp Webhooks**
-- Host: `selmedia.net`  
-- Path: `/webhooks/whatsapp`
-- Container Port: `5001`
-- HTTPS: ✅
+**OR simply expose port 5000:**
+- Map host port 5000 → container port 5000
+- Then use: `https://selmedia.net:5000/webhooks/...`
 
-#### Option B: Use Port Mapping (Simpler)
-If Dokploy doesn't support path routing easily, expose the ports:
-- Port 5000 → Facebook/Instagram
-- Port 5001 → WhatsApp
-
-Then use these URLs in Facebook:
-- `https://selmedia.net:5000/webhooks/facebook/webhook`
-- `https://selmedia.net:5001/webhooks/whatsapp/webhook`
+**All platforms use the same service on port 5000!** ✨
 
 ---
 
@@ -118,7 +107,8 @@ Back in Facebook Developer Console:
 
 **Test Facebook:**
 - Message your Facebook Page
-- Bot should respond!
+- Bot should resp
+
 
 **Test Instagram:**
 - DM your Instagram business account
@@ -140,14 +130,14 @@ curl -X POST https://selmedia.net/whatsapp/send \
 ## 🆘 Troubleshooting
 
 ### Webhooks won't verify?
-1. Check services are running: `docker-compose ps`
-2. Check logs: `docker-compose logs facebook_instagram_webhook`
+1. Check service is running: `docker-compose ps`
+2. Check logs: `docker-compose logs social_media_webhook`
 3. Test URL: `curl https://selmedia.net/webhooks/facebook/webhook`
 
 ### Messages not working?
 1. Verify tokens in `.env` are correct
 2. Check webhook subscriptions in Facebook console
-3. Check logs: `docker-compose logs -f facebook_instagram_webhook`
+3. Check logs: `docker-compose logs -f social_media_webhook`
 
 ### Need more help?
 See the full guide: `FACEBOOK_INSTAGRAM_WHATSAPP_SETUP.md`
@@ -156,10 +146,9 @@ See the full guide: `FACEBOOK_INSTAGRAM_WHATSAPP_SETUP.md`
 
 ## 📁 Files Created
 
-- `facebook_instagram_webhook.py` - Webhook handler for FB + Instagram
-- `whatsapp_connector.py` - WhatsApp webhook + report sender
+- `social_media_webhook.py` - **Unified webhook handler** for all platforms
 - `.env` - Updated with new configuration (update tokens!)
-- `docker-compose.yml` - Added new webhook services
+- `docker-compose.yml` - Added unified webhook service (port 5000)
 - `requirements.txt` - Added Flask dependency
 - `FACEBOOK_INSTAGRAM_WHATSAPP_SETUP.md` - Detailed setup guide
 
@@ -167,11 +156,12 @@ See the full guide: `FACEBOOK_INSTAGRAM_WHATSAPP_SETUP.md`
 
 ## 💡 Quick Tips
 
-1. **Same token for both:** Instagram uses the same Page Access Token as Messenger
-2. **Test mode first:** Use Facebook's test numbers before going live
-3. **Templates required:** WhatsApp requires approved templates for notifications
-4. **Check logs often:** Use `docker-compose logs -f [service]` to debug
-5. **HTTPS required:** All webhooks must use HTTPS (you have it with selmedia.net ✅)
+1. **One service for all:** Single webhook handles Facebook, Instagram, AND WhatsApp
+2. **Same token for FB/IG:** Instagram uses the same Page Access Token as Messenger
+3. **Test mode first:** Use Facebook's test numbers before going live
+4. **Templates required:** WhatsApp requires approved templates for notifications
+5. **Check logs often:** Use `docker-compose logs -f social_media_webhook` to debug
+6. **HTTPS required:** All webhooks must use HTTPS (you have it with selmedia.net ✅)
 
 ---
 
@@ -183,7 +173,7 @@ Add this to your Rasa actions:
 import requests
 
 def send_whatsapp_report(phone, message):
-    url = "http://whatsapp_webhook:5001/whatsapp/send"
+    url = "http://social_media_webhook:5000/whatsapp/send"
     response = requests.post(url, json={"phone": phone, "message": message})
     return response.status_code == 200
 ```
