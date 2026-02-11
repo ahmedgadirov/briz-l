@@ -3,9 +3,9 @@ action_endpoint:
 
 tracker_store:
   type: postgres
-  url: db
-  db: rasa
-  username: rasa
-  password: rasa_password
+  url: rasa-brizl-tbycs9
+  db: briz-l
+  username: postgres
+  password: herahera
   port: 5432
   dialect: "postgresql"

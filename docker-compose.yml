@@ -21,7 +21,7 @@ services:
       - action_server
       - db
     environment:
-      - DB_PASSWORD=rasa_password
+      - DB_PASSWORD=herahera
 
   action_server:
     image: rasa-brizl-action:latest
