@@ -83,8 +83,8 @@ def verify_webhook_signature(req, secret):
         logger.warning("Missing X-Hub-Signature-256 header")
         return False
 
-    # Get raw body bytes exactly
-    payload = req.get_data(cache=False, as_text=False)
+    # Get raw body bytes exactly, caching them so request.get_json() works later
+    payload = req.get_data(cache=True, as_text=False)
     
     expected_signature = hmac.new(
         secret.encode('utf-8'),
@@ -389,31 +389,39 @@ def facebook_webhook():
             return 'Verification failed', 403
     
     elif request.method == 'POST':
-        # Verify signature BEFORE parsing JSON
-        if FB_APP_SECRET and not verify_webhook_signature(request, FB_APP_SECRET):
-            logger.warning("Invalid Facebook webhook signature!")
-            return 'Invalid signature', 403
-        
-        # Process webhook data
-        data = request.get_json()
-        
-        if data.get('object') == 'page':
+        try:
+            # Verify signature BEFORE parsing JSON
+            if FB_APP_SECRET and not verify_webhook_signature(request, FB_APP_SECRET):
+                logger.warning("Invalid Facebook webhook signature!")
+                return 'Invalid signature', 403
+                
+            # Process webhook data
+            data = request.get_json(silent=True)
+            if data is None:
+                raw_data = request.get_data(cache=True)
+                logger.error(f"FB webhook 400: invalid JSON. raw={raw_data[:500]!r}")
+                return 'Invalid JSON', 400
+            
+            obj = data.get('object')
+            if obj not in ('page', 'instagram'):
+                logger.warning(f"FB webhook: unknown object type '{obj}'. Ignoring.")
+                return 'OK', 200
+            
             for entry in data.get('entry', []):
+                # Instagram and Page events usually use 'messaging'
                 for messaging_event in entry.get('messaging', []):
                     sender_id = messaging_event['sender']['id']
                     
                     # Determine platform
-                    platform = "instagram" if "instagram" in str(entry) else "facebook"
+                    platform = "instagram" if obj == "instagram" else "facebook"
                     
                     # Handle message
                     if 'message' in messaging_event:
                         message = messaging_event['message']
-                        
                         if 'text' in message:
                             text = message['text']
                             rasa_responses = forward_to_rasa(sender_id, text, platform)
                             handle_facebook_responses(sender_id, rasa_responses)
-                        
                         elif 'attachments' in message:
                             send_facebook_message(sender_id, "I can only process text messages for now.")
                     
@@ -422,8 +430,12 @@ def facebook_webhook():
                         payload = messaging_event['postback']['payload']
                         rasa_responses = forward_to_rasa(sender_id, payload, platform)
                         handle_facebook_responses(sender_id, rasa_responses)
-        
-        return 'OK', 200
+                        
+            return 'OK', 200
+            
+        except Exception as e:
+            logger.exception(f"FB webhook error: {e}")
+            return 'Error', 500
 
 
 @app.route('/webhooks/whatsapp/webhook', methods=['GET', 'POST'])
@@ -444,15 +456,22 @@ def whatsapp_webhook():
             return 'Verification failed', 403
     
     elif request.method == 'POST':
-        # Verify signature (optional) BEFORE parsing JSON
-        if FB_APP_SECRET and not verify_webhook_signature(request, FB_APP_SECRET):
-            logger.warning("Invalid WhatsApp webhook signature!")
-            return 'Invalid signature', 403
-        
-        # Process webhook data
-        data = request.get_json()
-        
-        if data.get('object') == 'whatsapp_business_account':
+        try:
+            # Verify signature (optional) BEFORE parsing JSON
+            if FB_APP_SECRET and not verify_webhook_signature(request, FB_APP_SECRET):
+                logger.warning("Invalid WhatsApp webhook signature!")
+                return 'Invalid signature', 403
+                
+            # Process webhook data
+            data = request.get_json(silent=True)
+            if data is None:
+                raw_data = request.get_data(cache=True)
+                logger.error(f"WA webhook 400: invalid JSON. raw={raw_data[:500]!r}")
+                return 'Invalid JSON', 400
+            
+            if data.get('object') != 'whatsapp_business_account':
+                logger.warning(f"WA webhook: unknown object type '{data.get('object')}'. Ignoring.")
+                return 'OK', 200
             for entry in data.get('entry', []):
                 for change in entry.get('changes', []):
                     value = change.get('value', {})
@@ -492,8 +511,12 @@ def whatsapp_webhook():
                             
                             else:
                                 send_whatsapp_message(from_phone, "I can only process text messages at the moment.")
-        
-        return 'OK', 200
+                        
+            return 'OK', 200
+            
+        except Exception as e:
+            logger.exception(f"WA webhook error: {e}")
+            return 'Error', 500
 
 
 # ============================================================================
