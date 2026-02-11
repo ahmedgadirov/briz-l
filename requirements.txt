@@ -9,3 +9,4 @@ langdetect
 python-dotenv
 pyTelegramBotAPI
 flask
+schedule

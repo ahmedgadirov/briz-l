@@ -40,6 +40,14 @@ WEBHOOK_PID=$!
 # Wait a moment for webhook server to start
 sleep 3
 
+# Start Daily Report Scheduler in background
+echo "📅 Starting Daily Report Scheduler (9:00 AM reports for Seljan)..."
+python daily_report_scheduler.py &
+SCHEDULER_PID=$!
+
+# Wait a moment for scheduler to start
+sleep 2
+
 # Start Telegram Poller in foreground
 echo "📱 Starting Telegram Poller..."
 python telegram_poller.py &
@@ -49,6 +57,7 @@ echo "✅ All services started!"
 echo "   - Action Server: PID $ACTION_PID (port 5055)"
 echo "   - Rasa Server: PID $RASA_PID (port 3000)"
 echo "   - Social Media Webhook: PID $WEBHOOK_PID (port 5000)"
+echo "   - Daily Report Scheduler: PID $SCHEDULER_PID"
 echo "   - Telegram Poller: PID $TELEGRAM_PID"
 echo ""
 echo "📊 Monitoring services..."

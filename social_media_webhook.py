@@ -18,6 +18,14 @@ from dotenv import load_dotenv
 # Load environment variables from .env file
 load_dotenv()
 
+# Import admin handler for Seljan
+try:
+    from admin_handler import is_admin, generate_admin_greeting
+    ADMIN_HANDLER_AVAILABLE = True
+except ImportError:
+    ADMIN_HANDLER_AVAILABLE = False
+    logger.warning("Admin handler not available")
+
 # Configure logging
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
 logger = logging.getLogger(__name__)
