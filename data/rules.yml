@@ -1,0 +1,109 @@
+version: "3.1"
+
+rules:
+
+- rule: Greet user
+  steps:
+  - intent: greet
+  - action: utter_greet
+
+- rule: Say goodbye
+  steps:
+  - intent: goodbye
+  - action: utter_goodbye
+
+- rule: Respond to thanks
+  steps:
+  - intent: thanks
+  - action: utter_thanks
+
+- rule: Activate booking form
+  steps:
+  - intent: want_checkup
+  - action: booking_form
+  - active_loop: booking_form
+
+- rule: Submit booking form
+  condition:
+  - active_loop: booking_form
+  steps:
+  - action: booking_form
+  - active_loop: null
+  - slot_was_set:
+    - requested_slot: null
+  - action: utter_booking_confirmed
+
+
+- rule: Submit symptom form
+  condition:
+  - active_loop: symptom_form
+  steps:
+  - action: symptom_form
+  - active_loop: null
+  - slot_was_set:
+    - requested_slot: null
+  - action: action_analyze_symptoms
+  - action: utter_symptom_analysis
+
+- rule: Ask for fallback
+  steps:
+  - intent: nlu_fallback
+  - action: action_fallback_with_count
+
+- rule: Interruption - Ask for price
+  condition:
+  - active_loop: booking_form
+  steps:
+  - intent: want_price_estimate
+  - action: utter_price_estimate
+  - action: booking_form
+  - active_loop: booking_form
+
+- rule: Interruption - Ask for price (No form)
+  condition:
+  - active_loop: null
+  steps:
+  - intent: want_price_estimate
+  - action: utter_price_estimate
+
+- rule: respond to surgery fear
+  steps:
+    - intent: express_fear_surgery
+    - action: action_detect_emotion
+    - action: utter_acknowledge_fear
+    - action: action_provide_reassurance
+    - action: utter_doctors_info
+
+- rule: respond to pain fear
+  steps:
+    - intent: express_fear_pain
+    - action: utter_reassure_pain_management
+    - action: action_provide_reassurance
+- rule: Respond to address query
+  steps:
+  - intent: ask_address
+  - action: action_detect_language
+  - action: utter_address_info
+
+- rule: Respond to hours query
+  steps:
+  - intent: ask_hours
+  - action: action_detect_language
+  - action: utter_hours_info
+
+- rule: Respond to help query
+  steps:
+  - intent: bot_help
+  - action: action_detect_language
+  - action: utter_bot_help
+
+- rule: Respond to doctor recommendation
+  steps:
+  - intent: want_doctor_recommendation
+  - action: action_detect_language
+  - action: action_recommend_doctor
+- rule: Respond to how are you
+  steps:
+  - intent: how_are_you
+  - action: action_detect_language
+  - action: utter_social_reply

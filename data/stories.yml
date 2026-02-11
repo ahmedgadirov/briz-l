@@ -1,0 +1,115 @@
+version: "3.1"
+
+stories:
+
+- story: Booking happy path
+  steps:
+  - intent: greet
+  - action: utter_greet
+  - intent: want_checkup
+  - action: booking_form
+  - active_loop: booking_form
+  - active_loop: null
+  - slot_was_set:
+    - requested_slot: null
+  - action: utter_booking_confirmed
+  - intent: thanks
+  - action: utter_thanks
+
+- story: Symptom triage path
+  steps:
+  - intent: greet
+  - action: utter_greet
+  - intent: symptom_eye_pain
+  - action: action_detect_emotion
+  - action: symptom_form
+  - active_loop: symptom_form
+  - active_loop: null
+  - slot_was_set:
+    - requested_slot: null
+  - action: action_analyze_symptoms
+  - action: utter_symptom_analysis
+  - intent: affirm
+  - action: booking_form
+  - active_loop: booking_form
+  - active_loop: null
+  - slot_was_set:
+    - requested_slot: null
+  - action: utter_booking_confirmed
+
+- story: Urgent issue path
+  steps:
+  - intent: urgent_issue
+  - action: utter_hitl
+
+- story: Doctor info request
+  steps:
+  - intent: want_doctor_recommendation
+  - action: action_recommend_doctor
+  - intent: want_checkup
+  - action: booking_form
+  - active_loop: booking_form
+
+- story: Context switch during booking (Interruption)
+  steps:
+  - intent: want_checkup
+  - action: booking_form
+  - active_loop: booking_form
+  - intent: want_price_estimate
+  - action: utter_price_estimate
+  - action: booking_form
+  - active_loop: booking_form
+
+
+- story: patient with pain and fear
+  steps:
+    - intent: symptom_eye_pain
+      entities:
+        - patient_concern: "göz ağrısı"
+    - action: action_detect_emotion
+    - slot_was_set:
+        - patient_emotion: pain
+    - action: action_adaptive_response
+    - action: utter_acknowledge_pain
+    - action: utter_ask_symptom_duration
+    - intent: inform
+      entities:
+        - duration: "3 gün"
+    - action: booking_form
+    - active_loop: booking_form
+    - active_loop: null
+    - action: utter_booking_confirmed
+
+- story: emergency triage - immediate escalation
+  steps:
+    - intent: symptom_eye_pain
+      entities:
+        - patient_concern: "görə bilmirəm"
+    - action: action_detect_emotion
+    - action: symptom_qualifier_form
+    - active_loop: symptom_qualifier_form
+    - slot_was_set:
+        - symptom_severity: severe
+    - active_loop: null
+    - action: action_triage_patient
+    - slot_was_set:
+        - urgency_level: emergency
+    - action: utter_emergency_protocol
+
+- story: urgent triage - same day booking
+  steps:
+    - intent: symptom_redness
+    - action: action_detect_emotion
+    - action: symptom_qualifier_form
+    - active_loop: symptom_qualifier_form
+    - active_loop: null
+    - action: action_triage_patient
+    - slot_was_set:
+        - urgency_level: urgent
+    - action: utter_urgent_booking_offer
+    - action: booking_form
+    - active_loop: booking_form
+    - active_loop: null
+    - slot_was_set:
+        - requested_slot: null
+    - action: utter_booking_confirmed

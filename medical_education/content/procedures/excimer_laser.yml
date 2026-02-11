@@ -1,0 +1,365 @@
+procedure:
+  id: excimer_laser
+  name:
+    az: "Excimer Lazer (LASIK/PRK)"
+    ru: "Эксимер-лазерная коррекция (LASIK/PRK)"
+    en: "Excimer Laser (LASIK/PRK)"
+  
+  category: "refractive_surgery"
+  treats:
+    az: ["Yaxıngörmə (Miopiya)", "Uzaqgörmə (Hipermetropiya)", "Astiqmatizm"]
+
+# LAYER 1: Simple Explanation
+simple_explanation:
+  az: |
+    Lazer göz əməliyyatı gözlükdən və kontakt linzalardan azad olmaq üçündür.
+    
+    Necə işləyir?
+    💡 Lazer buynuz qişanın formasını dəyişir
+    💡 İşıq düz retinaya fokuslanır
+    💡 Aydın görmə - gözlüksüz!
+    
+    ⏱️ 10-15 dəqiqə (hər iki göz)
+    😴 Tamamilə ağrısız
+    🏠 Evə gedirsiniz
+    👁️ Ertəsi gün görürsünüz!
+
+# LAYER 2: Who is Candidate
+candidacy:
+  ideal_candidate:
+    az:
+      age: "18-45 yaş arası"
+      prescription:
+        myopia: "Yaxıngörmə: -1.00 to -10.00"
+        hyperopia: "Uzaqgörmə: +1.00 to +4.00"
+        astigmatism: "Astiqmatizm: 1.00 to 5.00"
+      stability: "Gözlük nömrəsi 1 ildir sabitdir"
+      health: "Sağlam buynuz qişa və ümumi sağlamlıq"
+  
+  not_candidate:
+    az:
+      - "❌ 18 yaşdan kiçik (göz hələ böyüyür)"
+      - "❌ Hamiləlik və ya laktasiya dövrü"
+      - "❌ Keratokonus (buynuz qişa xəstəliyi)"
+      - "❌ Aktiv göz infeksiyası"
+      - "❌ Çox nazik buynuz qişa"
+      - "❌ Nəzarətsiz şəkərli diabet"
+      - "❌ Autoimmun xəstəliklər (bəzi)"
+      - "❌ Quru göz sindromu (ağır forma)"
+  
+  borderline_cases:
+    az: |
+      Bəzi hallarda mümkün ola bilər:
+      • 45+ yaş (presbyopia problemi qalır)
+      • Yüksək nömrə (-10-dan çox)
+      • Orta dərəcə quru göz
+      → Ətraflı müayinə lazımdır
+
+# LAYER 3: Procedure Types
+procedure_types:
+  - name: "LASIK (Laser-Assisted In Situ Keratomileusis)"
+    description:
+      az: |
+        Ən populyar metod.
+        
+        Prosedur:
+        1. Buynuz qişanın üst qatından nazik flap kəsilir
+        2. Flap qaldırılır
+        3. Lazer buynuz qişanı yenidən formalaşdırır
+        4. Flap yerinə qoyulur (təbii yapışır)
+        
+        ✅ Tez sağalma (1-2 gün)
+        ✅ Minimal ağrı
+        ✅ Hər iki göz eyni vaxtda
+        
+        ⚠️ Flap komplikasiyası (nadir, <1%)
+    
+    recovery:
+      day_1: "Görmə 80-90%"
+      week_1: "Normal həyat"
+      month_1: "Stabilləşir"
+    
+    best_for: "İdmançılar, aktiv həyat tərzi"
+  
+  - name: "PRK (Photorefractive Keratectomy)"
+    description:
+      az: |
+        Flap yoxdur - birbaşa səth işlənir.
+        
+        Prosedur:
+        1. Buynuz qişanın epiteli çıxarılır
+        2. Lazer birbaşa işləyir
+        3. Kontakt linza qoyulur (mühafizə)
+        4. Epitel 3-5 gündə özü bərpa olur
+        
+        ✅ Flap riski yoxdur
+        ✅ Nazik buynuz qişa üçün əla
+        ✅ İdman travması riski az
+        
+        ⚠️ Sağalma daha uzun (1 həftə)
+        ⚠️ İlk günlər narahatlıq
+    
+    recovery:
+      day_1: "Bulanıq, narahatlıq"
+      week_1: "Görmə yaxşılaşır (70-80%)"
+      month_1: "Stabilləşir"
+      month_3: "Tam nəticə"
+    
+    best_for: "Nazik buynuz qişa, idman travması riski"
+  
+  - name: "SMILE (Small Incision Lenticule Extraction)"
+    description:
+      az: |
+        Ən yeni texnologiya.
+        
+        Prosedur:
+        1. Femtosekund lazer buynuz qişanın içində lentikul yaradır
+        2. Kiçik kəsikdən (2-3mm) lentikul çıxarılır
+        3. Flap yoxdur!
+        
+        ✅ Minimal invaziv
+        ✅ Quru göz riski az
+        ✅ Tez sağalma
+        
+        ⚠️ Yalnız yaxıngörmə üçün
+        ⚠️ Texnologiya yenidir (az təcrübə)
+    
+    best_for: "Quru göz riski olanlar"
+
+# LAYER 4: Step-by-Step What Happens
+procedure_timeline:
+  consultation:
+    duration: "1-2 saat"
+    tests:
+      az:
+        - "Göz muayinəsi"
+        - "Buynuz qişa topoqrafiyası"
+        - "Buynuz qişa qalınlığı ölçülməsi"
+        - "Göz bəbəyinin ölçüsü"
+        - "Quru göz testi"
+        - "Göz içi təzyiqi"
+    decision: "Həkim sizin üçün ən yaxşı metodu seçir"
+  
+  day_before:
+    az:
+      - "Kontakt linza taxmayın (yumuşaq: 3 gün, sərt: 2 həftə)"
+      - "Gözə makiyaj etməyin"
+      - "Spiritli parfüm istifadə etməyin"
+  
+  surgery_day:
+    arrival: "30 dəqiqə əvvəl"
+    preparation:
+      az:
+        - "Göz damcısı (anesteziya + antibiotik)"
+        - "Rahat uzanırsınız"
+        - "Göz açıq tutulur (speculum ilə)"
+    
+    during_surgery:
+      step_1:
+        time: "2-3 dəqiqə"
+        what: "Flap yaradılır (LASIK) və ya epitel çıxarılır (PRK)"
+        feel: "Yüngül təzyiq, heç ağrı yox"
+      
+      step_2:
+        time: "30-60 saniyə"
+        what: "Lazer işləyir"
+        feel: "Lazer səsi (tıq-tıq), heç nə hiss etməzsiniz"
+      
+      step_3:
+        time: "1 dəqiqə"
+        what: "Flap yerinə qoyulur (LASIK)"
+        feel: "Təmiz"
+    
+    total_time: "10-15 dəqiqə (hər iki göz)"
+  
+  immediately_after:
+    az:
+      - "Görmə bulanıqdır (normal)"
+      - "Göz yanan hiss (2-4 saat)"
+      - "İşıq həssaslığı"
+      - "Günəş eynəyi taxın"
+      - "Evə gedin və yatın"
+  
+  next_day_checkup:
+    what_to_expect:
+      az: "Görmə artıq 80-90%! Çox yaxşı görəcəksiniz."
+
+# LAYER 5: Risks & Realistic Expectations
+risks:
+  common_side_effects:
+    - effect: "Quru göz"
+      frequency: "30-40%"
+      duration: "3-6 ay"
+      management: "Süni göz yaşı damcıları"
+    
+    - effect: "Halo və parıltı (gecələr işıq ətrafında)"
+      frequency: "20-30%"
+      duration: "1-3 ay"
+      management: "Tədricən azalır"
+    
+    - effect: "Bulanıq görmə (dəyişən)"
+      frequency: "10-20%"
+      duration: "1-2 həftə"
+      management: "Normallaşır"
+  
+  rare_complications:
+    - complication: "Az/çox korreksiya"
+      frequency: "3-5%"
+      solution: "Enhancement (əlavə lazer) 3-6 ay sonra"
+    
+    - complication: "Flap komplikasiyası (LASIK)"
+      frequency: "<1%"
+      solution: "Əlavə əməliyyat"
+    
+    - complication: "İnfeksiya"
+      frequency: "<0.1%"
+      solution: "Antibiotik müalicəsi"
+    
+    - complication: "Ektaziya (buynuz qişa zəifləməsi)"
+      frequency: "<0.5%"
+      solution: "Cross-linking və ya lens implantasiyası"
+
+realistic_expectations:
+  success:
+    az: "95-98% pasiyent 20/20 və ya daha yaxşı görür"
+  
+  limitations:
+    az:
+      - "❗ Presbyopia (40+ yaşda yaxından görmə) həll olunmur"
+      - "❗ Yaş artdıqca gözlük lazım ola bilər (oxumaq üçün)"
+      - "❗ Bəzi pasiyentlər hələ yüngül gözlük istifadə edə bilər"
+      - "❗ Gecə sürücülük keyfiyyəti bir az aşağı ola bilər (halo)"
+  
+  long_term:
+    az: |
+      ✅ Nəticə ömürlükdür (əksər hallarda)
+      ⚠️ 10-20 il sonra presbyopia başlayır (təbii yaşlanma)
+      ⚠️ Enhancement lazım ola bilər (5-10% hallarda)
+
+# LAYER 6: Recovery Timeline
+recovery:
+  lasik:
+    hour_2:
+      vision: "Bulanıq"
+      discomfort: "Orta (4/10)"
+      activity: "Evdə yatın"
+    
+    day_1:
+      vision: "80-90% aydın"
+      discomfort: "Minimal (1/10)"
+      activity: "Normal (ekran işi OK)"
+    
+    week_1:
+      vision: "95% aydın"
+      discomfort: "Yox"
+      activity: "İdman OK (kontaktsız)"
+    
+    month_1:
+      vision: "Stabil"
+      discomfort: "Yox"
+      activity: "Hər şey normal"
+  
+  prk:
+    day_1_3:
+      vision: "Çox bulanıq"
+      discomfort: "Orta-yüksək (5-7/10)"
+      activity: "Evdə istirahət"
+    
+    week_1:
+      vision: "70-80% aydın"
+      discomfort: "Azalır"
+      activity: "Yüngül fəaliyyət"
+    
+    month_1:
+      vision: "90% aydın"
+      discomfort: "Minimal"
+      activity: "Normal"
+    
+    month_3:
+      vision: "Tam stabil"
+      discomfort: "Yox"
+      activity: "Hər şey"
+
+# LAYER 7: Cost
+cost:
+  factors:
+    az:
+      - "Texnologiya (LASIK, PRK, SMILE)"
+      - "Hər iki göz yoxsa bir göz"
+      - "Nömrənin dərəcəsi"
+      - "Klinika və həkim təcrübəsi"
+  
+  estimate:
+    lasik_both_eyes: "2000-4000 AZN"
+    prk_both_eyes: "1800-3500 AZN"
+    smile_both_eyes: "3000-5000 AZN"
+  
+  includes:
+    az:
+      - "Bütün pre-op müayinələr"
+      - "Əməliyyat"
+      - "Post-op baxışlar (1 il)"
+      - "Dərmanlar"
+  
+  financing:
+    az: "Bəzi klinikalar hissə-hissə ödəmə planı təklif edir."
+
+# LAYER 8: Preparation & Post-Op Care
+preparation:
+  before:
+    az:
+      - "🚫 Kontakt linza: 3 gün (yumuşaq), 2 həftə (sərt)"
+      - "🚫 Göz makiyajı: 24 saat"
+      - "🚿 Saçınızı yuyun (3 gün yumaya bilməyəcəksiniz)"
+      - "🚗 Kimsə sizi evə aparmalıdır"
+      - "💊 Resept dərmanları əvvəlcədən alın"
+
+after_care:
+  do:
+    az:
+      - "✅ Damcıları istifadə edin (antibiotik, iltihab əleyhinə)"
+      - "✅ Qoruyucu eynək taxın (gecələr, 1 həftə)"
+      - "✅ Günəş eynəyi (1 ay)"
+      - "✅ Kontrol müayinələrə gəlin"
+  
+  dont:
+    az:
+      - "❌ Göz ovuşdurmayın (1 ay!)"
+      - "❌ Su gözə dəyməsin (3 gün)"
+      - "❌ Hovuz, dəniz (2 həftə)"
+      - "❌ Göz makiyajı (1 həftə)"
+      - "❌ Kontakt idman (1 ay)"
+      - "❌ Sauna, hamam (2 həftə)"
+
+# LAYER 9: FAQs
+faqs:
+  - question:
+      az: "LASIK yoxsa PRK? Hansı yaxşıdır?"
+    answer:
+      az: "Həkim buynuz qişanızın qalınlığına görə qərar verəcək. LASIK tez sağalır, PRK daha təhlükəsizdir (travma üçün)."
+  
+  - question:
+      az: "Nəticə ömürlükdürmü?"
+    answer:
+      az: "Əksər hallarda bəli. Amma yaş artdıqca (40+) oxumaq üçün gözlük lazım ola bilər (presbyopia)."
+  
+  - question:
+      az: "Hər iki gözü eyni vaxtda edə bilərikmi?"
+    answer:
+      az: "Bəli, LASIK hər iki göz eyni gündə edilir. PRK bəzən ayrı-ayrı edilir."
+  
+  - question:
+      az: "Ağrılıdırmı?"
+    answer:
+      az: "Xeyr! LASIK tamamilə ağrısızdır. PRK ilk 2-3 gün narahatlıq ola bilər."
+  
+  - question:
+      az: "İdmana nə vaxt qayıda bilərəm?"
+    answer:
+      az: "LASIK: 1 həftə (kontaktsız). PRK: 2 həftə. Kontakt idman (boks, futbol): 1 ay."
+
+# Metadata
+metadata:
+  last_updated: "2026-02-11"
+  reading_time: "12 minutes"
+  complexity: "medium"

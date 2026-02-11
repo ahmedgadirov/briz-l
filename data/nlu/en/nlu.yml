@@ -1,0 +1,98 @@
+version: "3.1"
+
+nlu:
+- intent: greet
+  examples: |
+    - hello
+    - hi
+    - good morning
+    - good afternoon
+    - hey there
+
+- intent: goodbye
+  examples: |
+    - bye
+    - good bye
+    - see you
+    - farewell
+
+- intent: thanks
+  examples: |
+    - thanks
+    - thank you
+    - ty
+    - thanks a lot
+
+- intent: affirm
+  examples: |
+    - yes
+    - yeah
+    - yup
+    - correct
+    - sure
+
+- intent: deny
+  examples: |
+    - no
+    - nope
+    - nah
+    - not really
+    - don't want to
+
+- intent: symptom_blurry_vision
+  examples: |
+    - blurry vision
+    - can't see clearly
+    - vision is foggy
+    - eyesight getting worse
+    - everything is blur
+    - hard to focus
+
+- intent: want_booking
+  examples: |
+    - book appointment
+    - schedule visit
+    - see a doctor
+    - need consultation
+    - make an appointment
+    - checkup please
+
+- intent: symptom_eye_pain
+  examples: |
+    - eye pain
+    - my eyes hurt
+    - burning sensation
+    - sharp pain in eye
+    - eyes are sore
+    
+- intent: concern_glasses
+  examples: |
+    - want to get rid of glasses
+    - laser surgery
+    - lasik
+    - stop wearing glasses
+    - fix my vision
+    
+- intent: concern_cataract
+  examples: |
+    - cataract
+    - cloudy lens
+    - cataract surgery
+    - eye cloudiness
+
+- intent: express_fear_surgery
+  examples: |
+    - scared of surgery
+    - is it dangerous?
+    - will I go blind?
+    - does it hurt?
+    - is it risky?
+
+- intent: urgent_issue
+  examples: |
+    - emergency
+    - urgent help needed
+    - sudden loss of vision
+    - I can't see anything!
+    - eye injury
+    - bleeding eye

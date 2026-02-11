@@ -1,0 +1,7 @@
+rasa-sdk
+psycopg2-binary
+requests
+sqlalchemy<2.0
+PyYAML
+pytest
+langdetect

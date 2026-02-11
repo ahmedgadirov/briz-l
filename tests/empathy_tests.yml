@@ -1,0 +1,25 @@
+test_cases:
+  - name: "Patient with fear"
+    steps:
+      - user: "əməliyyatdan çox qorxuram"
+        intent: express_fear_surgery
+      - action: action_detect_emotion
+      - action: utter_acknowledge_fear
+      - action: action_provide_reassurance
+      
+  - name: "Emergency triage"
+    steps:
+      - user: "təcili, gözüm görmür"
+        intent: urgent_issue
+      - action: action_triage_patient
+      - slot_was_set:
+        - urgency_level: emergency
+     # Note: Exact action sequence depends on rules/stories, checking core slot set is key
+          
+  - name: "Progressive education"
+    steps:
+      - user: "katarakta nədir?"
+        intent: concern_cataract
+      - action: action_progressive_education
+      - slot_was_set:
+        - education_depth: 1

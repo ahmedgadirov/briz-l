@@ -1,0 +1,204 @@
+symptoms:
+  # CRITICAL - Emergency (Score: 9-10)
+  sudden_vision_loss:
+    severity: 10
+    keywords:
+      az: ["birdən görə bilmirəm", "görməyi itirdim", "qara oldu", "heç nə görmürəm"]
+      ru: ["внезапная потеря зрения", "ослеп", "не вижу совсем"]
+      en: ["sudden vision loss", "went blind", "can't see anything"]
+    urgency: emergency
+    timeframe: "immediate"
+    protocol: "emergency_vision_loss"
+    
+  eye_trauma:
+    severity: 10
+    keywords:
+      az: ["gözə zədə", "gözə dəydi", "gözümü vurdu", "qırıq şüşə"]
+      ru: ["травма глаза", "удар в глаз", "осколок в глазу"]
+      en: ["eye injury", "hit in eye", "foreign object in eye"]
+    urgency: emergency
+    timeframe: "immediate"
+    protocol: "eye_trauma"
+    
+  severe_pain_sudden:
+    severity: 9
+    keywords:
+      az: ["dözülməz ağrı", "çox pis ağrı", "birdən ağrı başladı"]
+      ru: ["невыносимая боль", "острая боль", "сильная боль"]
+      en: ["severe pain", "unbearable pain", "intense pain"]
+    urgency: emergency
+    timeframe: "within 2 hours"
+    protocol: "acute_pain"
+    
+  chemical_burn:
+    severity: 10
+    keywords:
+      az: ["kimyəvi maddə", "turşu", "dağlayıcı", "yanır"]
+      ru: ["химический ожог", "кислота", "щелочь"]
+      en: ["chemical burn", "acid in eye", "chemical splash"]
+    urgency: emergency
+    timeframe: "immediate - irrigate first"
+    protocol: "chemical_injury"
+    
+  # URGENT - Same day/24hr (Score: 7-8)
+  red_eye_with_pain:
+    severity: 8
+    keywords:
+      az: ["göz qırmızıdır ağrıyır", "qırmızı və ağrı", "iltihab"]
+      ru: ["красный глаз с болью", "воспаление", "покраснение и боль"]
+      en: ["red eye with pain", "inflamed eye", "painful red eye"]
+    urgency: urgent
+    timeframe: "within 24 hours"
+    protocol: "acute_inflammation"
+    
+  flashes_floaters:
+    severity: 8
+    keywords:
+      az: ["işıq çaxmaları", "qaranlıq nöqtələr", "milçək uçur", "pərdə"]
+      ru: ["вспышки света", "мушки", "занавес", "молнии"]
+      en: ["flashes of light", "floaters", "curtain", "shadow"]
+    urgency: urgent
+    timeframe: "within 12-24 hours"
+    protocol: "retinal_detachment_risk"
+    
+  post_surgery_complication:
+    severity: 8
+    keywords:
+      az: ["əməliyyatdan sonra", "əməliyyat oldum", "pisləşdi", "qırmızı oldu"]
+      ru: ["после операции", "осложнение", "ухудшилось"]
+      en: ["after surgery", "post-op", "complication", "worse after surgery"]
+    urgency: urgent
+    timeframe: "within 12 hours"
+    protocol: "post_op_complication"
+    
+  discharge_pain:
+    severity: 7
+    keywords:
+      az: ["axıntı və ağrı", "irin", "yapışır"]
+      ru: ["гной", "выделения и боль", "слипается"]
+      en: ["discharge with pain", "pus", "sticky eye with pain"]
+    urgency: urgent
+    timeframe: "within 24 hours"
+    protocol: "infection_suspected"
+    
+  # SOON - Within week (Score: 5-6)
+  blurry_vision_worsening:
+    severity: 6
+    keywords:
+      az: ["pisləşir", "getdikcə pis", "tədricən"]
+      ru: ["размытое зрение ухудшается", "прогрессирует"]
+      en: ["blurry vision worsening", "getting worse", "progressively worse"]
+    urgency: soon
+    timeframe: "within 3-7 days"
+    protocol: "progressive_vision_loss"
+    
+  persistent_redness:
+    severity: 5
+    keywords:
+      az: ["bir neçə gündür qırmızı", "davam edir", "keçmir"]
+      ru: ["покраснение не проходит", "несколько дней"]
+      en: ["redness not improving", "persistent redness"]
+    urgency: soon
+    timeframe: "within 5-7 days"
+    protocol: "chronic_inflammation"
+    
+  double_vision:
+    severity: 6
+    keywords:
+      az: ["ikili görürəm", "iki şəkil", "dublikat"]
+      ru: ["двоится", "двойное зрение"]
+      en: ["double vision", "diplopia", "seeing double"]
+    urgency: soon
+    timeframe: "within 3-5 days"
+    protocol: "neurological_assessment"
+    
+  # ROUTINE - Within 2-4 weeks (Score: 2-4)
+  gradual_blurry_vision:
+    severity: 4
+    keywords:
+      az: ["dumanlı görürəm", "yavaş-yavaş dumanlı", "aylar ərzində", "tədricən"]
+      ru: ["постепенно размыто", "месяцами"]
+      en: ["gradual blurry vision", "slowly worsening", "over months"]
+    urgency: routine
+    timeframe: "within 2-4 weeks"
+    protocol: "routine_exam"
+    
+  dry_eyes:
+    severity: 3
+    keywords:
+      az: ["quru göz", "yanır qaşınır", "qum kimi"]
+      ru: ["сухость глаз", "жжение", "песок в глазах"]
+      en: ["dry eyes", "gritty feeling", "burning eyes"]
+    urgency: routine
+    timeframe: "within 3-4 weeks"
+    protocol: "dry_eye_syndrome"
+    
+  want_glasses_removal:
+    severity: 2
+    keywords:
+      az: ["gözlükdən qurtulmaq", "lazer əməliyyatı", "kontakt linza"]
+      ru: ["избавиться от очков", "лазерная коррекция"]
+      en: ["get rid of glasses", "laser surgery", "stop wearing contacts"]
+    urgency: elective
+    timeframe: "flexible"
+    protocol: "refractive_surgery_consult"
+
+# Modifiers - Adjust severity based on context
+modifiers:
+  age_over_60:
+    multiplier: 1.2
+    reason: "Higher risk for serious conditions"
+    
+  age_under_5:
+    multiplier: 1.3
+    reason: "Pediatric cases need prompt attention"
+    
+  diabetes:
+    multiplier: 1.3
+    reason: "High risk for diabetic retinopathy"
+    
+  previous_retinal_detachment:
+    multiplier: 1.5
+    reason: "High risk for recurrence"
+    
+  only_functional_eye:
+    multiplier: 1.5
+    reason: "Vision preservation critical"
+    
+  bilateral_symptoms:
+    multiplier: 1.2
+    reason: "Both eyes affected - systemic concern"
+    
+  pregnancy:
+    multiplier: 1.1
+    reason: "Medication restrictions, preeclampsia risk"
+    
+  immunocompromised:
+    multiplier: 1.3
+    reason: "Higher infection risk"
+
+# Duration impact
+duration_scaling:
+  sudden_onset:
+    multiplier: 1.5
+    keywords: ["birdən", "внезапно", "suddenly", "this morning"]
+    
+  hours:
+    multiplier: 1.3
+    keywords: ["bu gün", "сегодня", "today", "few hours"]
+    
+  days:
+    multiplier: 1.1
+    keywords: ["bir neçə gün", "несколько дней", "few days"]
+    
+  weeks:
+    multiplier: 1.0
+    keywords: ["həftələr", "недели", "weeks"]
+    
+  months:
+    multiplier: 0.9
+    keywords: ["aylar", "месяцы", "months"]
+    
+  years:
+    multiplier: 0.8
+    keywords: ["illər", "годы", "years"]

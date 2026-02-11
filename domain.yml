@@ -1,0 +1,492 @@
+version: "3.1"
+
+intents:
+  - symptom_eye_pain
+  - symptom_blurry_vision
+  - symptom_redness
+  - concern_glasses
+  - concern_cataract
+  - concern_surgery_info
+  - want_checkup
+  - want_price_estimate
+  - want_doctor_recommendation
+  - urgent_issue
+  - inform
+  - greet
+  - goodbye
+  - thanks
+  - affirm
+  - deny
+  - nlu_fallback
+  - express_fear_surgery
+  - express_fear_pain
+  - express_fear_complications
+  - ask_about_condition
+  - ask_about_procedure
+  - ask_more_details
+  - ask_faq
+  - search_medical_info
+  - list_conditions
+  - ask_address
+  - ask_hours
+  - bot_help
+  - how_are_you
+
+entities:
+  - patient_concern
+  - duration
+  - doctor_name
+  - phone_number
+  - time
+  - patient_name
+  - age
+  - medical_condition
+  - medical_procedure
+
+
+slots:
+  patient_concern:
+    type: text
+    mappings:
+      - type: from_text
+        needs_correction: false
+      - type: from_entity
+        entity: patient_concern
+
+  symptom_duration:
+    type: text
+    mappings:
+      - type: from_entity
+        entity: duration
+
+  has_diagnosis:
+    type: bool
+    mappings:
+      - type: from_intent
+        value: true
+        intent: affirm
+      - type: from_intent
+        value: false
+        intent: deny
+
+  preferred_doctor:
+    type: text
+    mappings:
+      - type: from_entity
+        entity: doctor_name
+
+  patient_name:
+    type: text
+    mappings:
+      - type: from_text
+        conditions:
+         - active_loop: booking_form
+         
+  phone_number:
+    type: text
+    mappings:
+      - type: from_entity
+        entity: phone_number
+      - type: from_text
+        conditions:
+         - active_loop: booking_form
+           requested_slot: phone_number
+
+  preferred_time:
+    type: text
+    mappings:
+      - type: from_entity
+        entity: time
+      - type: from_text
+        conditions:
+         - active_loop: booking_form
+           requested_slot: preferred_time
+
+  symptom_severity:
+    type: text
+    mappings:
+      - type: from_text
+        conditions:
+         - active_loop: symptom_form
+           requested_slot: symptom_severity
+
+  conversation_stage:
+    type: text
+    initial_value: "greeting"
+    mappings:
+      - type: custom
+
+  language:
+    type: text
+    initial_value: "az"
+    mappings:
+      - type: custom
+
+  affects_daily_life:
+    type: bool
+    mappings:
+      - type: from_intent
+        value: true
+        intent: affirm
+        conditions:
+         - active_loop: symptom_qualifier_form
+      - type: from_intent
+        value: false
+        intent: deny
+        conditions:
+         - active_loop: symptom_qualifier_form
+
+  symptom_type:
+    type: text
+    mappings:
+      - type: from_text
+        conditions:
+         - active_loop: symptom_qualifier_form
+
+  fallback_count:
+    type: float
+    mappings:
+      - type: custom
+
+  patient_emotion:
+    type: text
+    influence_conversation: true
+    mappings:
+      - type: custom
+
+  urgency_level:
+    type: categorical
+    values:
+      - routine
+      - soon
+      - urgent
+      - emergency
+    influence_conversation: true
+    mappings:
+      - type: custom
+      
+  patient_age:
+    type: text
+    mappings:
+      - type: from_entity
+        entity: age
+
+  patient_profile:
+    type: text
+    mappings:
+      - type: custom
+
+  handoff_completed:
+    type: bool
+    mappings:
+      - type: custom
+
+  is_returning_patient:
+    type: bool
+    mappings:
+      - type: custom
+
+  education_topic:
+    type: text
+    mappings:
+      - type: custom
+
+  education_depth:
+    type: float
+    initial_value: 0
+    mappings:
+      - type: custom
+  
+  education_type:
+    type: text
+    mappings:
+      - type: custom
+  
+  education_layer:
+    type: text
+    mappings:
+      - type: custom
+  
+  detected_language:
+    type: text
+    initial_value: "az"
+    mappings:
+      - type: custom
+
+  has_diabetes:
+    type: bool
+    mappings:
+      - type: custom
+
+  previous_retinal_detachment:
+    type: bool
+    mappings:
+      - type: custom
+
+  only_functional_eye:
+    type: bool
+    mappings:
+      - type: custom
+
+  bilateral_symptoms:
+    type: bool
+    mappings:
+      - type: custom
+
+  is_pregnant:
+    type: bool
+    mappings:
+      - type: custom
+
+  immunocompromised:
+    type: bool
+    mappings:
+      - type: custom
+
+  triage_protocol:
+    type: text
+    mappings:
+      - type: custom
+
+  triage_report:
+    type: text
+    mappings:
+      - type: custom
+
+forms:
+  booking_form:
+    required_slots:
+      - patient_name
+      - patient_concern
+      - phone_number
+      - preferred_time
+  
+  symptom_form:
+    required_slots:
+      - patient_concern
+      - symptom_duration
+      - symptom_severity
+
+  symptom_qualifier_form:
+    required_slots:
+      - symptom_type
+      - symptom_duration
+      - symptom_severity
+      - affects_daily_life
+
+responses:
+  utter_greet:
+    - text: "Salam! Briz-L Göz Klinikasına xoş gəlmisiniz. Göz sağlamlığınızla bağlı sizə necə kömək edə bilərəm?"
+      metadata:
+        language: az
+    - text: "Здравствуйте! Добро пожаловать в глазную клинику Briz-L. Чем могу помочь?"
+      metadata:
+        language: ru
+    - text: "Hello! Welcome to Briz-L Eye Clinic. How can I help you?"
+      metadata:
+        language: en
+
+  utter_goodbye:
+    - text: "Sağ olun! Sizə cansağlığı arzulayırıq."
+
+  utter_thanks:
+    - text: "Buyurun, borcumuzdur."
+
+  utter_default:
+    - text: "Bağışlayın, sizi tam başa düşmədim. Zəhmət olmasa fikrinizi bir az daha ətraflı izah edə bilərsiniz?"
+
+  utter_symptom_acknowledged:
+    - text: "Başa düşürəm. Göz sağlamlığı çox vacibdir."
+
+  utter_ask_patient_concern:
+    - text: "Hansı problemlə bağlı müraciət edirsiniz? (Məsələn: gözüm ağrıyır, müayinə lazımdır)"
+
+  utter_ask_phone_number:
+    - text: "Sizinlə əlaqə saxlamağımız üçün zəhmət olmasa telefon nömrənizi qeyd edin. (Məs: 055 123 45 67)"
+
+  utter_ask_preferred_time:
+    - text: "Müayinə üçün hansı vaxt sizin üçün uyğundur? (Məs: bu gün, sabah səhər, həftə sonu)"
+
+  utter_ask_symptom_duration:
+    - text: "Bu problem nə vaxtdan başlayıb? (Məs: 3 gündür, dünəndən)"
+
+  utter_ask_symptom_severity:
+    - text: "Ağrı və ya narahatlıq nə dərəcədədir? (Məs: dözülməzdir, azdır, yalnız axşamlar)"
+
+  utter_booking_confirmed:
+    - text: |
+        Təşəkkür edirəm! Məlumatlarınızı qeyd etdim:
+        
+        📝 Problem: {patient_concern}
+        📞 Əlaqə: {phone_number}
+        📅 Zaman: {preferred_time}
+        
+        Koordinatorumuz 30 dəqiqə ərzində sizinlə əlaqə saxlayıb vaxtı dəqiqləşdirəcək.
+
+  utter_symptom_analysis:
+    - text: |
+        Məlumat üçün təşəkkürlər. Sizin şikayətləriniz:
+        - {patient_concern}
+        - Müddət: {symptom_duration}
+        
+        Tövsiyə edirik ki, həkim müayinəsindən keçəsiniz. Qeydiyyat edək?
+
+  utter_booking_info:
+    - text: "Müayinəyə yazılmaq üçün zəhmət olmasa adınızı və əlaqə nömrənizi qeyd edin, koordinatorumuz sizinlə əlaqə saxlayacaq."
+
+  utter_doctors_info:
+    - text: "Bizim klinikada təcrübəli oftalmoloqlar fəaliyyət göstərir. Dr. İltifat Şərif, Dr. Emil Qafarlı, Dr. Səbinə Əbiyeva və Dr. Seymur Bayramov."
+
+  utter_price_estimate:
+    - text: "Qiymətlər müayinə nəticəsindən asılıdır. Məsələn, ən sadə müayinə 30-50 AZN, əməliyyatlar isə fərqlidir. Dəqiq qiymət həkim baxışından sonra bilinir."
+
+  utter_emergency_protocol:
+    - text: "⚠️ Təcili vəziyyət protokolu aktivləşdi. Zəhmət olmasa dərhal +994 12 541 19 00 nömrəsinə zəng edin."
+
+  utter_urgent_booking_offer:
+    - text: "Sizin vəziyyətiniz təcilidir. Sabah üçün boş yerimiz var, sizi yazım?"
+
+  utter_ask_affects_daily_life:
+    - text: "Bu problem gündəlik həyatınıza mane olurmu? (işləmək, oxumaq, maşın sürmək)"
+
+  utter_ask_symptom_type:
+    - text: "Zəhmət olmasa şikayətinizi qısaca təsvir edin."
+
+  utter_acknowledge_pain:
+    - text: "Başa düşürəm, göz ağrısı həqiqətən narahat edicidir. Heç kim ağrı ilə yaşamalı deyil."
+    - text: "Göz ağrınızın olması çox əziyyətlidir. Gəlin tez həll tapaq."
+
+  utter_acknowledge_worry:
+    - text: "Görmə problemləri təbii ki narahat edir. Amma yaxşı xəbər - əksər göz problemləri müalicə olunandır."
+    - text: "Narahatçılığınızı başa düşürəm. Göz sağlamlığı çox vacibdir və biz köməyə hazırıq."
+
+  utter_acknowledge_fear:
+    - text: "Qorxmaq normaldır. Amma bilməlisiniz ki, göz əməliyyatları çox inkişaf edib və təhlükəsizdir."
+    - text: "Bu narahatlıq hiss edirsiniz, anlayıram. Sizinlə addım-addım gedəcəyik və hər şeyi izah edəcəyik."
+
+  utter_acknowledge_urgency:
+    - text: "Təcili vəziyyət olduğunu görürəm. Dərhal kömək edək."
+    - text: "Bunu ciddi qəbul edirəm. İndi sadə dildə izah edim."
+
+  utter_acknowledge_frustration:
+    - text: "Görürəm ki əsəbisiniz. Üzr istəyirəm, gəlin daha aydın izah edim."
+    - text: "Bilirəm, çaşqın hiss edirsiniz. İndi sadə dildə izah edim."
+
+  utter_reassure_pain_management:
+    - text: |
+        💙 Ağrıdan qorxmayın - müasir göz əməliyyatları ağrısızdır.
+        
+        Necə?
+        ✅ Lokal anesteziya damcısı
+        ✅ Heç nə hiss etməzsiniz
+        ✅ Sadəcə yüngül təzyiq
+        ✅ Əməliyyat 10-20 dəqiqə
+        
+        Əməliyyatdan SONRA:
+        • İlk saatlar: yüngül narahatlıq (normal)
+        • Ağrıkəsici damcı veririk
+        • 24 saatda rahatsınız
+        
+        Pasiyentlərimiz deyir: "Gözlədiyimdən asan oldu"
+        
+        Bu məlumat sizi sakitləşdirdimi?
+
+
+  utter_address_info:
+    - text: "Klinikamız Bakı şəhəri, Azadlıq prospekti 124 ünvanında yerləşir. (Bakı Sağlamlıq Mərkəzi ilə üzbəüz)"
+      metadata:
+        language: az
+    - text: "Наша клиника находится в Баку, проспект Азадлыг 124. (Напротив Бакинского Оздоровительного Центра)"
+      metadata:
+        language: ru
+    - text: "Our clinic is located at 124 Azadlig Avenue, Baku. (Opposite Baku Health Center)"
+      metadata:
+        language: en
+
+  utter_hours_info:
+    - text: "İş saatlarımız: Bazar ertəsi - Şənbə, 09:00 - 18:00. Bazar günü istirahət günüdür."
+      metadata:
+        language: az
+    - text: "Часы работы: Понедельник - Суббота, 09:00 - 18:00. Воскресенье - выходной."
+      metadata:
+        language: ru
+    - text: "Working hours: Monday - Saturday, 09:00 AM - 06:00 PM. Sunday is a day off."
+      metadata:
+        language: en
+
+  utter_bot_help:
+    - text: |
+        Mən sizə aşağıdakı mövzularda kömək edə bilərəm:
+        🔹 Göz xəstəlikləri haqqında məlumat (məs: katarakta nədir?)
+        🔹 Müayinəyə yazılmaq
+        🔹 Həkim seçimi (məs: hansı həkim yaxşıdır?)
+        🔹 Qiymətlər
+        🔹 Ünvan və iş saatları
+        
+        Nə ilə maraqlanırsınız?
+      metadata:
+        language: az
+    - text: |
+        Я могу помочь вам со следующими темами:
+        🔹 Информация о глазных заболеваниях (напр: что такое катаракта?)
+        🔹 Запись на прием
+        🔹 Выбор врача (напр: какой врач хороший?)
+        🔹 Цены
+        🔹 Адрес и часы работы
+        
+        Что вас интересует?
+      metadata:
+        language: ru
+    - text: |
+        I can help you with the following topics:
+        🔹 Information about eye conditions (e.g., what is a cataract?)
+        🔹 Booking an appointment
+        🔹 Choosing a doctor (e.g., who is the best doctor?)
+        🔹 Pricing
+        🔹 Address and working hours
+        
+        What are you interested in?
+      metadata:
+        language: en
+
+  utter_social_reply:
+    - text: "Çox sağ olun, mən yaxşıyam! Sizə necə kömək edə bilərəm?"
+      metadata:
+        language: az
+    - text: "Спасибо, у меня все хорошо! Чем я могу вам помочь?"
+      metadata:
+        language: ru
+    - text: "I'm doing great, thank you! How can I help you today?"
+      metadata:
+        language: en
+
+  utter_hitl:
+    - text: |
+        Sizə daha yaxşı kömək etmək üçün zəhmət olmasa koordinatorumuzla birbaşa WhatsApp vasitəsilə əlaqə saxlayın:
+
+        https://wa.me/994555512400
+
+        Koordinatorumuz bütün suallarınızı cavablandıracaq.
+
+actions:
+  - action_guardrail_language
+  - action_fallback_with_count
+  - action_analyze_symptoms
+  - action_recommend_doctor
+  - action_detect_emotion
+  - action_adaptive_response
+  - action_triage_patient
+  - validate_symptom_qualifier_form
+  - action_provide_reassurance
+  - action_detect_language
+  - action_adaptive_utter
+  - action_progressive_education
+  - action_recap_conversation
+  - action_smart_follow_up
+  - action_build_patient_profile
+  - action_warm_handoff
+  - action_recognize_returning_patient
+  - action_educate
+  - action_search_education
+  - action_list_conditions
+

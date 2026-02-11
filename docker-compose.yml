@@ -1,0 +1,59 @@
+version: '3.4'
+services:
+  rasa:
+    image: rasa-brizl:latest
+    build:
+      context: .
+      dockerfile: Dockerfile
+    platform: linux/amd64
+    ports:
+      - "5005:5005"
+    volumes:
+      - ./:/app
+      - ./models:/app/models
+    command:
+      - run
+      - --enable-api
+      - --cors
+      - "*"
+      - --debug
+    depends_on:
+      - action_server
+      - db
+    environment:
+      - DB_PASSWORD=rasa_password
+
+  action_server:
+    image: rasa-brizl-action:latest
+    build:
+      context: .
+      dockerfile: Dockerfile.action
+    platform: linux/amd64
+    ports:
+      - "5055:5055"
+    volumes:
+      - ./actions:/app/actions
+      - ./triage_system:/app/triage_system
+      - ./medical_education:/app/medical_education
+      - ./data:/app/data
+      - ./tests:/app/tests
+    command:
+      - start
+      - --actions
+      - actions
+      - --debug
+
+  db:
+    image: postgres:14
+    restart: always
+    environment:
+      POSTGRES_USER: rasa
+      POSTGRES_PASSWORD: rasa_password
+      POSTGRES_DB: rasa
+    ports:
+      - "5433:5432"
+    volumes:
+      - db-data:/var/lib/postgresql/data
+
+volumes:
+  db-data:

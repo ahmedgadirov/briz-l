@@ -1,0 +1,207 @@
+version: "3.1"
+
+nlu:
+- intent: greet
+  examples: |
+    - salam
+    - hi
+    - hello
+    - sabahınız xeyir
+    - axşamınız xeyir
+    - salamlar
+    - salam doktor
+
+- intent: goodbye
+  examples: |
+    - sağ ol
+    - sağ olun
+    - hələlik
+    - görüşənədək
+    - bye
+    - good bye
+
+- intent: thanks
+  examples: |
+    - təşəkkür edirəm
+    - çox sağ olun
+    - minnətdaram
+    - təşəkkürlər
+    - thanks
+
+- intent: affirm
+  examples: |
+    - bəli
+    - hə
+    - elədir
+    - doğrudur
+    - yes
+    - okay
+
+- intent: deny
+  examples: |
+    - xeyr
+    - yox
+    - istəmirəm
+    - lazım deyil
+    - no
+
+- intent: symptom_eye_pain
+  examples: |
+    - gözlərim ağrıyır
+    - gözümdə ağrı var
+    - bərk ağrıyır
+    - sancı var gözümdə
+    - gözlərim sızıldayır
+    - baş ağrısı verir gözüm
+    - gözümün içi ağrıyır
+    - gözümə nəsə batır sanki
+    - ağrıdan dözə bilmirəm
+    - göz ağrısı
+
+- intent: symptom_blurry_vision
+  examples: |
+    - dumanlı görürəm
+    - aydın görmürəm
+    - gözümə duman gəlir
+    - bulanıq görürəm
+    - uzağı yaxşı görmürəm
+    - yaxını görə bilmirəm
+    - hər şey dumanlıdır
+    - gözümdə pərdə var elə bil
+    - tor görürəm
+    - zəif görürəm
+
+- intent: symptom_redness
+  examples: |
+    - gözlərim qızarıb
+    - qan sağılıb gözümə
+    - gözüm qıpqırmızıdır
+    - qızartı var
+    - gözümün ağı qızarıb
+    - qanşanağı olub
+    - iltihab var deyəsən
+    - qızarıqlıq keçmir
+
+- intent: concern_glasses
+  examples: |
+    - gözlükdən qurtulmaq istəyirəm
+    - eynəyi atmaq istəyirəm
+    - lazer əməliyyatı
+    - eksimer lazer
+    - eynəkdən bezmişəm
+    - linza istəmirəm artıq
+    - lazerlə düzəltdirmək olar?
+    - göz nömrəmi sildirmək istəyirəm
+    - excimer
+    - lasik
+
+- intent: concern_cataract
+  examples: |
+    - katarakta
+    - mirvari suyu
+    - gözümdə mirvari suyu var
+    - katarakta əməliyyatı
+    - mirvari suyu təmizlənməsi
+    - lens dəyişdirilməsi
+    - yaşlı adamda mirvari suyu
+    - katarakta diaqnozu qoyulub
+
+- intent: concern_surgery_info
+  examples: |
+    - əməliyyat haqqında məlumat
+    - əməliyyat necə keçir?
+    - qorxuludurmu?
+    - nə qədər vaxt aparır?
+    - narkozla olur?
+    - əməliyyatdan sonra nə vaxt görəcəm?
+    - lazer əməliyyatı necə olur?
+
+- intent: want_checkup
+  examples: |
+    - müayinə istəyirəm
+    - müayinəyə yazılmaq
+    - qeydiyyatdan keçmək
+    - həkim qəbuluna yazılmaq
+    - yoxlanmaq istəyirəm
+    - gözümü yoxlatmaq
+    - reception
+    - növbə almaq
+    - yazılmaq istəyirəm
+    - checkup
+
+- intent: want_price_estimate
+  examples: |
+    - qiymət
+    - nə qədərdir?
+    - neçəyədir?
+    - qiyməti necədir?
+    - bahadır?
+    - ödəniş nə qədərdir?
+    - lazerin qiyməti
+    - müayinə neçəyədir?
+    - pulsuzdur?
+    - endirim var?
+
+- intent: want_doctor_recommendation
+  examples: |
+    - hansı həkim yaxşıdır?
+    - yaxşı oftalmoloq
+    - həkim məsləhəti
+    - katarakta üçün kimə gedim?
+    - uşaq həkimi kimdir?
+    - baş həkim kimdir?
+    - Dr İltifatı istəyirəm
+    - tövsiyə edə bilərsiniz?
+    - ən yaxşı həkiminiz
+
+- intent: urgent_issue
+  examples: |
+    - təcili
+    - çox pisdir
+    - görə bilmirəm
+    - qəfil kor oldum
+    - gözümə dəmir girdi
+    - travma aldım
+    - qan axır
+    - dözə bilmirəm
+    - kömək edin tez
+    - təcili yardım
+
+- intent: inform
+  examples: |
+    - adım Əlidir
+    - 3 gündür
+    - dünəndən
+    - 1 həftədir
+    - bu gün
+    - yox diaqnoz yoxdur
+    - bəli var
+    - 055 123 45 67
+    - nömrəm budur
+
+- intent: express_fear_surgery
+  examples: |
+    - əməliyyatdan qorxuram
+    - təhlükəlidiрmi
+    - kor ola bilərəmmi
+    - nə olacaq əməliyyatda
+    - qorxunc deyilmi
+    - ağrılıdırmı
+    - təhlükəsizdiрmi
+    - riskləri nədir
+
+- intent: express_fear_pain
+  examples: |
+    - ağrıyacaqmı
+    - çox ağrıyırmı
+    - dözülməzdiрmi
+    - anesteziya varmı
+    - ağrıdan qorxuram
+    
+- intent: express_fear_complications
+  examples: |
+    - komplikasiya ola bilərmi
+    - problem çıxarmı
+    - uğursuz olarsa
+    - riskli deyilmi
+    - nə baş verə bilər
