@@ -12,6 +12,8 @@ COPY . /app
 # Install dependencies
 RUN pip install --no-cache-dir -r requirements.txt
 
+USER 1001
+
 # Override entrypoint to allow running multiple processes
 ENTRYPOINT []
 
