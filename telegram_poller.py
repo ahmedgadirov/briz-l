@@ -116,8 +116,8 @@ if __name__ == "__main__":
     logger.info("Polling for Telegram updates...")
     while True:
         try:
-            # run threaded=False to avoid multiple threads conflict
-            bot.polling(none_stop=True, interval=0, timeout=20, threaded=False)
+            # Polling without threaded parameter (removed in newer pyTelegramBotAPI versions)
+            bot.polling(none_stop=True, interval=0, timeout=20)
         except Exception as e:
             logger.error(f"Telegram polling crashed: {e}")
             time.sleep(5)
