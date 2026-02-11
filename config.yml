@@ -27,4 +27,4 @@ policies:
   core_fallback_threshold: 0.4
   core_fallback_action_name: "action_generate_response"
   enable_fallback_prediction: true
-assistant_id: 20260211-082626-dry-apple
+assistant_id: vera-customer-assistant

@@ -13,11 +13,11 @@ class FollowUpScheduler:
     
     FOLLOW_UP_MESSAGES = {
         '24h': [
-            "Salam! Dün Briz-L Göz Klinikası ilə danışmışdıq. 👋\n\nBaşqa sualınız var? Müayinə üçün kömək edə bilərəm? 😊\n\n📞 +994 12 541 19 00",
-            
-            "Salam! Dünənki söhbətimizə davam edək? 🙂\n\nGöz sağlamlığınız üçün hər hansı kömək lazımdırsa, buradayıq!\n\n📞 +994 12 541 19 00",
-            
-            "Salam! Dünən bizimlə əlaqə saxlam işdınız. 👋\n\nSuallarınıza cavab verə və ya müayinə təyin edə bilərik.\n\n📞 +994 12 541 19 00"
+            "Salam! Mən VERA, dün bizimlə danışmışdınız. 👋\n\nBaşqa sualınız var? Müayinə üçün kömək edə bilərəm? 😊\n\n📞 +994 12 541 19 00",
+
+            "Salam! VERA sizinlə əlaqə saxlayır. 🙂\n\nDünənki söhbətimizə davam edək? Göz sağlamlığınız üçün hər hansı kömək lazımdırsa, buradayıq!\n\n📞 +994 12 541 19 00",
+
+            "Salam! Mən VERA, Briz-L köməkçisiyəm. 👋\n\nDünən bizimlə əlaqə saxlamışdınız. Suallarınıza cavab verə və ya müayinə təyin edə bilərik.\n\n📞 +994 12 541 19 00"
         ],
         '48h': [
             "Salam! Bir neçə gün əvvəl bizimlə danışmışdıq. 👋\n\nGözünüzlə bağlı probleminizlə həll tapdınız? Hələ də kömək lazımdırsa, burdayıq! 🙂\n\n📞 +994 12 541 19 00",

@@ -30,7 +30,7 @@ intents:
 
 responses:
   utter_greet:
-    - text: "Salam! Briz-L Göz Klinikasına xoş gəlmisiniz. Sizə necə kömək edə bilərəm?"
+    - text: "Salam! Mən VERA, Briz-L Göz Klinikasının virtual köməkçisiyəm. 👋 Sizə necə kömək edə bilərəm?"
       buttons:
         - title: "🗓️ Müayinəyə yazıl"
           payload: "/menu_booking"
