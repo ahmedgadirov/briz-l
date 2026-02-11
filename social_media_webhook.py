@@ -42,6 +42,7 @@ WA_ACCESS_TOKEN = os.getenv("WA_ACCESS_TOKEN")
 WA_PHONE_NUMBER_ID = os.getenv("WA_PHONE_NUMBER_ID")
 
 RASA_URL = os.getenv("RASA_URL", "http://rasa:3000/webhooks/rest/webhook")
+SKIP_VERIFY_SIGNATURE = os.getenv("SKIP_VERIFY_SIGNATURE", "false").lower() == "true"
 
 # Validate configuration
 if not FB_VERIFY_TOKEN:
@@ -92,7 +93,14 @@ def verify_webhook_signature(payload, signature, secret):
         logger.warning(f"Signature mismatch!")
         logger.warning(f"  Received: {signature[:15]}...")
         logger.warning(f"  Expected prefix: {expected_full[:15]}...")
-        logger.debug(f"  Payload size: {len(payload)} bytes")
+        logger.warning(f"  Secret starts with: {secret[:4]}...")
+        logger.warning(f"  Payload size: {len(payload)} bytes")
+        if payload:
+            logger.info(f"  Payload preview: {payload[:100]}...")
+            
+    if SKIP_VERIFY_SIGNATURE:
+        logger.warning("  ⚠️ SKIPPING signature verification because SKIP_VERIFY_SIGNATURE is set!")
+        return True
         
     return is_valid
 
@@ -560,8 +568,9 @@ if __name__ == '__main__':
     # Log only first character of verify token for security
     fb_token_prefix = FB_VERIFY_TOKEN[0] if FB_VERIFY_TOKEN else "None"
     logger.info(f"  - Verify Token: {bool(FB_VERIFY_TOKEN)} (starts with: {fb_token_prefix}...)")
-    logger.info(f"  - Page Access Token: {bool(FB_PAGE_ACCESS_TOKEN)}")
-    logger.info(f"  - App Secret: {bool(FB_APP_SECRET)}")
+    logger.info(f"  - Page Access Token: {bool(FB_PAGE_ACCESS_TOKEN)} (starts with: {FB_PAGE_ACCESS_TOKEN[:4] if FB_PAGE_ACCESS_TOKEN else 'None'}...)")
+    logger.info(f"  - App Secret: {bool(FB_APP_SECRET)} (starts with: {FB_APP_SECRET[:4] if FB_APP_SECRET else 'None'}...)")
+    logger.info(f"  - Skip Signature Verify: {SKIP_VERIFY_SIGNATURE}")
     logger.info(f"WhatsApp:")
     wa_token_prefix = WA_VERIFY_TOKEN[0] if WA_VERIFY_TOKEN else "None"
     logger.info(f"  - Verify Token: {bool(WA_VERIFY_TOKEN)} (starts with: {wa_token_prefix}...)")
