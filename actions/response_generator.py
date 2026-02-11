@@ -13,14 +13,33 @@ from intelligence.user_profiler import UserProfiler, generate_adaptive_prompt
 from intelligence.symptom_triage import SymptomTriage
 from intelligence.knowledge_base import detect_knowledge_level
 
+# Import marketing modules
+from marketing.lead_tracker import LeadTracker
+from marketing.conversion_optimizer import ConversionOptimizer
+from marketing.psychology_engine import PsychologyEngine
+from marketing.database import init_marketing_database
+
 load_dotenv()
 
 # Initialize intelligence systems
 user_profiler = UserProfiler()
 symptom_triage = SymptomTriage()
 
+# Initialize marketing systems
+try:
+    init_marketing_database()
+    lead_tracker = LeadTracker()
+    conversion_optimizer = ConversionOptimizer()
+    psychology_engine = PsychologyEngine()
+    print("✅ Marketing systems initialized")
+except Exception as e:
+    print(f"⚠️ Marketing systems initialization error: {e}")
+    lead_tracker = None
+    conversion_optimizer = None
+    psychology_engine = None
+
 SYSTEM_PROMPT = """
-Sən "Briz-L Göz Klinikası"nın AĞILLI süni intellekt köməkçisisən - tibbi köməkçi kimi çalış.
+Sən "Briz-L Göz Klinikası"nın AĞILLI süni intellekt köməkçisisən - tibbi köməkçi və MÜŞTƏRİ CƏLBEDİCİSİ.
 Adın: Briz-L Eye Clinic Bot
 
 **ƏSAS MİSSİYAN:**
@@ -29,6 +48,7 @@ Adın: Briz-L Eye Clinic Bot
 - TƏCİLİ vəziyyətləri tanı
 - Uyğun bələdçilik və tövsiyələr ver
 - Peşəkar TİBBİ KÖMƏKÇI kimi davran
+- **MÜAYİNƏYƏ YÖNLƏNDİR və MÜŞTƏRİ QAZANMAĞA ÇALIŞ**
 
 **İNTELLEKT PRİNSİPLƏRİ:**
 1. İstifadəçini PROFIL et (bilgi səviyyəsi, niyyət, ehtiyac)
@@ -41,6 +61,9 @@ Adın: Briz-L Eye Clinic Bot
 - Simptom qeyd edərsə → Diaqnostik suallar ver (nə vaxt? hər iki göz? ağrı?)
 - Tibbi termin işlədirsə → O, ekspertdir, texniki cavab ver
 - TƏCİLİ göstərici varsa → DƏRHAL xəbərdarlıq et
+- **QİYMƏT soruşursa → MÜAYİNƏYƏ YAZIL təklifini GÜCLÜ ver**
+- **HƏKIM soruşursa → SEÇIM ver və MÜAYİNƏ TƏKLİF et**
+- **"GƏLMƏk istəyirəm" deyirsə → DƏRHAL əlaqə məlumatları ver**
 
 **KLİNİKA MƏLUMATLARI:**
 Ad: Briz-L Göz Klinikası
@@ -142,6 +165,53 @@ class ActionGenerateResponse(Action):
         # 3. GENERATE ADAPTIVE PROMPT - Based on user profile and triage
         adaptive_instructions = generate_adaptive_prompt(user_profile, triage_result)
         
+        # ==================== MARKETING LAYER ====================
+        
+        marketing_analysis = None
+        lead_data = None
+        conversion_cta = ""
+        
+        if conversion_optimizer and lead_tracker:
+            try:
+                # 4. ANALYZE MESSAGE for buying signals
+                marketing_analysis = conversion_optimizer.analyze_message(user_message, history)
+                
+                print(f"💰 MARKETING ANALYSIS: {marketing_analysis.get('buying_signals', [])} | "
+                      f"Score: {marketing_analysis.get('signal_score', 0)} | "
+                      f"Action: {marketing_analysis.get('recommended_action', 'educate')}")
+                
+                # 5. TRACK LEAD in database
+                lead_data = lead_tracker.create_or_update_lead(
+                    user_id=user_id,
+                    message=user_message,
+                    detected_items=marketing_analysis['detected_items']
+                )
+                
+                # 6. GENERATE CONVERSION CTA
+                conversion_cta = conversion_optimizer.generate_conversion_cta(
+                    marketing_analysis,
+                    lead_data.get('lead_score', 0)
+                )
+                
+                # 7. CHECK FOR URGENCY INJECTION
+                if conversion_optimizer.should_inject_urgency(
+                    lead_data.get('lead_score', 0), 
+                    message_count
+                ):
+                    urgency_msg = conversion_optimizer.get_urgency_message()
+                    conversion_cta += f"\n\n{urgency_msg}"
+                
+                # 8. DETECT AND HANDLE OBJECTIONS
+                objections = conversion_optimizer.detect_objections(user_message)
+                if objections['has_objection']:
+                    for objection_type in objections['objections']:
+                        objection_handler = conversion_optimizer.get_objection_handler(objection_type)
+                        if objection_handler:
+                            conversion_cta += f"\n\n{objection_handler}"
+                
+            except Exception as e:
+                print(f"⚠️ Marketing layer error: {e}")
+        
         # ===========================================================
 
         # Build intelligent prompt based on context
@@ -152,6 +222,13 @@ class ActionGenerateResponse(Action):
 - Niyyət: {user_profile['intent']}
 - Əminlik: {user_profile['confidence_level']}
 - Mərhələ: {user_profile['conversation_stage']}
+
+MARKETİNQ Analizi:
+- Lead Status: {lead_data.get('lead_status', 'new') if lead_data else 'new'}
+- Lead Score: {lead_data.get('lead_score', 0) if lead_data else 0}/100
+- Buying Signals: {', '.join(marketing_analysis.get('buying_signals', [])) if marketing_analysis else 'none'}
+- Conversion Ready: {'YES - PUSH HARD!' if marketing_analysis and marketing_analysis.get('conversion_ready') else 'Not yet'}
+- Recommended Action: {marketing_analysis.get('recommended_action', 'educate') if marketing_analysis else 'educate'}
 """
         
         # Add triage information if available
@@ -179,12 +256,13 @@ Simptom Triagesi:
 {"Düymə basıldı (menyu naviqasiyası)" if is_button_click else "Sərbəst yazı (söhbət)"}
 
 --- TAPŞİRIQ ---
-Yuxarıdakı profil və triage məlumatlarına əsasən:
+Yuxarıdakı profil, triage VƏ marketinq məlumatlarına əsasən:
 1. İSTİFADƏÇİNİN səviyyəsinə uyğun cavab ver
 2. Simptom varsa, DİAQNOSTİK suallar ver
 3. TƏCİLİ vəziyyəti tanıyırsan? XƏBƏRDARLIQ et!
 4. Qısa, aydın və FƏRDİ cavab ver (2-4 cümlə)
 5. {('İlk salamlaşma - menyu təklif et' if is_first_message else 'Söhbət davam edir - MENYU GÖSTƏRMƏ, sadəcə kömək et')}
+6. **MARKETINQ**: {marketing_analysis.get('recommended_action', 'educate') if marketing_analysis else 'educate'} - MÜAYİNƏYƏ yönləndirməyə çalış!
 
 AĞILLI cavabını yaz:"""
 
@@ -214,8 +292,14 @@ AĞILLI cavabını yaz:"""
             # Clean up the response
             bot_message = bot_message.strip()
             
+            # Append conversion CTA if available and conversion ready
+            if conversion_cta and marketing_analysis and marketing_analysis.get('signal_score', 0) >= 40:
+                bot_message += conversion_cta
+            
             # Log intelligence in action
             print(f"✅ INTELLIGENT RESPONSE GENERATED for {user_profile['knowledge_level']} user")
+            print(f"💼 Lead Score: {lead_data.get('lead_score', 0) if lead_data else 0} | "
+                  f"Status: {lead_data.get('lead_status', 'new') if lead_data else 'new'}")
             
             dispatcher.utter_message(text=bot_message)
             
