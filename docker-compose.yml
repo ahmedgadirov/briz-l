@@ -57,5 +57,18 @@ services:
     volumes:
       - db-data:/var/lib/postgresql/data
 
+  telegram_poller:
+    image: rasa-brizl:latest
+    platform: linux/amd64
+    depends_on:
+      - rasa
+    env_file:
+      - .env
+    environment:
+      - RASA_URL=http://rasa:3000/webhooks/rest/webhook
+    command:
+      - python
+      - telegram_poller.py
+
 volumes:
   db-data:
