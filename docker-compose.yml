@@ -18,6 +18,8 @@ services:
       - "*"
       - -p
       - "3000"
+      - --log-config-file
+      - logging.yml
     depends_on:
       - action_server
     environment:
@@ -65,6 +67,7 @@ services:
       - .env
     environment:
       - RASA_URL=http://rasa:3000/webhooks/rest/webhook
+      - PYTHONWARNINGS=ignore
     entrypoint: []
     command:
       - /opt/venv/bin/python
