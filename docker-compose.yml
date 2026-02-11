@@ -1,4 +1,4 @@
-version: '3.4'
+# version field is obsolete and removed
 services:
   rasa:
     image: rasa-brizl:latest
@@ -21,7 +21,6 @@ services:
       - "3000"
     depends_on:
       - action_server
-      - db
     environment:
       - DB_PASSWORD=herahera
       - PYTHONWARNINGS=ignore
@@ -48,17 +47,8 @@ services:
       - --actions
       - actions
 
-  db:
-    image: postgres:14
-    restart: always
-    environment:
-      POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: herahera
-      POSTGRES_DB: briz-l
-    ports:
-      - "5433:5432"
-    volumes:
-      - db-data:/var/lib/postgresql/data
+  # Local db service removed - using external Dokploy database
+  # See endpoints.yml for production database connection
 
   telegram_poller:
     image: rasa-brizl:latest
@@ -74,5 +64,4 @@ services:
       - /opt/venv/bin/python
       - telegram_poller.py
 
-volumes:
-  db-data:
+# volumes section removed - no local database
