@@ -25,7 +25,7 @@ services:
       - PYTHONWARNINGS=ignore
       - SQLALCHEMY_SILENCE_UBER_WARNING=1
     networks:
-      - rasa-network
+      - dokploy-network
     labels:
       - "com.dokploy.project=rasa-brizl"
 
@@ -52,7 +52,7 @@ services:
       - --actions
       - actions
     networks:
-      - rasa-network
+      - dokploy-network
     labels:
       - "com.dokploy.project=rasa-brizl"
 
@@ -70,10 +70,10 @@ services:
       - /opt/venv/bin/python
       - telegram_poller.py
     networks:
-      - rasa-network
+      - dokploy-network
     labels:
       - "com.dokploy.project=rasa-brizl"
 
 networks:
-  rasa-network:
-    driver: bridge
+  dokploy-network:
+    external: true
