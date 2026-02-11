@@ -29,8 +29,18 @@ rasa run --enable-api --cors "*" -p 3000 --logging-config-file logging.yml &
 RASA_PID=$!
 
 # Wait for Rasa to be ready
-echo "⏳ Waiting for Rasa Server to start..."
-sleep 10
+echo "⏳ Waiting for Rasa Server to start on port 3000..."
+MAX_RETRIES=20
+COUNT=0
+while ! curl -s http://localhost:3000/status > /dev/null; do
+    COUNT=$((COUNT+1))
+    if [ $COUNT -ge $MAX_RETRIES ]; then
+        echo "❌ Rasa Server failed to start in time!"
+        exit 1
+    fi
+    sleep 2
+done
+echo "✅ Rasa Server is up!"
 
 # Start Social Media Webhook Server in background
 echo "📱 Starting Social Media Webhook Server on port 5000..."

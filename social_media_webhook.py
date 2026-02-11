@@ -73,10 +73,18 @@ def normalize_phone(phone):
     return clean_phone
 
 
-def verify_webhook_signature(payload, signature, secret):
+def verify_webhook_signature(req, secret):
     """Verify that the webhook request came from Facebook/WhatsApp"""
     if not secret:
         return True  # Skip verification if secret not configured
+        
+    signature = req.headers.get('X-Hub-Signature-256', '')
+    if not signature:
+        logger.warning("Missing X-Hub-Signature-256 header")
+        return False
+
+    # Get raw body bytes exactly
+    payload = req.get_data(cache=False, as_text=False)
     
     expected_signature = hmac.new(
         secret.encode('utf-8'),
@@ -381,14 +389,13 @@ def facebook_webhook():
             return 'Verification failed', 403
     
     elif request.method == 'POST':
-        # Verify signature
-        signature = request.headers.get('X-Hub-Signature-256', '')
-        if FB_APP_SECRET and not verify_webhook_signature(request.data, signature, FB_APP_SECRET):
+        # Verify signature BEFORE parsing JSON
+        if FB_APP_SECRET and not verify_webhook_signature(request, FB_APP_SECRET):
             logger.warning("Invalid Facebook webhook signature!")
             return 'Invalid signature', 403
         
         # Process webhook data
-        data = request.json
+        data = request.get_json()
         
         if data.get('object') == 'page':
             for entry in data.get('entry', []):
@@ -437,14 +444,13 @@ def whatsapp_webhook():
             return 'Verification failed', 403
     
     elif request.method == 'POST':
-        # Verify signature (optional)
-        signature = request.headers.get('X-Hub-Signature-256', '')
-        if FB_APP_SECRET and not verify_webhook_signature(request.data, signature, FB_APP_SECRET):
+        # Verify signature (optional) BEFORE parsing JSON
+        if FB_APP_SECRET and not verify_webhook_signature(request, FB_APP_SECRET):
             logger.warning("Invalid WhatsApp webhook signature!")
             return 'Invalid signature', 403
         
         # Process webhook data
-        data = request.json
+        data = request.get_json()
         
         if data.get('object') == 'whatsapp_business_account':
             for entry in data.get('entry', []):
