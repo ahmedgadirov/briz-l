@@ -40,15 +40,15 @@ def forward_to_rasa(user_id, message_text):
             "sender": str(user_id),
             "message": message_text
         }
-        logger.info(f"--- Sending to Rasa ---")
-        logger.info(f"Payload: {payload}")
+        logger.debug(f"--- Sending to Rasa ---")
+        logger.debug(f"Payload: {payload}")
         
         response = requests.post(RASA_URL, json=payload, timeout=10)
         response.raise_for_status()
         
         rasa_responses = response.json()
-        logger.info(f"--- Received from Rasa ---")
-        logger.info(f"Responses: {rasa_responses}")
+        logger.debug(f"--- Received from Rasa ---")
+        logger.debug(f"Responses: {rasa_responses}")
 
         for rasa_msg in rasa_responses:
             if "text" in rasa_msg:
@@ -56,7 +56,15 @@ def forward_to_rasa(user_id, message_text):
                 if "buttons" in rasa_msg:
                     markup = telebot.types.InlineKeyboardMarkup()
                     for button in rasa_msg["buttons"]:
-                        markup.add(telebot.types.InlineKeyboardButton(text=button["title"], callback_data=button["payload"]))
+                        payload = button.get("payload", "")
+                        is_url = button.get("type") == "web_url" or payload.startswith("http")
+                        
+                        if is_url:
+                            markup.add(telebot.types.InlineKeyboardButton(text=button["title"], url=payload))
+                        else:
+                            # Telegram callback_data has a 64 byte limit
+                            callback_data = payload[:64]
+                            markup.add(telebot.types.InlineKeyboardButton(text=button["title"], callback_data=callback_data))
                     bot.send_message(user_id, rasa_msg["text"], reply_markup=markup)
                 else:
                     bot.send_message(user_id, rasa_msg["text"])
@@ -68,7 +76,14 @@ def forward_to_rasa(user_id, message_text):
                 # Case where buttons are sent without a separate 'text' field (rare but possible)
                 markup = telebot.types.InlineKeyboardMarkup()
                 for button in rasa_msg["buttons"]:
-                    markup.add(telebot.types.InlineKeyboardButton(text=button["title"], callback_data=button["payload"]))
+                    payload = button.get("payload", "")
+                    is_url = button.get("type") == "web_url" or payload.startswith("http")
+                    
+                    if is_url:
+                        markup.add(telebot.types.InlineKeyboardButton(text=button["title"], url=payload))
+                    else:
+                        callback_data = payload[:64]
+                        markup.add(telebot.types.InlineKeyboardButton(text=button["title"], callback_data=callback_data))
                 bot.send_message(user_id, "Choose an option:", reply_markup=markup)
 
     except Exception as e:

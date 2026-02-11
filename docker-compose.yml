@@ -16,12 +16,13 @@ services:
       - --enable-api
       - --cors
       - "*"
-      - --debug
     depends_on:
       - action_server
       - db
     environment:
       - DB_PASSWORD=herahera
+      - PYTHONWARNINGS=ignore
+      - SQLALCHEMY_SILENCE_UBER_WARNING=1
 
   action_server:
     image: rasa-brizl-action:latest
@@ -37,13 +38,12 @@ services:
       - ./medical_education:/app/medical_education
       - ./data:/app/data
       - ./tests:/app/tests
-    env_file:
-      - .env
+    environment:
+      - PYTHONWARNINGS=ignore
     command:
       - start
       - --actions
       - actions
-      - --debug
 
   db:
     image: postgres:14
