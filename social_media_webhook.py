@@ -13,6 +13,10 @@ import requests
 from flask import Flask, request, jsonify
 import hashlib
 import hmac
+from dotenv import load_dotenv
+
+# Load environment variables from .env file
+load_dotenv()
 
 # Configure logging
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
@@ -305,11 +309,18 @@ def facebook_webhook():
         token = request.args.get('hub.verify_token')
         challenge = request.args.get('hub.challenge')
         
-        if mode == 'subscribe' and token == FB_VERIFY_TOKEN:
-            logger.info("Facebook/Instagram webhook verified successfully!")
+        logger.info(f"Facebook verification attempt:")
+        logger.info(f"  Mode: {mode}")
+        logger.info(f"  Received token: {token}")
+        logger.info(f"  Expected token: {FB_VERIFY_TOKEN}")
+        logger.info(f"  Challenge: {challenge}")
+        
+        if mode == 'subscribe' and token and FB_VERIFY_TOKEN and token == FB_VERIFY_TOKEN:
+            logger.info("✅ Facebook/Instagram webhook verified successfully!")
             return challenge, 200
         else:
-            logger.warning("Facebook/Instagram webhook verification failed!")
+            logger.warning(f"❌ Facebook/Instagram webhook verification failed!")
+            logger.warning(f"   Reason: mode={mode}, token_matches={token == FB_VERIFY_TOKEN}")
             return 'Verification failed', 403
     
     elif request.method == 'POST':
