@@ -1,4 +1,3 @@
-# version field is obsolete and removed
 services:
   rasa:
     image: rasa-brizl:latest
@@ -25,6 +24,10 @@ services:
       - DB_PASSWORD=herahera
       - PYTHONWARNINGS=ignore
       - SQLALCHEMY_SILENCE_UBER_WARNING=1
+    networks:
+      - rasa-network
+    labels:
+      - "com.dokploy.project=rasa-brizl"
 
   action_server:
     image: rasa-brizl-action:latest
@@ -48,9 +51,10 @@ services:
       - start
       - --actions
       - actions
-
-  # Local db service removed - using external Dokploy database
-  # See endpoints.yml for production database connection
+    networks:
+      - rasa-network
+    labels:
+      - "com.dokploy.project=rasa-brizl"
 
   telegram_poller:
     image: rasa-brizl:latest
@@ -65,5 +69,11 @@ services:
     command:
       - /opt/venv/bin/python
       - telegram_poller.py
+    networks:
+      - rasa-network
+    labels:
+      - "com.dokploy.project=rasa-brizl"
 
-# volumes section removed - no local database
+networks:
+  rasa-network:
+    driver: bridge
