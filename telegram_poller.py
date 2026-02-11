@@ -14,8 +14,8 @@ logger = logging.getLogger(__name__)
 
 # Configuration from environment variables
 TELEGRAM_TOKEN = os.getenv("TELEGRAM_BOT_TOKEN")  # Match the .env variable name
-# Note: Use 'rasa' when running in Docker Compose network
-RASA_URL = os.getenv("RASA_URL", "http://rasa:3000/webhooks/rest/webhook")
+# Note: Use 'localhost' since all services run in one container
+RASA_URL = os.getenv("RASA_URL", "http://localhost:3000/webhooks/rest/webhook")
 
 if not TELEGRAM_TOKEN:
     # Use the token provided in the chat as a fallback
