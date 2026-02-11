@@ -1,36 +1,46 @@
 import os
 import requests
+import sys
 from typing import Any, Text, Dict, List
 from rasa_sdk import Action, Tracker
 from rasa_sdk.executor import CollectingDispatcher
 from dotenv import load_dotenv
 
+# Add intelligence modules to path
+sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..'))
+
+from intelligence.user_profiler import UserProfiler, generate_adaptive_prompt
+from intelligence.symptom_triage import SymptomTriage
+from intelligence.knowledge_base import detect_knowledge_level
+
 load_dotenv()
 
+# Initialize intelligence systems
+user_profiler = UserProfiler()
+symptom_triage = SymptomTriage()
+
 SYSTEM_PROMPT = """
-Sən "Briz-L Göz Klinikası"nın süni intellekt köməkçisisən.
+Sən "Briz-L Göz Klinikası"nın AĞILLI süni intellekt köməkçisisən - tibbi köməkçi kimi çalış.
 Adın: Briz-L Eye Clinic Bot
 
-**ƏSAS PRİNSİPLƏR:**
-- Peşəkar, sakit, mehriban və CANLI söhbət et
-- Təbii, əl ilə yazılmış kimi cavablar ver - hər dəfə fərqli ifadələr işlət
-- QISA və asan başa düşülən cavablar ver (2-3 cümlə)
-- Dil: Azərbaycan dili
-- Sləng, zarafat, mübahisə, həkimləri müqayisə etmək QADAĞANDIR
+**ƏSAS MİSSİYAN:**
+- Hər istifadəçinin bilgi səviyyəsini başa düş (başlayan/orta/ekspert)
+- Simptomları dinlə, DİAQNOSTİK suallar ver
+- TƏCİLİ vəziyyətləri tanı
+- Uyğun bələdçilik və tövsiyələr ver
+- Peşəkar TİBBİ KÖMƏKÇI kimi davran
 
-**ÇOX ÖNƏMLİ - MENYU QAYDALARI:**
-❌ HƏR CAVABDAN SONRA MENYU TƏKLİF ETMƏ!
-✅ YALNIZ bu hallarda menyu təklif et:
-  1. İstifadəçi açıq şəkildə "menyu", "seçim", "nə edə bilərəm" və s. istəyərsə
-  2. Söhbət təbii şəkildə bitərsə və istifadəçi daha sual vermirsə
-  3. İstifadəçi aşkar şəkildə itib görünərsə
-  4. İlk salamlaşma zamanı (yalnız ilk dəfə)
+**İNTELLEKT PRİNSİPLƏRİ:**
+1. İstifadəçini PROFIL et (bilgi səviyyəsi, niyyət, ehtiyac)
+2. Simptomları TRIAGE et (təcililik, mümkün diaqnoz)
+3. Cavabları ADAPTE et (başlayan üçün sadə, ekspert üçün texniki)
+4. MƏQSƏDYÖNLÜ bələdçilik et (itkin → yönləndirmə, əmin → hərəkət)
 
-**SÖHBƏT QAYDASI:**
-- İstifadəçi sual verərsə → Sadəcə cavab ver, menyu göstərmə
-- İstifadəçi izah istəyərsə → İzah ver, davam et
-- Söhbət davam edərsə → Təbii cavab ver
-- Yalnız söhbət bitəndə → "Başqa sualınız var?" və ya "Sizə necə kömək edə bilərəm?"
+**AĞILLI SÖHBƏT QAYDASI:**
+- İstifadəçi "bilmirəm nə edim" deyərsə → Sadə dillə izah et, addım-addım kömək et
+- Simptom qeyd edərsə → Diaqnostik suallar ver (nə vaxt? hər iki göz? ağrı?)
+- Tibbi termin işlədirsə → O, ekspertdir, texniki cavab ver
+- TƏCİLİ göstərici varsa → DƏRHAL xəbərdarlıq et
 
 **KLİNİKA MƏLUMATLARI:**
 Ad: Briz-L Göz Klinikası
@@ -45,38 +55,32 @@ Xəritə: https://www.google.com/maps?q=40.401955867990424,49.83970805339595
 3. Dr. Səbinə Əbiyeva - Oftalmoloq (055 319 75 76, https://wa.me/994553197576)
 4. Dr. Seymur Bayramov - Oftalmoloq (070 505 00 01, https://wa.me/994705050001)
 
-**ƏMƏLİYYATLAR (ÇOX İSTİFADƏ EDİLƏN):**
+**ƏMƏLİYYATLAR (RƏSMİ ADLAR - DƏQİQ İSTİFADƏ ET):**
 1. Excimer laser - Gözlük/lenslərdən azadlıq, yaxın/uzaq görmə düzəlişi
-2. Katarakta - Göz lensinin dəyişdirilməsi, dumanlı görmə problemi
+2. Katarakta (mirvari suyu) - Göz lensinin dəyişdirilməsi, dumanlı görmə
 3. Pteregium - Göz ağında toxuma təmizlənməsi
 4. Phacic - Gözə süni lens yerləşdirilməsi
 5. Çəplik - Göz əzələsi düzəlişi
-6. Cross linking - Buynuz qişası möhkəmləndirilməsi (keratokonus üçün)
-7. Arqon laser - Göz dibi müalicəsi (retina, diabet və s.)
+6. Cross linking - Buynuz qişası möhkəmləndirilməsi (keratokonus)
+7. Arqon laser - Göz dibi müalicəsi (retina, diabet)
 8. YAG laser - Katarakta sonrası kapsul təmizlənməsi
 9. Avastin - Göz dibinə iynə (makula, diabetik retinopatiya)
-10. Qlaukoma - Qara su əməliyyatı
+10. Qlaukoma (qara su) - Qara su əməliyyatı
 
 **VACIB:** Əməliyyat qiymətləri YALNIZ müayinədən sonra müəyyən edilir!
 
-**GÖZ PROBLEMLƏRİ VƏ HƏLLƏR:**
-- "Uzağı görmürəm" → Yəqin ki yaxıngörmə, Excimer laser və ya gözlük
-- "Yaxını görmürəm" → Uzaqgörmə (presbiopiya), müayinə lazımdır
-- "Dumanlı görürəm" → Ola bilər katarakta, mütləq müayinə
-- "Çəplik var" → Çəplik əməliyyatı
-- "Gözüm qırmızıdır" → Müayinə lazımdır
-- "Göz ağında ləkə" → Ola bilər pteregium
+**DİAQNOSTİK YANAŞMA NÜMUNƏLƏR:**
+✅ Yaxşı: "Uzağı görmürəm" → "Nə vaxtdan? Gözlük istifadə edirsiniz? Yaşınız?" → "Yaxıngörmə ola bilər, Excimer laser və ya Phacic tövsiyə edilir"
+✅ Yaxşı: "Dumanlı görürəm" → "Yaşınız? Tədricən dumanlıdır? İşıqdan narahat olursunuz?" → "Katarakta (mirvari suyu) ola bilər, müayinə vacibdir"
+✅ Yaxşı: "Göz çox ağrıyır" → "⚠️ TƏCİLİ! Ağrı güclüdür? Görmə azalıb? Qırmızıdır?" → "DƏRHAL klinikamıza gəlin!"
+
+**MENYU QAYDALARI:**
+❌ HƏR CAVABDAN SONRA MENYU GÖSTƏRMƏ
+✅ Yalnız: ilk salamda, istifadəçi itərsə, söhbət tamam bitərsə
 
 **TERMİNOLOGİYA:**
 ✅ "Müayinə", "Müayinəyə yazılmaq", "Həkimə göstərmək"
 ❌ "Booking", "Appointment"
-
-**CAVAB TƏRZİ NÜMUNƏLƏR:**
-Pis ❌: "Sizə bu əməliyyat barədə məlumat verdim. İndi menyu göstərim?"
-Yaxşı ✅: "Bu əməliyyat göz dibinin müalicəsi üçündür. Başqa sualınız var?"
-
-Pis ❌: "Həkimlərimiz haqqında məlumat aldınız. Nə etmək istəyirsiniz?"
-Yaxşı ✅: "Dr. İltifat Şərif klinikaımızın baş həkimidir. Hansı problem üçün müayinə istəyirsiniz?"
 """
 
 class ActionGenerateResponse(Action):
@@ -93,6 +97,7 @@ class ActionGenerateResponse(Action):
             return []
 
         user_message = tracker.latest_message.get("text")
+        user_id = tracker.sender_id
         
         # Check if this is a button click (menu navigation) or free text conversation
         metadata = tracker.latest_message.get("metadata", {})
@@ -116,9 +121,54 @@ class ActionGenerateResponse(Action):
         # Count how many messages in conversation
         message_count = len([e for e in tracker.events if e.get("event") == "user"])
         is_first_message = message_count <= 1
+        
+        # ==================== INTELLIGENCE LAYER ====================
+        
+        # 1. USER PROFILING - Analyze user knowledge level and intent
+        user_profile = user_profiler.analyze_user(user_id, user_message, history)
+        
+        print(f"🧠 USER PROFILE: {user_profile}")
+        
+        # 2. SYMPTOM TRIAGE - Analyze if user is describing symptoms
+        triage_result = None
+        if user_profile.get('intent') == 'symptom_inquiry':
+            triage_result = symptom_triage.analyze_symptoms(
+                user_id, 
+                user_message, 
+                user_profile['knowledge_level']
+            )
+            print(f"🩺 TRIAGE RESULT: {triage_result}")
+        
+        # 3. GENERATE ADAPTIVE PROMPT - Based on user profile and triage
+        adaptive_instructions = generate_adaptive_prompt(user_profile, triage_result)
+        
+        # ===========================================================
 
         # Build intelligent prompt based on context
-        full_prompt = f"""--- TARİXÇƏ ---
+        intelligence_context = f"""
+--- İNTELLEKT ANALİZİ ---
+İstifadəçi Profili:
+- Bilgi səviyyəsi: {user_profile['knowledge_level']}
+- Niyyət: {user_profile['intent']}
+- Əminlik: {user_profile['confidence_level']}
+- Mərhələ: {user_profile['conversation_stage']}
+"""
+        
+        # Add triage information if available
+        if triage_result and triage_result.get('has_symptoms'):
+            intelligence_context += f"""
+Simptom Triagesi:
+- Vəziyyət: {', '.join(triage_result['matched_conditions'])}
+- Tövsiyə olunan: {', '.join(triage_result['suggested_surgeries'])}
+- Təcililik: {triage_result['urgency'].upper()}
+- Diaqnostik suallar: {', '.join(triage_result['diagnostic_questions'])}
+"""
+
+        full_prompt = f"""{intelligence_context}
+
+{adaptive_instructions}
+
+--- TARİXÇƏ ---
 {recent_history}
 
 --- SON İSTİFADƏÇİ MESAJI ---
@@ -129,14 +179,14 @@ class ActionGenerateResponse(Action):
 {"Düymə basıldı (menyu naviqasiyası)" if is_button_click else "Sərbəst yazı (söhbət)"}
 
 --- TAPŞİRIQ ---
-Yuxarıdakı məlumatlar əsasında:
-1. Təbii, canlı və peşəkar cavab ver
-2. Qısa və aydın yaz (2-3 cümlə)
-3. {'İlk salamlaşma olduğu üçün YALNIZ bu dəfə əsas menyunu təklif et' if is_first_message else 'MENYU TƏKLİF ETMƏ - sadəcə cavab ver və söhbətə davam et'}
-4. Hər dəfə FƏRQLI ifadələr işlət - eyni cümlələri təkrar etmə
-5. İstifadəçinin konkret sualına cavab ver
+Yuxarıdakı profil və triage məlumatlarına əsasən:
+1. İSTİFADƏÇİNİN səviyyəsinə uyğun cavab ver
+2. Simptom varsa, DİAQNOSTİK suallar ver
+3. TƏCİLİ vəziyyəti tanıyırsan? XƏBƏRDARLIQ et!
+4. Qısa, aydın və FƏRDİ cavab ver (2-4 cümlə)
+5. {('İlk salamlaşma - menyu təklif et' if is_first_message else 'Söhbət davam edir - MENYU GÖSTƏRMƏ, sadəcə kömək et')}
 
-Cavabını yaz:"""
+AĞILLI cavabını yaz:"""
 
         try:
             response = requests.post(
@@ -146,16 +196,16 @@ Cavabını yaz:"""
                     "Content-Type": "application/json"
                 },
                 json={
-                    "model": "gpt-4o-mini",  # Using more reliable model
+                    "model": "gpt-4o-mini",
                     "messages": [
                         {"role": "system", "content": SYSTEM_PROMPT},
                         {"role": "user", "content": full_prompt}
                     ],
-                    "temperature": 0.7,  # Higher for more varied responses
-                    "max_tokens": 300,
+                    "temperature": 0.7,
+                    "max_tokens": 400,  # Increased for diagnostic questions
                     "stream": False
                 },
-                timeout=20
+                timeout=25
             )
             response.raise_for_status()
             data = response.json()
@@ -164,10 +214,13 @@ Cavabını yaz:"""
             # Clean up the response
             bot_message = bot_message.strip()
             
+            # Log intelligence in action
+            print(f"✅ INTELLIGENT RESPONSE GENERATED for {user_profile['knowledge_level']} user")
+            
             dispatcher.utter_message(text=bot_message)
             
         except Exception as e:
-            print(f"LLM Error: {e}")
+            print(f"❌ LLM Error: {e}")
             # Fallback response
             dispatcher.utter_message(text="Bağışlayın, texniki xəta baş verdi. Zəhmət olmasa bir az sonra yenidən cəhd edin və ya birbaşa bizimlə əlaqə saxlayın:\n\nWhatsApp: https://wa.me/994555512400\nTelefon: +994 12 541 19 00")
 
