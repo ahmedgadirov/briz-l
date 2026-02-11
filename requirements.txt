@@ -1,3 +1,4 @@
+packaging<22.0
 rasa-sdk
 psycopg2-binary
 requests
