@@ -1,0 +1,5 @@
+doctor_id,name,title,specialty,phone,whatsapp_link,note
+1,Dr. İltifat Şərif,Baş həkim,Oftalmoloq,010 710 74 65,https://wa.me/994107107465,Müayinə qiyməti və qəbul saatları koordinator tərəfindən təsdiqlənir
+2,Dr. Emil Qafarlı,Həkim,Oftalmoloq,051 844 76 21,https://wa.me/994518447621,Ümumi göz müayinəsi və konsultasiya
+3,Dr. Səbinə Əbiyeva,Həkim,Oftalmoloq,055 319 75 76,https://wa.me/994553197576,Əməliyyat qiymətləri yalnız müayinədən sonra təsdiqlənir
+4,Dr. Seymur Bayramov,Həkim,Oftalmoloq,070 505 00 01,https://wa.me/994705050001,Göz müayinəsi və konsultasiya

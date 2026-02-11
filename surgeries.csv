@@ -1,0 +1,11 @@
+surgery_id,name,aliases,description,details,category
+1,Excimer laser,"",Gözlük və kontakt linzalardan azad olmaq üçün lazer əməliyyatı,Yaxıngörmə, uzaqgörmə və astiqmatizmin korreksiyası üçün istifadə olunur,Refractive
+2,Katarakta,"mirvari suyu, phaco, qara su",Göz lensinin dəyişdirilməsi,"Katarakta zamanı göz lensi dumanlı olur və görmə zəifləyir. Əməliyyat zamanı köhnə lens çıxarılır və yenisi yerləşdirilir",Cataract
+3,Pteregium,"",Göz ağının üzərində əmələ gələn toxumanın təmizlənməsi,Bu əməliyyat gözün ağ hissəsində və buynuz qişada əmələ gələn artıq toxumanın çıxarılması üçündür,Corneal
+4,Phacic,"",Gözə lens yerləşdirilməsi,Yüksək dərəcəli görmə qüsurlarında gözə süni lens yerləşdirmək üçün istifadə olunur,Refractive
+5,Çəplik,"",Göz əzələlərinin düzəldilməsi,Gözlərin düz baxmaması probleminin həlli üçündür,Strabismus
+6,Cross linking,CCL,Buynuz qişanın möhkəmləndirilməsi,Keratokonus xəstəliyində buynuz qişanı möhkəmləndirmək üçün istifadə olunur,Corneal
+7,Arqon laser,green laser,Göz dibinin lazer müalicəsi,"Retina problemlərində, şəkərli diabet, yırtıq və s. hallarda istifadə olunur",Retinal
+8,YAG laser,"",Katarakta sonrası kapsul təmizlənməsi,"Katarakta əməliyyatından sonra kapsul dumanlanarsa, YAG lazer ilə təmizlənir",Cataract
+9,Avastin,"",Göz dibinə vurulan iynə müalicəsi,"Göz dibində yaş tipli makula degenerasiyası, diabetik retinopatiya və s. xəstəliklərdə istifadə olunur",Retinal
+10,Qlaukoma,qara su,Gözə lens yerləşdirilməsi,Qlaukoma müalicəsi üçün əməliyyat,Glaucoma

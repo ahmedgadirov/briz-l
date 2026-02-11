@@ -1,28 +1,16 @@
 version: "3.1"
-
 nlu:
 - intent: greet
   examples: |
     - salam
-    - hi
     - hello
+    - hi
+    - privet
+    - salam aleykum
     - sabahınız xeyir
     - axşamınız xeyir
-    - salamlar
-    - salam doktor
-
-- intent: how_are_you
-  examples: |
-    - necesen
-    - necesiniz
-    - necəsən
-    - necəsiniz
-    - how are you
-    - как дела
-    - как вы
-    - necəsiz?
-    - işlər necədir?
-    - nətərsən?
+    - start
+    - /start
 
 - intent: goodbye
   examples: |
@@ -31,223 +19,187 @@ nlu:
     - hələlik
     - görüşənədək
     - bye
-    - good bye
+    - goodbye
 
-- intent: thanks
+- intent: main_menu
   examples: |
-    - təşəkkür edirəm
-    - çox sağ olun
-    - minnətdaram
-    - təşəkkürlər
-    - thanks
+    - menu
+    - menyu
+    - əsas menyu
+    - main menu
+    - baş səhifə
 
-- intent: affirm
+- intent: menu_doctors
   examples: |
-    - bəli
-    - hə
-    - elədir
-    - doğrudur
-    - yes
-    - okay
+    - həkimlər
+    - hekimler
+    - doktorlar
+    - doctors
+    - oftalmoloqlar
+    - həkim
+    - doctor
 
-- intent: deny
+- intent: menu_surgeries
   examples: |
-    - xeyr
-    - yox
-    - istəmirəm
-    - lazım deyil
-    - no
-
-- intent: symptom_eye_pain
-  examples: |
-    - gözlərim ağrıyır
-    - gözümdə ağrı var
-    - bərk ağrıyır
-    - sancı var gözümdə
-    - gözlərim sızıldayır
-    - baş ağrısı verir gözüm
-    - gözümün içi ağrıyır
-    - gözümə nəsə batır sanki
-    - ağrıdan dözə bilmirəm
-    - göz ağrısı
-
-- intent: symptom_blurry_vision
-  examples: |
-    - dumanlı görürəm
-    - aydın görmürəm
-    - gözümə duman gəlir
-    - bulanıq görürəm
-    - uzağı yaxşı görmürəm
-    - yaxını görə bilmirəm
-    - hər şey dumanlıdır
-    - gözümdə pərdə var elə bil
-    - tor görürəm
-    - zəif görürəm
-
-- intent: symptom_redness
-  examples: |
-    - gözlərim qızarıb
-    - qan sağılıb gözümə
-    - gözüm qıpqırmızıdır
-    - qızartı var
-    - gözümün ağı qızarıb
-    - qanşanağı olub
-    - iltihab var deyəsən
-    - qızarıqlıq keçmir
-
-- intent: concern_glasses
-  examples: |
-    - gözlükdən qurtulmaq istəyirəm
-    - eynəyi atmaq istəyirəm
+    - əməliyyatlar
+    - emeliyyatlar
+    - surgeries
+    - operations
+    - cərrahiyyə
     - lazer əməliyyatı
-    - eksimer lazer
-    - eynəkdən bezmişəm
-    - linza istəmirəm artıq
-    - lazerlə düzəltdirmək olar?
-    - göz nömrəmi sildirmək istəyirəm
-    - excimer
-    - lasik
 
-- intent: concern_cataract
+- intent: menu_address
   examples: |
-    - katarakta
-    - mirvari suyu
-    - gözümdə mirvari suyu var
-    - katarakta əməliyyatı
-    - mirvari suyu təmizlənməsi
-    - lens dəyişdirilməsi
-    - yaşlı adamda mirvari suyu
-    - katarakta diaqnozu qoyulub
-
-- intent: concern_surgery_info
-  examples: |
-    - əməliyyat haqqında məlumat
-    - əməliyyat necə keçir?
-    - qorxuludurmu?
-    - nə qədər vaxt aparır?
-    - narkozla olur?
-    - əməliyyatdan sonra nə vaxt görəcəm?
-    - lazer əməliyyatı necə olur?
-
-- intent: want_checkup
-  examples: |
-    - müayinə istəyirəm
-    - müayinəyə yazılmaq
-    - qeydiyyatdan keçmək
-    - həkim qəbuluna yazılmaq
-    - yoxlanmaq istəyirəm
-    - gözümü yoxlatmaq
-    - reception
-    - növbə almaq
-    - yazılmaq istəyirəm
-    - checkup
-
-- intent: want_price_estimate
-  examples: |
-    - qiymət
-    - nə qədərdir?
-    - neçəyədir?
-    - qiyməti necədir?
-    - bahadır?
-    - ödəniş nə qədərdir?
-    - lazerin qiyməti
-    - müayinə neçəyədir?
-    - pulsuzdur?
-    - endirim var?
-
-- intent: want_doctor_recommendation
-  examples: |
-    - hansı həkim yaxşıdır?
-    - yaxşı oftalmoloq
-    - həkim məsləhəti
-    - katarakta üçün kimə gedim?
-    - uşaq həkimi kimdir?
-    - baş həkim kimdir?
-    - Dr İltifatı istəyirəm
-    - tövsiyə edə bilərsiniz?
-    - ən yaxşı həkiminiz
-
-- intent: urgent_issue
-  examples: |
-    - təcili
-    - çox pisdir
-    - görə bilmirəm
-    - qəfil kor oldum
-    - gözümə dəmir girdi
-    - travma aldım
-    - qan axır
-    - dözə bilmirəm
-    - kömək edin tez
-    - təcili yardım
-
-- intent: inform
-  examples: |
-    - adım Əlidir
-    - 3 gündür
-    - dünəndən
-    - 1 həftədir
-    - bu gün
-    - yox diaqnoz yoxdur
-    - bəli var
-    - 055 123 45 67
-    - nömrəm budur
-
-- intent: express_fear_surgery
-  examples: |
-    - əməliyyatdan qorxuram
-    - təhlükəlidiрmi
-    - kor ola bilərəmmi
-    - nə olacaq əməliyyatda
-    - qorxunc deyilmi
-    - ağrılıdırmı
-    - təhlükəsizdiрmi
-    - riskləri nədir
-
-- intent: express_fear_pain
-  examples: |
-    - ağrıyacaqmı
-    - çox ağrıyırmı
-    - dözülməzdiрmi
-    - anesteziya varmı
-    - ağrıdan qorxuram
-    
-- intent: express_fear_complications
-  examples: |
-    - komplikasiya ola bilərmi
-    - problem çıxarmı
-    - uğursuz olarsa
-    - riskli deyilmi
-    - nə baş verə bilər
-- intent: ask_address
-  examples: |
-    - ünvan haradadır?
-    - harada yerləşirsiniz?
-    - klinika haradadır?
-    - yeriniz haradadır?
+    - ünvan
     - unvan
+    - adres
     - address
-    - адрес
-    - где вы находитесь?
-    - как вас найти?
     - location
+    - hardasız
+    - yol tarifi
+    - xəritə
+    - map
+    - lokasyon
 
-- intent: ask_hours
+- intent: menu_hours
   examples: |
-    - iş saatlarınız
-    - neçəyə qədər işləyirsiniz?
-    - nə vaxt açılırsınız?
-    - açılış saatları
-    - hours
-    - work hours
-    - время работы
-    - когда вы открыты?
+    - iş saatları
+    - is saatlari
+    - saatlar
+    - vaxt
+    - working hours
+    - time
+    - açıqsız?
+    - nə vaxta qədər işləyirsiniz?
 
-- intent: bot_help
+- intent: menu_prices
   examples: |
-    - kömək lazımdır
-    - mənə kömək et
-    - help
-    - i want help
-    - yardım edin
-    - помощь
-    - мне нужна помощь
+    - qiymətlər
+    - qiymetler
+    - prices
+    - cost
+    - neçəyədir?
+    - pul
+    - ödəniş
+    - qiymət
+
+- intent: menu_questions
+  examples: |
+    - sual ver
+    - sual
+    - question
+    - ask
+    - soruşmaq istəyirəm
+
+- intent: menu_booking
+  examples: |
+    - müayinəyə yazıl
+    - müayinə
+    - muayine
+    - qeydiyyat
+    - yazılmaq
+    - booking
+    - appointment
+    - randevu
+
+- intent: menu_back
+  examples: |
+    - geri
+    - back
+    - qayıt
+    - arxaya
+
+# Doctors
+- intent: doctor_iltifat
+  examples: |
+    - Dr. İltifat Şərif
+    - İltifat həkim
+    - Iltifat Serif
+    - İltifat
+
+- intent: doctor_emil
+  examples: |
+    - Dr. Emil Qafarlı
+    - Emil həkim
+    - Emil Qafarli
+    - Emil
+
+- intent: doctor_sabina
+  examples: |
+    - Dr. Səbinə Əbiyeva
+    - Səbinə həkim
+    - Sabina Abiyeva
+    - Sabina
+
+- intent: doctor_seymur
+  examples: |
+    - Dr. Seymur Bayramov
+    - Seymur həkim
+    - Seymur Bayramov
+    - Seymur
+
+# Surgeries
+- intent: surgery_excimer
+  examples: |
+    - Excimer laser
+    - excimer
+    - eksimer
+    - lazer
+    - eynəkdən xilas olmaq
+
+- intent: surgery_cataract
+  examples: |
+    - Katarakta
+    - mirvari suyu
+    - cataract
+    - lens dəyişimi
+
+- intent: surgery_opteregium
+  examples: |
+    - Pteregium
+    - ət
+    - göz əti
+
+- intent: surgery_phacic
+  examples: |
+    - Phacic
+    - fakik
+    - lens qoyulması
+
+- intent: surgery_cesplik
+  examples: |
+    - Çəplik
+    - ceplik
+    - strabismus
+
+- intent: surgery_cross_linking
+  examples: |
+    - Cross linking
+    - ccl
+    - keratokonus
+    - buynuz qişa
+
+- intent: surgery_argon
+  examples: |
+    - Arqon laser
+    - argon
+    - green laser
+    - göz dibi lazer
+
+- intent: surgery_yag
+  examples: |
+    - YAG laser
+    - yaq lazer
+    - kapsul təmizlənməsi
+
+- intent: surgery_avastin
+  examples: |
+    - Avastin
+    - iynə
+    - göz dibi iynə
+
+- intent: surgery_glaucoma
+  examples: |
+    - Qlaukoma
+    - qara su
+    - təzyiq

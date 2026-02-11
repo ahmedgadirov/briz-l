@@ -1,109 +1,134 @@
 version: "3.1"
 
 rules:
-
-- rule: Greet user
+- rule: Greet
   steps:
   - intent: greet
   - action: utter_greet
 
-- rule: Say goodbye
+- rule: Main Menu
+  steps:
+  - intent: main_menu
+  - action: utter_main_menu
+
+- rule: Doctors Menu
+  steps:
+  - intent: menu_doctors
+  - action: utter_doctors_list
+
+- rule: Surgeries Menu
+  steps:
+  - intent: menu_surgeries
+  - action: utter_surgeries_list
+
+- rule: Address Menu
+  steps:
+  - intent: menu_address
+  - action: utter_address_info
+
+- rule: Hours Menu
+  steps:
+  - intent: menu_hours
+  - action: utter_hours_info
+
+- rule: Prices Menu
+  steps:
+  - intent: menu_prices
+  - action: utter_prices_info
+
+- rule: Questions Menu
+  steps:
+  - intent: menu_questions
+  - action: utter_ask_question
+
+- rule: Booking Menu
+  steps:
+  - intent: menu_booking
+  - action: utter_booking_info
+
+- rule: Back
+  steps:
+  - intent: menu_back
+  - action: utter_main_menu
+
+# Doctors
+- rule: Doctor Iltifat
+  steps:
+  - intent: doctor_iltifat
+  - action: utter_doctor_iltifat
+
+- rule: Doctor Emil
+  steps:
+  - intent: doctor_emil
+  - action: utter_doctor_emil
+
+- rule: Doctor Sabina
+  steps:
+  - intent: doctor_sabina
+  - action: utter_doctor_sabina
+
+- rule: Doctor Seymur
+  steps:
+  - intent: doctor_seymur
+  - action: utter_doctor_seymur
+
+# Surgeries
+- rule: Surgery Excimer
+  steps:
+  - intent: surgery_excimer
+  - action: utter_surgery_excimer
+
+- rule: Surgery Cataract
+  steps:
+  - intent: surgery_cataract
+  - action: utter_surgery_cataract
+
+- rule: Surgery Pteregium
+  steps:
+  - intent: surgery_opteregium
+  - action: utter_surgery_pteregium
+
+- rule: Surgery Phacic
+  steps:
+  - intent: surgery_phacic
+  - action: utter_surgery_phacic
+
+- rule: Surgery Cesplik
+  steps:
+  - intent: surgery_cesplik
+  - action: utter_surgery_cesplik
+
+- rule: Surgery Cross Linking
+  steps:
+  - intent: surgery_cross_linking
+  - action: utter_surgery_cross_linking
+
+- rule: Surgery Argon
+  steps:
+  - intent: surgery_argon
+  - action: utter_surgery_argon
+
+- rule: Surgery YAG
+  steps:
+  - intent: surgery_yag
+  - action: utter_surgery_yag
+
+- rule: Surgery Avastin
+  steps:
+  - intent: surgery_avastin
+  - action: utter_surgery_avastin
+
+- rule: Surgery Glaucoma
+  steps:
+  - intent: surgery_glaucoma
+  - action: utter_surgery_glaucoma
+
+- rule: NLU Fallback to LLM
+  steps:
+  - intent: nlu_fallback
+  - action: action_generate_response
+
+- rule: Goodbye
   steps:
   - intent: goodbye
   - action: utter_goodbye
-
-- rule: Respond to thanks
-  steps:
-  - intent: thanks
-  - action: utter_thanks
-
-- rule: Activate booking form
-  steps:
-  - intent: want_checkup
-  - action: booking_form
-  - active_loop: booking_form
-
-- rule: Submit booking form
-  condition:
-  - active_loop: booking_form
-  steps:
-  - action: booking_form
-  - active_loop: null
-  - slot_was_set:
-    - requested_slot: null
-  - action: utter_booking_confirmed
-
-
-- rule: Submit symptom form
-  condition:
-  - active_loop: symptom_form
-  steps:
-  - action: symptom_form
-  - active_loop: null
-  - slot_was_set:
-    - requested_slot: null
-  - action: action_analyze_symptoms
-  - action: utter_symptom_analysis
-
-- rule: Ask for fallback
-  steps:
-  - intent: nlu_fallback
-  - action: action_fallback_with_count
-
-- rule: Interruption - Ask for price
-  condition:
-  - active_loop: booking_form
-  steps:
-  - intent: want_price_estimate
-  - action: utter_price_estimate
-  - action: booking_form
-  - active_loop: booking_form
-
-- rule: Interruption - Ask for price (No form)
-  condition:
-  - active_loop: null
-  steps:
-  - intent: want_price_estimate
-  - action: utter_price_estimate
-
-- rule: respond to surgery fear
-  steps:
-    - intent: express_fear_surgery
-    - action: action_detect_emotion
-    - action: utter_acknowledge_fear
-    - action: action_provide_reassurance
-    - action: utter_doctors_info
-
-- rule: respond to pain fear
-  steps:
-    - intent: express_fear_pain
-    - action: utter_reassure_pain_management
-    - action: action_provide_reassurance
-- rule: Respond to address query
-  steps:
-  - intent: ask_address
-  - action: action_detect_language
-  - action: utter_address_info
-
-- rule: Respond to hours query
-  steps:
-  - intent: ask_hours
-  - action: action_detect_language
-  - action: utter_hours_info
-
-- rule: Respond to help query
-  steps:
-  - intent: bot_help
-  - action: action_detect_language
-  - action: utter_bot_help
-
-- rule: Respond to doctor recommendation
-  steps:
-  - intent: want_doctor_recommendation
-  - action: action_detect_language
-  - action: action_recommend_doctor
-- rule: Respond to how are you
-  steps:
-  - intent: how_are_you
-  - action: action_detect_language
-  - action: utter_social_reply

@@ -37,6 +37,8 @@ services:
       - ./medical_education:/app/medical_education
       - ./data:/app/data
       - ./tests:/app/tests
+    env_file:
+      - .env
     command:
       - start
       - --actions
