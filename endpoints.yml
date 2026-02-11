@@ -2,7 +2,7 @@ action_endpoint:
   url: "http://action_server:5055/webhook"
 
 tracker_store:
-  type: postgres
+  type: sql
   url: rasa-brizl-tbycs9
   db: briz-l
   username: postgres
