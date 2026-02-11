@@ -24,7 +24,7 @@ services:
       - action_server
     environment:
       - DB_PASSWORD=herahera
-      - PYTHONWARNINGS=ignore
+      - PYTHONWARNINGS=ignore::DeprecationWarning,ignore::PendingDeprecationWarning,ignore::ImportWarning
       - SQLALCHEMY_SILENCE_UBER_WARNING=1
     networks:
       - dokploy-network
@@ -48,7 +48,7 @@ services:
     env_file:
       - .env
     environment:
-      - PYTHONWARNINGS=ignore
+      - PYTHONWARNINGS=ignore::DeprecationWarning,ignore::PendingDeprecationWarning,ignore::ImportWarning
     command:
       - start
       - --actions
@@ -67,7 +67,7 @@ services:
       - .env
     environment:
       - RASA_URL=http://rasa:3000/webhooks/rest/webhook
-      - PYTHONWARNINGS=ignore
+      - PYTHONWARNINGS=ignore::DeprecationWarning,ignore::PendingDeprecationWarning,ignore::ImportWarning
     entrypoint: []
     command:
       - /opt/venv/bin/python

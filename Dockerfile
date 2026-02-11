@@ -3,7 +3,7 @@ FROM rasa/rasa:3.6.0-full
 
 USER root
 
-ENV PYTHONWARNINGS="ignore"
+ENV PYTHONWARNINGS="ignore::DeprecationWarning,ignore::PendingDeprecationWarning,ignore::ImportWarning"
 
 # Create directory for models and config
 RUN mkdir -p /app/models /app/.config/rasa && chmod -R 777 /app/models /app/.config
