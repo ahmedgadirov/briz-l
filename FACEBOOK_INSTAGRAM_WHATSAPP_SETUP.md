@@ -7,7 +7,7 @@ This guide walks you through connecting your Rasa chatbot to Facebook Messenger,
 Before starting, ensure you have:
 - ✅ Facebook Developer Account
 - ✅ Facebook App ID: `955336886822608`
-- ✅ Facebook App Secret: `bdca1c29634daaf56f66972696286a1a`
+- ✅ Facebook App Secret: `84ed4b95cffb3e1666b5fa851906c91a`
 - ✅ A Facebook Page (required for Messenger)
 - ✅ Instagram Business Account (connected to your Facebook Page)
 - ✅ WhatsApp Business Account or phone number
@@ -88,7 +88,7 @@ Open `/Users/bytelecom/Desktop/rasa-brizl/.env` and update these values:
 # Facebook/Instagram Configuration
 FB_VERIFY_TOKEN=vera_fb_verify_2024
 FB_PAGE_ACCESS_TOKEN=PASTE_YOUR_PAGE_ACCESS_TOKEN_HERE
-FB_APP_SECRET=bdca1c29634daaf56f66972696286a1a
+FB_APP_SECRET=84ed4b95cffb3e1666b5fa851906c91a
 
 # WhatsApp Configuration
 WA_VERIFY_TOKEN=vera_wa_verify_2024

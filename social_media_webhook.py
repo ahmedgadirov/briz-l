@@ -97,19 +97,18 @@ def verify_webhook_signature(payload, signature, secret):
     is_valid = hmac.compare_digest(expected_full, signature)
     
     if not is_valid:
-        logger.warning(f"Signature mismatch!")
-        logger.warning(f"  Received: {signature[:15]}...")
-        logger.warning(f"  Expected prefix: {expected_full[:15]}...")
-        logger.warning(f"  Secret starts with: {secret[:4]}...")
-        logger.warning(f"  Payload size: {len(payload)} bytes")
-        if payload:
-            logger.info(f"  Payload preview: {payload[:100]}...")
+        if SKIP_VERIFY_SIGNATURE:
+            logger.info("Signature mismatch detected, but skipping verification as requested.")
+        else:
+            logger.warning(f"Signature mismatch!")
+            logger.warning(f"  Received: {signature[:15]}...")
+            logger.warning(f"  Expected prefix: {expected_full[:15]}...")
+            logger.warning(f"  Secret starts with: {secret[:4]}...")
+            logger.warning(f"  Payload size: {len(payload)} bytes")
+            if payload:
+                logger.info(f"  Payload preview: {payload[:100]}...")
             
-    if SKIP_VERIFY_SIGNATURE:
-        logger.warning("  ⚠️ SKIPPING signature verification because SKIP_VERIFY_SIGNATURE is set!")
-        return True
-        
-    return is_valid
+    return is_valid or SKIP_VERIFY_SIGNATURE
 
 
 def forward_to_rasa(sender_id, message_text, platform="unknown"):
