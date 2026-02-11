@@ -82,8 +82,9 @@ def verify_webhook_signature(payload, signature, secret):
         return True  # Skip verification if secret not configured
         
     if not signature:
-        logger.warning("Missing X-Hub-Signature-256 header")
-        return False
+        if not SKIP_VERIFY_SIGNATURE:
+            logger.warning("Missing X-Hub-Signature-256 header")
+        return False or SKIP_VERIFY_SIGNATURE
     
     expected_signature = hmac.new(
         secret.encode('utf-8'),
@@ -145,8 +146,9 @@ def send_facebook_message(recipient_id, message_text, platform="facebook"):
         # Determine the correct node (Account ID or 'me')
         node = "me"
         if platform == "instagram" and INSTAGRAM_ACCOUNT_ID:
-            node = INSTAGRAM_ACCOUNT_ID
-            logger.info(f"Using Instagram Account ID: {node}")
+            # node = INSTAGRAM_ACCOUNT_ID
+            # node = INSTAGRAM_ACCOUNT_ID
+            logger.info("Using 'me' instead of Instagram Account ID")
         elif platform == "facebook" and FB_PAGE_ID:
             node = FB_PAGE_ID
             logger.info(f"Using Facebook Page ID: {node}")
@@ -182,8 +184,8 @@ def send_facebook_buttons(recipient_id, text, buttons, platform="facebook"):
         # Determine the correct node (Account ID or 'me')
         node = "me"
         if platform == "instagram" and INSTAGRAM_ACCOUNT_ID:
-            node = INSTAGRAM_ACCOUNT_ID
-            logger.info(f"Using Instagram Account ID: {node}")
+            # node = INSTAGRAM_ACCOUNT_ID
+            logger.info("Using 'me' instead of Instagram Account ID")
         elif platform == "facebook" and FB_PAGE_ID:
             node = FB_PAGE_ID
             logger.info(f"Using Facebook Page ID: {node}")
