@@ -9,6 +9,9 @@ RUN mkdir -p /app/models && chmod -R 777 /app/models
 # Copy project files
 COPY . /app
 
+# Install dependencies
+RUN pip install --no-cache-dir -r requirements.txt
+
 USER 1001
 
 # Default command to run Rasa server
