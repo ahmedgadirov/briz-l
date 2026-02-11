@@ -83,7 +83,18 @@ def verify_webhook_signature(payload, signature, secret):
         hashlib.sha256
     ).hexdigest()
     
-    return hmac.compare_digest(f"sha256={expected_signature}", signature)
+    # Prefix required by Facebook
+    expected_full = f"sha256={expected_signature}"
+    
+    is_valid = hmac.compare_digest(expected_full, signature)
+    
+    if not is_valid:
+        logger.warning(f"Signature mismatch!")
+        logger.warning(f"  Received: {signature[:15]}...")
+        logger.warning(f"  Expected prefix: {expected_full[:15]}...")
+        logger.debug(f"  Payload size: {len(payload)} bytes")
+        
+    return is_valid
 
 
 def forward_to_rasa(sender_id, message_text, platform="unknown"):
