@@ -145,10 +145,9 @@ def send_facebook_message(recipient_id, message_text, platform="facebook"):
     try:
         # Determine the correct node (Account ID or Page ID)
         if platform == "instagram":
-            if not INSTAGRAM_ACCOUNT_ID:
-                logger.error("INSTAGRAM_ACCOUNT_ID missing")
-                return False
-            node = INSTAGRAM_ACCOUNT_ID
+            # Instagram Messaging (Messenger API for Instagram) requires sending via /me/messages
+            # when using a Page Access Token.
+            node = "me"
         elif platform == "facebook":
             if not FB_PAGE_ID:
                 logger.error("FB_PAGE_ID missing (required for Facebook sends)")
@@ -188,10 +187,8 @@ def send_facebook_buttons(recipient_id, text, buttons, platform="facebook"):
     try:
         # Determine the correct node (Account ID or Page ID)
         if platform == "instagram":
-            if not INSTAGRAM_ACCOUNT_ID:
-                logger.error("INSTAGRAM_ACCOUNT_ID missing")
-                return False
-            node = INSTAGRAM_ACCOUNT_ID
+            # Instagram buttons also need the /me/messages node
+            node = "me"
         elif platform == "facebook":
             if not FB_PAGE_ID:
                 logger.error("FB_PAGE_ID missing (required for Facebook sends)")
