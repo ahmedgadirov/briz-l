@@ -12,7 +12,8 @@ COPY . /app
 # Install dependencies
 RUN pip install --no-cache-dir -r requirements.txt
 
-USER 1001
+# Override entrypoint to allow running multiple processes
+ENTRYPOINT []
 
-# Default command to run Rasa server on port 3000
-CMD ["run", "--enable-api", "--cors", "*", "--debug", "-p", "3000"]
+# Start both Rasa server and Telegram Polling Bridge
+CMD sh -c "rasa run --enable-api --cors '*' --debug -p 3000 & /opt/venv/bin/python telegram_poller.py"
