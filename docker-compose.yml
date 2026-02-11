@@ -66,8 +66,9 @@ services:
       - .env
     environment:
       - RASA_URL=http://rasa:3000/webhooks/rest/webhook
+    entrypoint: []
     command:
-      - python
+      - /opt/venv/bin/python
       - telegram_poller.py
 
 volumes:
