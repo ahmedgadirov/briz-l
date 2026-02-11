@@ -236,24 +236,7 @@ responses:
           payload: "/menu_back"
 
   utter_fallback:
-    - text: "Bağışlayın, sizi tam başa düşmədim.\n\nKöməyə ehtiyacınız varsa WhatsApp vasitəsilə yaza bilərsiniz:\nhttps://wa.me/994555512400\n\nvə ya aşağıdakı seçimlərdən birini seçin:"
-      buttons:
-        - title: "🗓️ Müayinəyə yazıl"
-          payload: "/menu_booking"
-        - title: "👩⚕️ Həkimlər"
-          payload: "/menu_doctors"
-        - title: "🏥 Əməliyyatlar"
-          payload: "/menu_surgeries"
-        - title: "📍 Ünvan / Yol tarifi"
-          payload: "/menu_address"
-        - title: "🕘 İş saatları"
-          payload: "/menu_hours"
-        - title: "💰 Qiymətlər"
-          payload: "/menu_prices"
-        - title: "❓ Sual ver"
-          payload: "/menu_questions"
-        - title: "⬅️ Geri"
-          payload: "/back"
+    - text: "Bağışlayın, sizi tam başa düşmədim. Sualınızı başqa cür yaza bilərsiniz?\n\nVə ya birbaşa bizimlə əlaqə saxlaya bilərsiniz:\nWhatsApp: https://wa.me/994555512400\nTelefon: +994 12 541 19 00"
 
   utter_goodbye:
     - text: "Sağ olun! Sizə cansağlığı arzulayırıq."

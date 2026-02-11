@@ -7,6 +7,7 @@ import requests
 import os
 import logging
 import time
+from collections import defaultdict
 
 # Configure logging
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
@@ -24,6 +25,11 @@ if not TELEGRAM_TOKEN:
 
 bot = telebot.TeleBot(TELEGRAM_TOKEN)
 
+# Track processed updates and messages to prevent duplicates
+processed_updates = set()
+last_messages = defaultdict(lambda: {"text": None, "time": 0})
+DUPLICATE_WINDOW = 5  # seconds
+
 def test_rasa_connection():
     logger.info(f"Testing connection to Rasa at {RASA_URL}...")
     try:
@@ -38,11 +44,31 @@ def test_rasa_connection():
         logger.error(f"Could not connect to Rasa server at {RASA_URL}: {e}")
     return False
 
-def forward_to_rasa(user_id, message_text):
+def is_duplicate_message(user_id, message_text, current_time):
+    """Check if this message is a duplicate within the time window"""
+    last = last_messages[user_id]
+    
+    if (last["text"] == message_text and 
+        current_time - last["time"] < DUPLICATE_WINDOW):
+        logger.warning(f"Duplicate message detected from {user_id}: {message_text}")
+        return True
+    
+    # Update last message tracking
+    last_messages[user_id] = {"text": message_text, "time": current_time}
+    return False
+
+def forward_to_rasa(user_id, message_text, is_button_click=False):
     try:
+        # Send metadata to help Rasa understand the context
+        metadata = {
+            "is_button_click": is_button_click,
+            "source": "telegram"
+        }
+        
         payload = {
             "sender": str(user_id),
-            "message": message_text
+            "message": message_text,
+            "metadata": metadata
         }
         logger.debug(f"--- Sending to Rasa ---")
         logger.debug(f"Payload: {payload}")
@@ -96,14 +122,32 @@ def forward_to_rasa(user_id, message_text):
 
 @bot.message_handler(func=lambda message: True)
 def handle_all_messages(message):
+    # Check for duplicate messages
+    current_time = time.time()
+    if is_duplicate_message(message.from_user.id, message.text, current_time):
+        logger.info(f"Skipping duplicate message from {message.from_user.id}")
+        return
+    
     logger.info(f"Incoming message from {message.from_user.id}: {message.text}")
-    forward_to_rasa(message.from_user.id, message.text)
+    forward_to_rasa(message.from_user.id, message.text, is_button_click=False)
 
 @bot.callback_query_handler(func=lambda call: True)
 def handle_callback_query(call):
+    # Check for duplicate callbacks using update_id if available
+    if hasattr(call, 'id') and call.id in processed_updates:
+        logger.info(f"Skipping duplicate callback: {call.id}")
+        bot.answer_callback_query(call.id)
+        return
+    
+    if hasattr(call, 'id'):
+        processed_updates.add(call.id)
+        # Keep only last 1000 update IDs to prevent memory bloat
+        if len(processed_updates) > 1000:
+            processed_updates.pop()
+    
     logger.info(f"Incoming callback from {call.from_user.id}: {call.data}")
-    # Forward the callback data (payload) to Rasa
-    forward_to_rasa(call.from_user.id, call.data)
+    # Forward the callback data (payload) to Rasa as a button click
+    forward_to_rasa(call.from_user.id, call.data, is_button_click=True)
     # Answer the callback to remove the loading state in Telegram
     bot.answer_callback_query(call.id)
 
