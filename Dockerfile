@@ -14,5 +14,5 @@ RUN pip install --no-cache-dir -r requirements.txt
 
 USER 1001
 
-# Default command to run Rasa server
-CMD ["run", "--enable-api", "--cors", "*", "--debug"]
+# Default command to run Rasa server on port 3000
+CMD ["run", "--enable-api", "--cors", "*", "--debug", "-p", "3000"]
