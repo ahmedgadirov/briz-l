@@ -1,190 +1,104 @@
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Outfit:wght@400;500;600;700;800&display=swap');
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
 
-@import "tailwindcss";
-
-/* Tailwind v4 Theme Configuration */
-@theme {
-  /* Premium Palette */
-  --color-mint-50: #f0fdf9;
-  --color-mint-100: #ccfbef;
-  --color-mint-200: #99f6e0;
-  --color-mint-300: #5eead4;
-  --color-mint-400: #2dd4bf;
-  --color-mint-500: #3EB489;
-  --color-mint-600: #2A8B6B;
-  --color-mint-700: #0f766e;
-  --color-mint-800: #115e59;
-  --color-mint-900: #134e4a;
-
-  --color-clinic-primary: #3EB489;
-  --color-clinic-secondary: #2A8B6B;
-  --color-clinic-accent: #142850;
-  --color-clinic-bg: #F8FCFA;
-  --color-clinic-card: #FFFFFF;
-
-  /* Premium Typography */
-  --font-sans: "Inter", "system-ui", "sans-serif";
-  --font-display: "Outfit", "system-ui", "sans-serif";
-
-  /* Premium Shadows */
-  --shadow-premium: 0 20px 50px rgba(62, 180, 137, 0.1);
-  --shadow-premium-hover: 0 30px 60px rgba(62, 180, 137, 0.15);
-
-  /* Custom Animations */
-  --animate-fade-in: fade-in 0.8s cubic-bezier(0.16, 1, 0.3, 1);
-  --animate-slide-up: slide-up 0.8s cubic-bezier(0.16, 1, 0.3, 1);
-  --animate-float: float 4s ease-in-out infinite;
-  --animate-pulse-soft: pulse-soft 2s ease-in-out infinite;
-}
-
-/* CSS Variables for backward compatibility and extra control */
 :root {
-  --primary: #3EB489;
-  --secondary: #2A8B6B;
-  --accent: #142850;
-  --bg: #F8FCFA;
+  --background: #f8fcfa;
+  --foreground: #1a1a1a;
+  --mint: 62 180 137;
+  --glass-bg: rgba(255, 255, 255, 0.7);
+  --glass-border: rgba(62, 180, 137, 0.15);
+  --glass-shadow: 0 20px 50px rgba(62, 180, 137, 0.1);
 }
 
-@layer base {
-  * {
-    @apply border-gray-200;
-    box-sizing: border-box;
-    padding: 0;
-    margin: 0;
-  }
-
-  html {
-    scroll-behavior: smooth;
-  }
-
-  body {
-    @apply bg-clinic-bg text-gray-800 antialiased;
-    font-family: var(--font-sans);
-    line-height: 1.6;
-  }
-
-  h1,
-  h2,
-  h3,
-  h4,
-  h5,
-  h6 {
-    font-family: var(--font-display);
-    @apply font-bold tracking-tight text-clinic-accent;
-  }
+* {
+  box-sizing: border-box;
+  padding: 0;
+  margin: 0;
 }
 
-@layer components {
-
-  /* Glassmorphism */
-  .glass-premium {
-    @apply bg-white/70 backdrop-blur-xl border border-white/20 shadow-premium;
-  }
-
-  .glass-dark {
-    @apply bg-clinic-accent/90 backdrop-blur-xl border border-white/10;
-  }
-
-  /* Premium Buttons */
-  .btn-premium {
-    @apply relative overflow-hidden px-6 py-3 rounded-xl font-semibold transition-all duration-300 active:scale-95;
-    background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
-    color: white;
-  }
-
-  .btn-premium:hover {
-    @apply shadow-lg transform -translate-y-0.5;
-    background: linear-gradient(135deg, var(--secondary) 0%, var(--primary) 100%);
-  }
-
-  .btn-ghost {
-    @apply px-6 py-3 rounded-xl font-semibold transition-all duration-300 border-2 border-clinic-primary text-clinic-primary hover:bg-clinic-primary hover:text-white active:scale-95;
-  }
-
-  /* Section Padding */
-  .section-spacing {
-    @apply py-20 px-6 md:py-32 md:px-12;
-  }
-
-  /* Card Styles */
-  .card-premium {
-    @apply bg-white rounded-3xl p-8 border border-gray-100 transition-all duration-300 shadow-premium hover:shadow-premium-hover hover:-translate-y-2;
-  }
+html {
+  scroll-behavior: smooth;
 }
 
-/* Custom Utilities */
-.mint-gradient-mesh {
-  background-color: #f8fcfa;
-  background-image:
-    radial-gradient(at 0% 0%, rgba(62, 180, 137, 0.1) 0, transparent 50%),
-    radial-gradient(at 50% 0%, rgba(42, 139, 107, 0.05) 0, transparent 50%),
-    radial-gradient(at 100% 0%, rgba(62, 180, 137, 0.1) 0, transparent 50%);
+body {
+  background: var(--background);
+  color: var(--foreground);
+  font-family: var(--font-inter), system-ui, sans-serif;
+  min-height: 100vh;
+  overflow-x: hidden;
 }
 
-.text-gradient {
-  background: linear-gradient(135deg, var(--accent) 0%, var(--primary) 100%);
+/* Glass morphism */
+.glass {
+  background: var(--glass-bg);
+  border: 1px solid var(--glass-border);
+  box-shadow: var(--glass-shadow);
+  backdrop-filter: blur(20px) saturate(150%);
+  -webkit-backdrop-filter: blur(20px) saturate(150%);
+  border-radius: 20px;
+}
+
+/* Gradient text */
+.gradient-text {
+  background: linear-gradient(135deg, #3EB489 0%, #2A8B6B 50%, #142850 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
+  background-clip: text;
 }
 
-/* Custom Scrollbar */
+/* Card hover glow */
+.card-glow {
+  position: relative;
+}
+
+.card-glow::before {
+  content: '';
+  position: absolute;
+  inset: -2px;
+  background: linear-gradient(135deg, #3EB489, transparent);
+  border-radius: 22px;
+  opacity: 0;
+  transition: opacity 0.4s ease;
+  z-index: -1;
+  filter: blur(10px);
+}
+
+.card-glow:hover::before {
+  opacity: 0.5;
+}
+
+/* Background mesh gradient */
+.mesh-gradient {
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  background: 
+    radial-gradient(ellipse 80% 50% at 20% 40%, rgba(62, 180, 137, 0.08), transparent),
+    radial-gradient(ellipse 60% 40% at 80% 20%, rgba(42, 139, 107, 0.06), transparent),
+    radial-gradient(ellipse 50% 30% at 60% 80%, rgba(20, 40, 80, 0.04), transparent);
+}
+
+/* Smooth scrollbar */
 ::-webkit-scrollbar {
   width: 8px;
 }
 
 ::-webkit-scrollbar-track {
-  @apply bg-gray-50;
+  background: rgba(62, 180, 137, 0.05);
 }
 
 ::-webkit-scrollbar-thumb {
-  @apply bg-mint-400 rounded-full hover:bg-mint-500 transition-colors;
+  background: rgba(62, 180, 137, 0.2);
+  border-radius: 4px;
 }
 
-/* Keyframe Animations */
-@keyframes fade-in {
-  from {
-    opacity: 0;
-  }
-
-  to {
-    opacity: 1;
-  }
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(62, 180, 137, 0.4);
 }
 
-@keyframes slide-up {
-  from {
-    opacity: 0;
-    transform: translateY(30px);
-  }
-
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
-@keyframes float {
-
-  0%,
-  100% {
-    transform: translateY(0);
-  }
-
-  50% {
-    transform: translateY(-15px);
-  }
-}
-
-@keyframes pulse-soft {
-
-  0%,
-  100% {
-    transform: scale(1);
-    opacity: 1;
-  }
-
-  50% {
-    transform: scale(1.05);
-    opacity: 0.8;
-  }
+/* Selection */
+::selection {
+  background: rgba(62, 180, 137, 0.3);
+  color: #fff;
 }
