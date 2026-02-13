@@ -1,0 +1,155 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --mint-primary: #3EB489;
+  --mint-secondary: #2A8B6B;
+  --mint-light: #E8F5F0;
+  --clinic-dark: #142850;
+  --clinic-bg: #F8FCFA;
+}
+
+* {
+  box-sizing: border-box;
+  padding: 0;
+  margin: 0;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  font-family: 'Inter', system-ui, sans-serif;
+  background-color: var(--clinic-bg);
+  color: #1f2937;
+  line-height: 1.6;
+}
+
+/* Custom scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: #f1f1f1;
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--mint-primary);
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--mint-secondary);
+}
+
+/* Mint gradient backgrounds */
+.mint-gradient {
+  background: linear-gradient(135deg, #E8F5F0 0%, #ffffff 50%, #E8F5F0 100%);
+}
+
+.mint-gradient-hero {
+  background: linear-gradient(180deg, #E8F5F0 0%, #ffffff 100%);
+}
+
+/* Card hover effects */
+.card-hover {
+  transition: all 0.3s ease;
+}
+
+.card-hover:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 20px 40px rgba(62, 180, 137, 0.15);
+}
+
+/* Button styles */
+.btn-mint {
+  background: linear-gradient(135deg, #3EB489 0%, #2A8B6B 100%);
+  color: white;
+  padding: 12px 28px;
+  border-radius: 12px;
+  font-weight: 600;
+  transition: all 0.3s ease;
+  border: none;
+  cursor: pointer;
+}
+
+.btn-mint:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 20px rgba(62, 180, 137, 0.4);
+}
+
+.btn-outline {
+  background: transparent;
+  color: var(--mint-primary);
+  padding: 12px 28px;
+  border-radius: 12px;
+  font-weight: 600;
+  transition: all 0.3s ease;
+  border: 2px solid var(--mint-primary);
+  cursor: pointer;
+}
+
+.btn-outline:hover {
+  background: var(--mint-primary);
+  color: white;
+}
+
+/* Section padding */
+.section-padding {
+  padding: 80px 20px;
+}
+
+@media (min-width: 768px) {
+  .section-padding {
+    padding: 100px 40px;
+  }
+}
+
+/* Container */
+.container-custom {
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 0 20px;
+}
+
+/* Glass effect */
+.glass {
+  background: rgba(255, 255, 255, 0.9);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(62, 180, 137, 0.1);
+}
+
+/* Mint decoration */
+.mint-decoration {
+  position: absolute;
+  width: 300px;
+  height: 300px;
+  background: radial-gradient(circle, rgba(62, 180, 137, 0.1) 0%, transparent 70%);
+  border-radius: 50%;
+  pointer-events: none;
+}
+
+/* Text selection */
+::selection {
+  background: rgba(62, 180, 137, 0.3);
+  color: #1f2937;
+}
+
+/* Animation utilities */
+@keyframes pulse-mint {
+  0%, 100% {
+    box-shadow: 0 0 0 0 rgba(62, 180, 137, 0.4);
+  }
+  50% {
+    box-shadow: 0 0 0 15px rgba(62, 180, 137, 0);
+  }
+}
+
+.animate-pulse-mint {
+  animation: pulse-mint 2s infinite;
+}
