@@ -1,8 +1,9 @@
 'use client'
 
 import { motion } from 'framer-motion'
-import { ArrowRight } from 'lucide-react'
+import { ArrowRight, MessageCircle } from 'lucide-react'
 import { surgeries, clinicInfo } from '@/lib/clinic-data'
+import { useChat } from '@/hooks/useChat'
 
 // Map surgery IDs to icons
 const iconMap: Record<string, string> = {
@@ -19,6 +20,16 @@ const iconMap: Record<string, string> = {
 }
 
 export default function Services() {
+  const { openChat, sendSurgeryQuery } = useChat()
+
+  const handleMoreInfo = (surgeryId: string) => {
+    openChat()
+    // Small delay to let chat open first
+    setTimeout(() => {
+      sendSurgeryQuery(surgeryId)
+    }, 300)
+  }
+
   return (
     <section id="services" className="py-24 px-6">
       <div className="max-w-7xl mx-auto">
@@ -74,16 +85,27 @@ export default function Services() {
                 ))}
               </ul>
 
-              {/* CTA */}
-              <motion.a
-                href={`tel:${clinicInfo.phone.main}`}
-                whileHover={{ scale: 1.02 }}
-                whileTap={{ scale: 0.98 }}
-                className="inline-flex items-center gap-2 text-mint bg-mint/10 px-5 py-3 rounded-xl font-medium text-sm transition-all duration-300 hover:bg-mint/20"
-              >
-                Randevu al
-                <ArrowRight className="w-4 h-4 opacity-60 group-hover:opacity-100 transition-opacity" />
-              </motion.a>
+              {/* CTA Buttons */}
+              <div className="flex flex-wrap gap-3">
+                <motion.a
+                  href={`tel:${clinicInfo.phone.main}`}
+                  whileHover={{ scale: 1.02 }}
+                  whileTap={{ scale: 0.98 }}
+                  className="inline-flex items-center gap-2 text-mint bg-mint/10 px-5 py-3 rounded-xl font-medium text-sm transition-all duration-300 hover:bg-mint/20"
+                >
+                  Randevu al
+                  <ArrowRight className="w-4 h-4 opacity-60 group-hover:opacity-100 transition-opacity" />
+                </motion.a>
+                <motion.button
+                  onClick={() => handleMoreInfo(service.id)}
+                  whileHover={{ scale: 1.02 }}
+                  whileTap={{ scale: 0.98 }}
+                  className="inline-flex items-center gap-2 text-gray-600 bg-gray-100 px-5 py-3 rounded-xl font-medium text-sm transition-all duration-300 hover:bg-gray-200"
+                >
+                  <MessageCircle className="w-4 h-4" />
+                  Ətraflı məlumat
+                </motion.button>
+              </div>
             </motion.div>
           ))}
         </div>

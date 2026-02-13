@@ -1,6 +1,7 @@
 import type { Metadata } from 'next'
 import { Inter, Space_Grotesk } from 'next/font/google'
 import './globals.css'
+import { Providers } from '@/components/Providers'
 
 const inter = Inter({
   subsets: ['latin'],
@@ -35,7 +36,9 @@ export default function RootLayout({
     <html lang="az" className={`${inter.variable} ${spaceGrotesk.variable}`}>
       <body className="antialiased">
         <div className="mesh-gradient" />
-        {children}
+        <Providers>
+          {children}
+        </Providers>
       </body>
     </html>
   )

@@ -1,10 +1,20 @@
 'use client'
 
 import { motion } from 'framer-motion'
-import { Phone, MessageCircle, User } from 'lucide-react'
+import { Phone, MessageCircle, User, Bot } from 'lucide-react'
 import { doctors } from '@/lib/clinic-data'
+import { useChat } from '@/hooks/useChat'
 
 export default function Doctors() {
+  const { openChat, sendDoctorQuery } = useChat()
+
+  const handleAskAboutDoctor = (doctorId: string) => {
+    openChat()
+    setTimeout(() => {
+      sendDoctorQuery(doctorId)
+    }, 300)
+  }
+
   return (
     <section id="doctors" className="py-24 px-6 bg-gradient-to-b from-transparent via-mint/5 to-transparent">
       <div className="max-w-7xl mx-auto">
@@ -56,7 +66,7 @@ export default function Doctors() {
               </p>
 
               {/* Contact buttons */}
-              <div className="flex items-center justify-center gap-2">
+              <div className="flex flex-wrap items-center justify-center gap-2">
                 <motion.a
                   href={`tel:${doctor.phone.replace(/\s/g, '')}`}
                   whileHover={{ scale: 1.05 }}
@@ -77,6 +87,15 @@ export default function Doctors() {
                   <MessageCircle className="w-4 h-4" />
                   WhatsApp
                 </motion.a>
+                <motion.button
+                  onClick={() => handleAskAboutDoctor(doctor.id)}
+                  whileHover={{ scale: 1.05 }}
+                  whileTap={{ scale: 0.95 }}
+                  className="inline-flex items-center gap-1.5 px-3 py-2 bg-gray-100 hover:bg-gray-200 text-gray-600 rounded-lg text-sm font-medium transition-colors"
+                >
+                  <Bot className="w-4 h-4" />
+                  Vera
+                </motion.button>
               </div>
             </motion.div>
           ))}
