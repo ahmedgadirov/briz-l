@@ -1,40 +1,22 @@
 'use client'
 
 import { motion } from 'framer-motion'
-import { Eye, Sparkles, Heart, ArrowRight } from 'lucide-react'
+import { ArrowRight } from 'lucide-react'
+import { surgeries, clinicInfo } from '@/lib/clinic-data'
 
-const services = [
-  {
-    name: 'Katarakta əməliyyatı',
-    description: 'Müasir metodlarla katarakta əməliyyatı. Süni lens yerləşdirilməsi ilə görmə qabiliyyətinin bərpası.',
-    features: [
-      'Fako əməliyyat üsulu',
-      'Süni lens implantasiyası',
-      'Qısa bərpa dövrü',
-    ],
-    icon: Eye,
-  },
-  {
-    name: 'Excimer Laser',
-    description: 'Lazer korreksiya ilə görmə qabiliyyətinin bərpası. Eynək və linzalardan xilas olun.',
-    features: [
-      'LASIK üsulu',
-      'Həssas korreksiya',
-      'Sürətli bərpa',
-    ],
-    icon: Sparkles,
-  },
-  {
-    name: 'Qlaukoma müalicəsi',
-    description: 'Qlaukoma diaqnostikası və müalicəsi. Gözdaxili təzyiqin normallaşdırılması.',
-    features: [
-      'Erkən diaqnostika',
-      'Lazer müalicəsi',
-      'Cərrahi müdaxilə',
-    ],
-    icon: Heart,
-  },
-]
+// Map surgery IDs to icons
+const iconMap: Record<string, string> = {
+  excimer: '🔬',
+  cataract: '👁️',
+  pteregium: '🔧',
+  phacic: '💎',
+  cesplik: '⚡',
+  cross_linking: '🔗',
+  argon: '💚',
+  yag: '✨',
+  avastin: '💉',
+  glaucoma: '🩺',
+}
 
 export default function Services() {
   return (
@@ -58,18 +40,18 @@ export default function Services() {
 
         {/* Services grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-8">
-          {services.map((service, index) => (
+          {surgeries.map((service, index) => (
             <motion.div
-              key={service.name}
+              key={service.id}
               initial={{ opacity: 0, y: 40 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
-              transition={{ duration: 0.6, delay: index * 0.15 }}
+              transition={{ duration: 0.6, delay: index * 0.1 }}
               className="card-glow glass p-8 md:p-10 border border-mint/20 hover:border-mint/40 transition-all duration-500 group"
             >
               {/* Icon */}
-              <div className="inline-flex items-center justify-center w-14 h-14 rounded-xl bg-mint/10 mb-6 group-hover:bg-mint/20 transition-colors">
-                <service.icon className="w-7 h-7 text-mint" />
+              <div className="inline-flex items-center justify-center w-14 h-14 rounded-xl bg-mint/10 mb-6 group-hover:bg-mint/20 transition-colors text-3xl">
+                {iconMap[service.id] || '🏥'}
               </div>
 
               {/* Header */}
@@ -94,7 +76,7 @@ export default function Services() {
 
               {/* CTA */}
               <motion.a
-                href="tel:+994502222222"
+                href={`tel:${clinicInfo.phone.main}`}
                 whileHover={{ scale: 1.02 }}
                 whileTap={{ scale: 0.98 }}
                 className="inline-flex items-center gap-2 text-mint bg-mint/10 px-5 py-3 rounded-xl font-medium text-sm transition-all duration-300 hover:bg-mint/20"

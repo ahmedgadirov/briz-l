@@ -2,16 +2,14 @@
 
 import { motion } from 'framer-motion'
 import { Phone, Mail, MapPin, Instagram, Facebook, Clock } from 'lucide-react'
+import { clinicInfo, surgeries } from '@/lib/clinic-data'
 
-const services = [
-  { name: 'Katarakta', href: '#services' },
-  { name: 'Excimer Laser', href: '#services' },
-  { name: 'Qlaukoma', href: '#services' },
-]
+const footerServices = surgeries.slice(0, 5)
 
 const socials = [
-  { name: 'Instagram', icon: Instagram, url: 'https://instagram.com/brizlclinic' },
-  { name: 'Facebook', icon: Facebook, url: 'https://facebook.com/brizlclinic' },
+  { name: 'Instagram', icon: Instagram, url: clinicInfo.social.instagram },
+  { name: 'Facebook', icon: Facebook, url: clinicInfo.social.facebook },
+  { name: 'WhatsApp', icon: Phone, url: clinicInfo.social.whatsapp },
 ]
 
 export default function Footer() {
@@ -26,21 +24,51 @@ export default function Footer() {
               className="inline-block font-display text-2xl font-semibold gradient-text mb-4"
               whileHover={{ scale: 1.02 }}
             >
-              Briz-L
+              {clinicInfo.name}
             </motion.a>
-            <p className="text-gray-500 text-sm max-w-sm leading-relaxed">
+            <p className="text-gray-500 text-sm max-w-sm leading-relaxed mb-4">
               Peşəkar göz sağlamlığı xidmətləri. Müasir texnologiyalar və təcrübəli həkimlər.
             </p>
+            
+            {/* Map Links with Logos */}
+            <div className="flex gap-3">
+              <a
+                href={clinicInfo.maps.google}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center gap-2 px-4 py-2 glass border border-gray-200 rounded-lg text-sm text-gray-600 hover:border-mint/40 transition-colors"
+              >
+                <img 
+                  src="/google-maps.svg.png" 
+                  alt="Google Maps" 
+                  className="w-5 h-5 object-contain"
+                />
+                Google Maps
+              </a>
+              <a
+                href={clinicInfo.maps.waze}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center gap-2 px-4 py-2 glass border border-gray-200 rounded-lg text-sm text-gray-600 hover:border-mint/40 transition-colors"
+              >
+                <img 
+                  src="/waze.png" 
+                  alt="Waze" 
+                  className="w-5 h-5 object-contain"
+                />
+                Waze
+              </a>
+            </div>
           </div>
 
           {/* Services */}
           <div>
             <h4 className="font-medium text-gray-700 mb-4 text-sm">Xidmətlər</h4>
             <ul className="space-y-3">
-              {services.map((service) => (
-                <li key={service.name}>
+              {footerServices.map((service) => (
+                <li key={service.id}>
                   <a
-                    href={service.href}
+                    href="#services"
                     className="text-gray-500 hover:text-mint text-sm transition-colors"
                   >
                     {service.name}
@@ -56,25 +84,49 @@ export default function Footer() {
             <ul className="space-y-3">
               <li>
                 <a
-                  href="tel:+994502222222"
+                  href={`tel:${clinicInfo.phone.main}`}
                   className="text-gray-500 hover:text-mint text-sm transition-colors inline-flex items-center gap-2"
                 >
                   <Phone className="w-4 h-4" />
-                  +994 50 222 22 22
+                  {clinicInfo.phone.main}
                 </a>
               </li>
               <li>
                 <a
-                  href="mailto:info@brizl.az"
+                  href={`tel:${clinicInfo.phone.secondary}`}
+                  className="text-gray-500 hover:text-mint text-sm transition-colors inline-flex items-center gap-2"
+                >
+                  <Phone className="w-4 h-4" />
+                  {clinicInfo.phone.secondary}
+                </a>
+              </li>
+              <li>
+                <a
+                  href={clinicInfo.social.whatsapp}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-gray-500 hover:text-mint text-sm transition-colors inline-flex items-center gap-2"
+                >
+                  <Phone className="w-4 h-4" />
+                  WhatsApp
+                </a>
+              </li>
+              <li>
+                <a
+                  href={`mailto:${clinicInfo.email}`}
                   className="text-gray-500 hover:text-mint text-sm transition-colors inline-flex items-center gap-2"
                 >
                   <Mail className="w-4 h-4" />
-                  info@brizl.az
+                  {clinicInfo.email}
                 </a>
               </li>
               <li className="text-gray-500 text-sm inline-flex items-center gap-2">
+                <MapPin className="w-4 h-4" />
+                {clinicInfo.address.street}
+              </li>
+              <li className="text-gray-500 text-sm inline-flex items-center gap-2">
                 <Clock className="w-4 h-4" />
-                B.e - Şənbə: 09:00 - 18:00
+                {clinicInfo.hours.weekdays}
               </li>
             </ul>
             <div className="flex gap-3 mt-4">
@@ -99,11 +151,11 @@ export default function Footer() {
         {/* Bottom */}
         <div className="flex flex-col md:flex-row items-center justify-between pt-8 border-t border-mint/10 gap-4">
           <p className="text-gray-400 text-xs">
-            © {new Date().getFullYear()} Briz-L Göz Klinikası. Bütün hüquqlar qorunur.
+            © {new Date().getFullYear()} {clinicInfo.fullName}. Bütün hüquqlar qorunur.
           </p>
           <p className="text-gray-400 text-xs inline-flex items-center gap-1">
             <MapPin className="w-3 h-3" />
-            Bakı, Azərbaycan
+            {clinicInfo.address.full}
           </p>
         </div>
       </div>

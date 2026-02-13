@@ -2,12 +2,9 @@
 
 import { motion } from 'framer-motion'
 import { ArrowDown, Phone, MapPin } from 'lucide-react'
+import { clinicInfo, surgeries } from '@/lib/clinic-data'
 
-const services = [
-  { name: 'Katarakta', href: '#services' },
-  { name: 'Excimer Laser', href: '#services' },
-  { name: 'Qlaukoma', href: '#services' },
-]
+const heroServices = surgeries.slice(0, 3).map(s => ({ name: s.name, href: '#services' }))
 
 export default function Hero() {
   return (
@@ -20,7 +17,7 @@ export default function Hero() {
       >
         {/* Brand line */}
         <h1 className="font-display text-4xl md:text-6xl lg:text-7xl font-medium tracking-tight mb-8 leading-tight">
-          <span className="gradient-text">Briz-L</span> Göz Klinikası — 
+          <span className="gradient-text">{clinicInfo.name}</span> Göz Klinikası — 
           peşəkar göz sağlamlığı{' '}
           <span className="text-mint">xidmətləri</span>.
         </h1>
@@ -36,7 +33,7 @@ export default function Hero() {
           transition={{ duration: 0.8, delay: 0.3 }}
           className="flex flex-wrap items-center justify-center gap-3 mt-8"
         >
-          {services.map((service, index) => (
+          {heroServices.map((service, index) => (
             <motion.a
               key={service.name}
               href={service.href}
@@ -60,20 +57,20 @@ export default function Hero() {
           className="flex flex-wrap items-center justify-center gap-4 mt-10"
         >
           <a
-            href="tel:+994502222222"
+            href={`tel:${clinicInfo.phone.main}`}
             className="inline-flex items-center gap-2 px-6 py-3 bg-mint text-white rounded-xl font-medium hover:bg-mint-dark transition-colors"
           >
             <Phone className="w-4 h-4" />
-            +994 50 222 22 22
+            {clinicInfo.phone.main}
           </a>
           <a
-            href="https://maps.google.com"
+            href={clinicInfo.maps.google}
             target="_blank"
             rel="noopener noreferrer"
             className="inline-flex items-center gap-2 px-6 py-3 glass border border-gray-200 text-gray-700 rounded-xl font-medium hover:border-mint/40 transition-colors"
           >
             <MapPin className="w-4 h-4" />
-            Bakı, Azərbaycan
+            {clinicInfo.address.full}
           </a>
         </motion.div>
 
