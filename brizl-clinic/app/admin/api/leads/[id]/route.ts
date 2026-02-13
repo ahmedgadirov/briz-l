@@ -3,9 +3,10 @@ import { getLeadById } from '@/lib/admin-db';
 
 export async function GET(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  props: { params: Promise<{ id: string }> }
 ) {
   try {
+    const params = await props.params;
     const userId = decodeURIComponent(params.id);
     const lead = await getLeadById(userId);
     
