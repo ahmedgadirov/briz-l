@@ -1,5 +1,6 @@
 import type { Metadata } from 'next'
 import { Inter, Space_Grotesk } from 'next/font/google'
+import Script from 'next/script'
 import './globals.css'
 
 const inter = Inter({
@@ -34,6 +35,18 @@ export default function RootLayout({
   return (
     <html className={`${inter.variable} ${spaceGrotesk.variable}`}>
       <body className="antialiased">
+        <Script
+          src="https://www.googletagmanager.com/gtag/js?id=G-EM2ZJEGZPS"
+          strategy="afterInteractive"
+        />
+        <Script id="google-analytics" strategy="afterInteractive">
+          {`
+            window.dataLayer = window.dataLayer || [];
+            function gtag(){dataLayer.push(arguments);}
+            gtag('js', new Date());
+            gtag('config', 'G-EM2ZJEGZPS');
+          `}
+        </Script>
         <div className="mesh-gradient" />
         {children}
       </body>
