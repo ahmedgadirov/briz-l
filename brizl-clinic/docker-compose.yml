@@ -11,9 +11,20 @@ services:
       - "3000:3000"
     environment:
       - NODE_ENV=production
+      - DB_HOST=postgres
+      - DB_PORT=5432
+      - DB_NAME=briz-l
+      - DB_USER=postgres
+      - DB_PASSWORD=herahera
+    networks:
+      - dokploy-network
     healthcheck:
       test: ["CMD", "wget", "-q", "--spider", "http://localhost:3000"]
       interval: 30s
       timeout: 10s
       retries: 3
       start_period: 40s
+
+networks:
+  dokploy-network:
+    external: true
