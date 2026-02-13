@@ -71,7 +71,14 @@ services:
       - ./tests:/app/tests
     env_file:
       - .env
+    depends_on:
+      - postgres
     environment:
+      - DB_HOST=postgres
+      - DB_PORT=5432
+      - DB_NAME=briz-l
+      - DB_USER=postgres
+      - DB_PASSWORD=herahera
       - PYTHONWARNINGS=ignore::DeprecationWarning,ignore::PendingDeprecationWarning,ignore::ImportWarning
     command:
       - start
