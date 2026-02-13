@@ -1,10 +1,13 @@
 'use client'
 
 import { motion } from 'framer-motion'
-import { MapPin, Clock, Phone, Mail } from 'lucide-react'
+import { MapPin, Clock, Phone } from 'lucide-react'
 import { clinicInfo } from '@/lib/clinic-data'
+import { useTranslations } from 'next-intl'
 
 export default function Location() {
+  const t = useTranslations('location')
+
   return (
     <section id="location" className="py-24 px-6 bg-gradient-to-b from-transparent via-mint/5 to-transparent">
       <div className="max-w-7xl mx-auto">
@@ -17,10 +20,10 @@ export default function Location() {
           className="text-center mb-16"
         >
           <h2 className="font-display text-3xl md:text-4xl font-semibold text-gray-800 mb-4">
-            Ünvanımız
+            {t('title')}
           </h2>
           <p className="text-gray-500 text-lg max-w-2xl mx-auto">
-            Klinikamızı ziyarət edin və ya yol tarifi alın.
+            {t('subtitle')}
           </p>
         </motion.div>
 
@@ -61,7 +64,7 @@ export default function Location() {
                   <MapPin className="w-5 h-5 text-mint" />
                 </div>
                 <div>
-                  <h3 className="font-display font-semibold text-gray-800 mb-1">Ünvan</h3>
+                  <h3 className="font-display font-semibold text-gray-800 mb-1">{t('address')}</h3>
                   <p className="text-gray-500">{clinicInfo.address.full}</p>
                 </div>
               </div>
@@ -72,9 +75,9 @@ export default function Location() {
                   <Clock className="w-5 h-5 text-mint" />
                 </div>
                 <div>
-                  <h3 className="font-display font-semibold text-gray-800 mb-1">İş saatları</h3>
-                  <p className="text-gray-500">Həftə içi: {clinicInfo.hours.weekdays}</p>
-                  <p className="text-gray-500">Həftə sonu: {clinicInfo.hours.weekend}</p>
+                  <h3 className="font-display font-semibold text-gray-800 mb-1">{t('workingHours')}</h3>
+                  <p className="text-gray-500">{t('weekdays')}: {clinicInfo.hours.weekdays}</p>
+                  <p className="text-gray-500">{t('weekend')}: {clinicInfo.hours.weekend}</p>
                 </div>
               </div>
 
@@ -84,7 +87,7 @@ export default function Location() {
                   <Phone className="w-5 h-5 text-mint" />
                 </div>
                 <div>
-                  <h3 className="font-display font-semibold text-gray-800 mb-1">Telefonlar</h3>
+                  <h3 className="font-display font-semibold text-gray-800 mb-1">{t('phones')}</h3>
                   <p className="text-gray-500">
                     <a href={`tel:${clinicInfo.phone.main}`} className="hover:text-mint transition-colors">
                       {clinicInfo.phone.main}

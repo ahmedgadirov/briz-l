@@ -2,9 +2,12 @@
 
 import { motion } from 'framer-motion'
 import { Phone, Mail, MapPin, Instagram, Facebook, Clock } from 'lucide-react'
-import { clinicInfo, surgeries } from '@/lib/clinic-data'
+import { clinicInfo } from '@/lib/clinic-data'
+import { useTranslations } from 'next-intl'
+import { Link } from '@/i18n/navigation'
 
-const footerServices = surgeries.slice(0, 5)
+// Surgery IDs for footer
+const footerServiceIds = ['excimer', 'cataract', 'pteregium', 'phacic', 'glaucoma']
 
 const socials = [
   { name: 'Instagram', icon: Instagram, url: clinicInfo.social.instagram },
@@ -13,21 +16,24 @@ const socials = [
 ]
 
 export default function Footer() {
+  const t = useTranslations('footer')
+  const tServices = useTranslations('services')
+  const tNav = useTranslations('nav')
+
   return (
     <footer className="py-16 px-6 border-t border-mint/10">
       <div className="max-w-7xl mx-auto">
         <div className="grid grid-cols-1 md:grid-cols-4 gap-10 mb-12">
           {/* Brand */}
           <div className="md:col-span-2">
-            <motion.a
+            <Link
               href="/"
               className="inline-block font-display text-2xl font-semibold gradient-text mb-4"
-              whileHover={{ scale: 1.02 }}
             >
               {clinicInfo.name}
-            </motion.a>
+            </Link>
             <p className="text-gray-500 text-sm max-w-sm leading-relaxed mb-4">
-              Peşəkar göz sağlamlığı xidmətləri. Müasir texnologiyalar və təcrübəli həkimlər.
+              {t('description')}
             </p>
             
             {/* Map Links with Logos */}
@@ -63,15 +69,15 @@ export default function Footer() {
 
           {/* Services */}
           <div>
-            <h4 className="font-medium text-gray-700 mb-4 text-sm">Xidmətlər</h4>
+            <h4 className="font-medium text-gray-700 mb-4 text-sm">{tNav('services')}</h4>
             <ul className="space-y-3">
-              {footerServices.map((service) => (
-                <li key={service.id}>
+              {footerServiceIds.map((id) => (
+                <li key={id}>
                   <a
                     href="#services"
                     className="text-gray-500 hover:text-mint text-sm transition-colors"
                   >
-                    {service.name}
+                    {tServices(`items.${id}.name`)}
                   </a>
                 </li>
               ))}
@@ -80,7 +86,7 @@ export default function Footer() {
 
           {/* Contact */}
           <div>
-            <h4 className="font-medium text-gray-700 mb-4 text-sm">Əlaqə</h4>
+            <h4 className="font-medium text-gray-700 mb-4 text-sm">{t('contact')}</h4>
             <ul className="space-y-3">
               <li>
                 <a
@@ -151,7 +157,7 @@ export default function Footer() {
         {/* Bottom */}
         <div className="flex flex-col md:flex-row items-center justify-between pt-8 border-t border-mint/10 gap-4">
           <p className="text-gray-400 text-xs">
-            © {new Date().getFullYear()} {clinicInfo.fullName}. Bütün hüquqlar qorunur.
+            © {new Date().getFullYear()} {clinicInfo.fullName}. {t('rights')}
           </p>
           <p className="text-gray-400 text-xs inline-flex items-center gap-1">
             <MapPin className="w-3 h-3" />

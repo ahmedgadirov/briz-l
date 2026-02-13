@@ -1,0 +1,159 @@
+{
+  "hero": {
+    "title": "{name} Göz Klinikası — peşəkar göz sağlamlığı xidmətləri.",
+    "subtitle": "Müasir texnologiyalar və təcrübəli həkimlərlə göz sağlamlığınızı etibar edin.",
+    "scrollToServices": "Xidmətlər"
+  },
+  "nav": {
+    "doctors": "Həkimlər",
+    "services": "Xidmətlər",
+    "vera": "VERA",
+    "location": "Ünvan"
+  },
+  "services": {
+    "title": "Xidmətlərimiz",
+    "subtitle": "Müasir oftalmologiya sahəsində ən son texnologiyalar və üsullarla xidmət göstəririk.",
+    "bookAppointment": "Randevu al",
+    "moreInfo": "Ətraflı məlumat",
+    "items": {
+      "excimer": {
+        "name": "Excimer Laser",
+        "description": "Gözlük və kontakt linzalardan azad olmaq üçün lazer əməliyyatı. Yaxıngörmə, uzaqgörmə və astiqmatizmin korreksiyası üçün istifadə olunur.",
+        "features": ["LASIK üsulu", "Həssas korreksiya", "Sürətli bərpa"]
+      },
+      "cataract": {
+        "name": "Katarakta (mirvari suyu)",
+        "description": "Göz lensinin dəyişdirilməsi. Katarakta zamanı göz lensi dumanlı olur və görmə zəifləyir. Əməliyyat zamanı köhnə lens çıxarılır və yenisi yerləşdirilir.",
+        "features": ["Fako əməliyyat üsulu", "Süni lens implantasiyası", "Qısa bərpa dövrü"]
+      },
+      "pteregium": {
+        "name": "Pteregium",
+        "description": "Göz ağının üzərində əmələ gələn toxumanın təmizlənməsi. Bu əməliyyat gözün ağ hissəsində və buynuz qişada əmələ gələn artıq toxumanın çıxarılması üçündür.",
+        "features": ["Mikrocərrahi üsul", "Buynuz qişa qorunması", "Minimal bərpa vaxtı"]
+      },
+      "phacic": {
+        "name": "Phacic Lens",
+        "description": "Yüksək dərəcəli görmə qüsurlarında gözə süni lens yerləşdirmək üçün istifadə olunur.",
+        "features": ["Yüksək dioptriya", "Reversiv prosedura", "Qısa bərpa dövrü"]
+      },
+      "cesplik": {
+        "name": "Çəplik əməliyyatı",
+        "description": "Göz əzələlərinin düzəldilməsi. Gözlərin düz baxmaması probleminin həlli üçündür.",
+        "features": ["Mikrocərrahi düzəliş", "Fərdi yanaşma", "Estetik nəticə"]
+      },
+      "cross_linking": {
+        "name": "Cross Linking (CCL)",
+        "description": "Buynuz qişanın möhkəmləndirilməsi. Keratokonus xəstəliyində buynuz qişanı möhkəmləndirmək üçün istifadə olunur.",
+        "features": ["Keratokonus müalicəsi", "Buynuz qişa möhkəmləndirmə", "Proqressiv xəstəliklər"]
+      },
+      "argon": {
+        "name": "Arqon Laser (Green Laser)",
+        "description": "Göz dibinin lazer müalicəsi. Retina problemlərində, şəkərli diabet, yırtıq və s. hallarda istifadə olunur.",
+        "features": ["Retina müalicəsi", "Diabetik retinopatiya", "Tez bərpa"]
+      },
+      "yag": {
+        "name": "YAG Laser",
+        "description": "Katarakta əməliyyatından sonra kapsul təmizlənməsi. Katarakta əməliyyatından sonra kapsul dumanlanarsa, YAG lazer ilə təmizlənir.",
+        "features": ["Kapsulotomiya", "Ağrısız prosedura", "Tez nəticə"]
+      },
+      "avastin": {
+        "name": "Avastin",
+        "description": "Göz dibinə vurulan iynə müalicəsi. Göz dibində yaş tipli makula degenerasiyası, diabetik retinopatiya və s. xəstəliklərdə istifadə olunur.",
+        "features": ["Anti-VEGF terapiya", "Makula degenerasiyası", "Diabetik retinopatiya"]
+      },
+      "glaucoma": {
+        "name": "Qlaukoma (qara su)",
+        "description": "Qlaukoma diaqnostikası və müalicəsi. Gözdaxili təzyiqin normallaşdırılması.",
+        "features": ["Erkən diaqnostika", "Lazer müalicəsi", "Cərrahi müdaxilə"]
+      }
+    }
+  },
+  "doctors": {
+    "title": "Həkimlərimiz",
+    "subtitle": "Peşəkar və təcrübəli həkim heyəti göz sağlamlığınızı etibarlı əllərə verir.",
+    "call": "Zəng",
+    "whatsapp": "WhatsApp",
+    "vera": "Vera",
+    "items": {
+      "iltifat": {
+        "name": "Dr. İltifat Şərif",
+        "title": "Baş həkim, Oftalmoloq",
+        "description": "Baş həkim, oftalmoqrafiya sahəsində ekspert"
+      },
+      "emil": {
+        "name": "Dr. Emil Qafarlı",
+        "title": "Oftalmoloq",
+        "description": "Ümumi göz müayinəsi və konsultasiya"
+      },
+      "sabina": {
+        "name": "Dr. Səbinə Əbiyeva",
+        "title": "Oftalmoloq",
+        "description": "Əməliyyat qiymətləri yalnız müayinədən sonra təsdiqlənir"
+      },
+      "seymur": {
+        "name": "Dr. Seymur Bayramov",
+        "title": "Oftalmoloq",
+        "description": "Göz müayinəsi və konsultasiya"
+      }
+    }
+  },
+  "whyChooseUs": {
+    "title": "Niyə bizi seçməlisiniz?",
+    "subtitle": "Keyfiyyətli xidmət və peşəkar yanaşma",
+    "items": {
+      "experience": {
+        "title": "Təcrübəli Həkimlər",
+        "description": "Peşəkar və təcrübəli həkim heyəti",
+        "stat": "10+ il",
+        "statLabel": "təcrübə"
+      },
+      "technology": {
+        "title": "Müasir Texnologiyalar",
+        "description": "Son texnologiya avadanlıqlar",
+        "stat": "5+",
+        "statLabel": "lazer cihazı"
+      },
+      "operations": {
+        "title": "Minlərlə Əməliyyat",
+        "description": "Uğurla həyata keçirilmiş əməliyyatlar",
+        "stat": "5000+",
+        "statLabel": "əməliyyat"
+      },
+      "satisfaction": {
+        "title": "Keyfiyyətli Xidmət",
+        "description": "Fərdi yanaşma və qulluq",
+        "stat": "98%",
+        "statLabel": "məmnuniyyət"
+      }
+    }
+  },
+  "booking": {
+    "title": "Randevu almaq istəyirsiniz?",
+    "subtitle": "Həkimlərimizlə konsultasiya üçün indi qeydiyyatdan keçin.",
+    "callUs": "Zəng et",
+    "whatsapp": "WhatsApp",
+    "askVera": "VERA-ya sual ver"
+  },
+  "location": {
+    "title": "Ünvanımız",
+    "subtitle": "Klinikamızı ziyarət edin və ya yol tarifi alın.",
+    "address": "Ünvan",
+    "workingHours": "İş saatları",
+    "weekdays": "Həftə içi",
+    "weekend": "Həftə sonu",
+    "phones": "Telefonlar"
+  },
+  "chat": {
+    "title": "VERA - Online Konsultant",
+    "placeholder": "Mesajınızı yazın...",
+    "send": "Göndər",
+    "welcome": "Salam! Mən VERA, Briz-L Göz Klinikasının virtual assistentiyəm. Sizə necə kömək edə bilərəm?"
+  },
+  "footer": {
+    "description": "Peşəkar göz sağlamlığı xidmətləri. Müasir texnologiyalar və təcrübəli həkimlər.",
+    "contact": "Əlaqə",
+    "rights": "Bütün hüquqlar qorunur.",
+    "privacyPolicy": "Məxfilik Siyasəti",
+    "termsOfService": "İstifadə Şərtləri"
+  }
+}

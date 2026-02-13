@@ -1,0 +1,159 @@
+{
+  "hero": {
+    "title": "{name} Eye Clinic — professional eye care services.",
+    "subtitle": "Trust your eye health with modern technologies and experienced doctors.",
+    "scrollToServices": "Services"
+  },
+  "nav": {
+    "doctors": "Doctors",
+    "services": "Services",
+    "vera": "VERA",
+    "location": "Location"
+  },
+  "services": {
+    "title": "Our Services",
+    "subtitle": "We provide services in modern ophthalmology using the latest technologies and methods.",
+    "bookAppointment": "Book Now",
+    "moreInfo": "More Info",
+    "items": {
+      "excimer": {
+        "name": "Excimer Laser",
+        "description": "Laser surgery to get rid of glasses and contact lenses. Used for correction of nearsightedness, farsightedness and astigmatism.",
+        "features": ["LASIK method", "Precise correction", "Fast recovery"]
+      },
+      "cataract": {
+        "name": "Cataract",
+        "description": "Replacement of the eye lens. With cataracts, the lens becomes cloudy and vision deteriorates. During surgery, the old lens is removed and a new one is implanted.",
+        "features": ["Phacoemulsification method", "Artificial lens implantation", "Short recovery period"]
+      },
+      "pteregium": {
+        "name": "Pterygium",
+        "description": "Removal of tissue formed on the white of the eye. This surgery is for removing excess tissue formed on the white part of the eye and cornea.",
+        "features": ["Microsurgical method", "Cornea protection", "Minimal recovery time"]
+      },
+      "phacic": {
+        "name": "Phacic Lens",
+        "description": "Used to implant an artificial lens in the eye for high degrees of vision impairment.",
+        "features": ["High diopter", "Reversible procedure", "Fast recovery"]
+      },
+      "cesplik": {
+        "name": "Strabismus Surgery",
+        "description": "Correction of eye muscles. For solving the problem of misaligned eyes.",
+        "features": ["Microsurgical correction", "Individual approach", "Aesthetic result"]
+      },
+      "cross_linking": {
+        "name": "Cross Linking (CCL)",
+        "description": "Corneal strengthening. Used to strengthen the cornea in keratoconus disease.",
+        "features": ["Keratoconus treatment", "Corneal strengthening", "Progressive diseases"]
+      },
+      "argon": {
+        "name": "Argon Laser (Green Laser)",
+        "description": "Laser treatment of the retina. Used for retinal problems, diabetes, tears, etc.",
+        "features": ["Retina treatment", "Diabetic retinopathy", "Fast recovery"]
+      },
+      "yag": {
+        "name": "YAG Laser",
+        "description": "Capsule cleaning after cataract surgery. If the capsule becomes cloudy after surgery, it is cleaned with YAG laser.",
+        "features": ["Capsulotomy", "Painless procedure", "Quick result"]
+      },
+      "avastin": {
+        "name": "Avastin",
+        "description": "Injection treatment of the eye fundus. Used for wet-type macular degeneration, diabetic retinopathy and other diseases.",
+        "features": ["Anti-VEGF therapy", "Macular degeneration", "Diabetic retinopathy"]
+      },
+      "glaucoma": {
+        "name": "Glaucoma",
+        "description": "Diagnosis and treatment of glaucoma. Normalization of intraocular pressure.",
+        "features": ["Early diagnosis", "Laser treatment", "Surgical intervention"]
+      }
+    }
+  },
+  "doctors": {
+    "title": "Our Doctors",
+    "subtitle": "Professional and experienced medical team will entrust your eye health to reliable hands.",
+    "call": "Call",
+    "whatsapp": "WhatsApp",
+    "vera": "Vera",
+    "items": {
+      "iltifat": {
+        "name": "Dr. İltifat Şərif",
+        "title": "Chief Doctor, Ophthalmologist",
+        "description": "Chief doctor, expert in ophthalmography"
+      },
+      "emil": {
+        "name": "Dr. Emil Qafarlı",
+        "title": "Ophthalmologist",
+        "description": "General eye examination and consultation"
+      },
+      "sabina": {
+        "name": "Dr. Səbinə Əbiyeva",
+        "title": "Ophthalmologist",
+        "description": "Surgery prices are confirmed only after examination"
+      },
+      "seymur": {
+        "name": "Dr. Seymur Bayramov",
+        "title": "Ophthalmologist",
+        "description": "Eye examination and consultation"
+      }
+    }
+  },
+  "whyChooseUs": {
+    "title": "Why choose us?",
+    "subtitle": "Quality service and professional approach",
+    "items": {
+      "experience": {
+        "title": "Experienced Doctors",
+        "description": "Professional and experienced medical team",
+        "stat": "10+ years",
+        "statLabel": "experience"
+      },
+      "technology": {
+        "title": "Modern Technologies",
+        "description": "Latest equipment",
+        "stat": "5+",
+        "statLabel": "laser devices"
+      },
+      "operations": {
+        "title": "Thousands of Operations",
+        "description": "Successfully performed operations",
+        "stat": "5000+",
+        "statLabel": "operations"
+      },
+      "satisfaction": {
+        "title": "Quality Service",
+        "description": "Individual approach and care",
+        "stat": "98%",
+        "statLabel": "satisfaction"
+      }
+    }
+  },
+  "booking": {
+    "title": "Want to book an appointment?",
+    "subtitle": "Register now for a consultation with our doctors.",
+    "callUs": "Call Us",
+    "whatsapp": "WhatsApp",
+    "askVera": "Ask VERA"
+  },
+  "location": {
+    "title": "Our Location",
+    "subtitle": "Visit our clinic or get directions.",
+    "address": "Address",
+    "workingHours": "Working Hours",
+    "weekdays": "Weekdays",
+    "weekend": "Weekend",
+    "phones": "Phones"
+  },
+  "chat": {
+    "title": "VERA - Online Consultant",
+    "placeholder": "Type your message...",
+    "send": "Send",
+    "welcome": "Hello! I'm VERA, virtual assistant of Briz-L Eye Clinic. How can I help you?"
+  },
+  "footer": {
+    "description": "Professional eye care services. Modern technologies and experienced doctors.",
+    "contact": "Contact",
+    "rights": "All rights reserved.",
+    "privacyPolicy": "Privacy Policy",
+    "termsOfService": "Terms of Service"
+  }
+}

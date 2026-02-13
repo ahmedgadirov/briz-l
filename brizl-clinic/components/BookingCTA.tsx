@@ -3,8 +3,11 @@
 import { motion } from 'framer-motion'
 import { Phone, MessageCircle, Calendar } from 'lucide-react'
 import { clinicInfo } from '@/lib/clinic-data'
+import { useTranslations } from 'next-intl'
 
 export default function BookingCTA() {
+  const t = useTranslations('booking')
+
   return (
     <section className="py-24 px-6">
       <div className="max-w-4xl mx-auto">
@@ -26,11 +29,11 @@ export default function BookingCTA() {
             </div>
             
             <h2 className="font-display text-2xl md:text-3xl font-semibold text-gray-800 mb-4">
-              Müayinəyə yazılın
+              {t('title')}
             </h2>
             
             <p className="text-gray-500 max-w-xl mx-auto mb-8">
-              Göz sağlamlığınız üçün peşəkar yardım. Bizimlə əlaqə saxlayın və müayinə vaxtı təyin edin.
+              {t('subtitle')}
             </p>
             
             {/* Contact buttons */}
@@ -44,7 +47,7 @@ export default function BookingCTA() {
                 className="inline-flex items-center gap-2 px-6 py-4 bg-green-500 hover:bg-green-600 text-white rounded-xl font-medium transition-colors shadow-lg shadow-green-500/20"
               >
                 <MessageCircle className="w-5 h-5" />
-                WhatsApp ilə yazıl
+                {t('whatsapp')}
               </motion.a>
               
               <motion.a
@@ -54,7 +57,7 @@ export default function BookingCTA() {
                 className="inline-flex items-center gap-2 px-6 py-4 bg-mint hover:bg-mint-dark text-white rounded-xl font-medium transition-colors shadow-lg shadow-mint/20"
               >
                 <Phone className="w-5 h-5" />
-                {clinicInfo.phone.main}
+                {t('callUs')}
               </motion.a>
             </div>
             
