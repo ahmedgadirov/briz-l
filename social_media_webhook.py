@@ -110,19 +110,58 @@ def verify_webhook_signature(payload, signature, secret):
     return is_valid or SKIP_VERIFY_SIGNATURE
 
 
-def forward_to_rasa(sender_id, message_text, platform="unknown"):
-    """Forward message to Rasa and return responses"""
+def forward_to_rasa(sender_id, message_text, platform="unknown", is_button_click=False):
+    """Forward message to Rasa and return responses with platform metadata"""
     try:
         logger.info(f"Forwarding to Rasa from {sender_id} ({platform}): {message_text}")
         
-        payload = {
-            "sender": f"{platform}_{sender_id}",
-            "message": message_text,
-            "metadata": {
-                "platform": platform,
-                "source": platform
-            }
+        # Create platform-specific sender ID
+        platform_sender_id = f"{platform}_{sender_id}"
+        
+        # Build metadata with platform info
+        metadata = {
+            "platform": platform,
+            "source": f"{platform}_messaging" if platform != "web" else "website_chat",
+            "is_button_click": is_button_click,
         }
+        
+        # Add platform-specific characteristics
+        if platform == "whatsapp":
+            metadata.update({
+                "supports_buttons": False,
+                "supports_lists": True,
+                "max_message_length": 1000,
+                "emoji_friendly": True,
+            })
+        elif platform == "facebook":
+            metadata.update({
+                "supports_buttons": True,
+                "supports_lists": False,
+                "max_message_length": 2000,
+                "emoji_friendly": True,
+            })
+        elif platform == "instagram":
+            metadata.update({
+                "supports_buttons": False,
+                "supports_lists": False,
+                "max_message_length": 1000,
+                "emoji_friendly": True,
+            })
+        elif platform == "telegram":
+            metadata.update({
+                "supports_buttons": True,
+                "supports_lists": True,
+                "max_message_length": 4000,
+                "emoji_friendly": True,
+            })
+        
+        payload = {
+            "sender": platform_sender_id,
+            "message": message_text,
+            "metadata": metadata
+        }
+        
+        logger.info(f"📱 Platform metadata: {metadata}")
         
         response = requests.post(RASA_URL, json=payload, timeout=10)
         response.raise_for_status()

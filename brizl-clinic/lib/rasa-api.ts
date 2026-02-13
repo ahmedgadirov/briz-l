@@ -18,6 +18,25 @@ export interface RasaMessage {
 export interface RasaRequest {
   sender: string
   message: string
+  metadata?: {
+    platform?: string
+    source?: string
+    is_button_click?: boolean
+    user_agent?: string
+    device_type?: 'mobile' | 'desktop' | 'tablet'
+  }
+}
+
+/**
+ * Detect device type based on user agent
+ */
+function detectDeviceType(): 'mobile' | 'desktop' | 'tablet' {
+  if (typeof window === 'undefined') return 'desktop'
+  
+  const ua = navigator.userAgent.toLowerCase()
+  if (/tablet|ipad|playbook|silk/.test(ua)) return 'tablet'
+  if (/mobile|android|iphone|ipod|blackberry|opera mini|iemobile/.test(ua)) return 'mobile'
+  return 'desktop'
 }
 
 /**
@@ -25,7 +44,8 @@ export interface RasaRequest {
  */
 export async function sendMessageToRasa(
   sender: string,
-  message: string
+  message: string,
+  metadata?: RasaRequest['metadata']
 ): Promise<RasaMessage[]> {
   try {
     const response = await fetch(`${RASA_URL}/webhooks/rest/webhook`, {
@@ -36,6 +56,13 @@ export async function sendMessageToRasa(
       body: JSON.stringify({
         sender,
         message,
+        metadata: {
+          platform: 'web',
+          source: 'website_chat',
+          device_type: detectDeviceType(),
+          user_agent: typeof window !== 'undefined' ? window.navigator.userAgent : undefined,
+          ...metadata,
+        },
       }),
     })
 

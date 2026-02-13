@@ -127,6 +127,10 @@ class ActionGenerateResponse(Action):
         metadata = tracker.latest_message.get("metadata", {})
         is_button_click = metadata.get("is_button_click", False)
         
+        # Detect platform from metadata or user_id prefix
+        platform = metadata.get("platform", "web")
+        print(f"📱 PLATFORM DETECTED: {platform} (user_id: {user_id})")
+        
         # Get conversation history (last 6 user-bot exchanges = 12 messages)
         history = []
         for event in tracker.events:
@@ -148,10 +152,11 @@ class ActionGenerateResponse(Action):
         
         # ==================== INTELLIGENCE LAYER ====================
         
-        # 1. USER PROFILING - Analyze user knowledge level and intent
-        user_profile = user_profiler.analyze_user(user_id, user_message, history)
+        # 1. USER PROFILING - Analyze user knowledge level and intent (with platform detection)
+        user_profile = user_profiler.analyze_user(user_id, user_message, history, metadata)
         
         print(f"🧠 USER PROFILE: {user_profile}")
+        print(f"📱 PLATFORM: {user_profile.get('platform', 'web')}")
         
         # 2. SYMPTOM TRIAGE - Analyze if user is describing symptoms
         triage_result = None

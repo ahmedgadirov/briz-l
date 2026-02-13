@@ -1,54 +1,94 @@
 """
 Briz-L User Profiler
 Analyzes user messages to detect knowledge level and conversation intent
+Now includes platform detection for multi-channel support
 """
 
 from .knowledge_base import detect_knowledge_level, TERMINOLOGY_LEVELS
+
+# Platform detection patterns
+PLATFORM_PATTERNS = {
+    'whatsapp': {
+        'prefixes': ['whatsapp_', 'wa_'],
+        'keywords': ['whatsapp'],
+        'characteristics': ['short_messages', 'emoji_heavy', 'voice_message_refs']
+    },
+    'facebook': {
+        'prefixes': ['facebook_', 'fb_', 'messenger_'],
+        'keywords': ['messenger', 'facebook'],
+        'characteristics': ['link_sharing', 'reaction_emojis']
+    },
+    'instagram': {
+        'prefixes': ['instagram_', 'ig_', 'insta_'],
+        'keywords': ['instagram', 'dm'],
+        'characteristics': ['visual_refs', 'story_mentions']
+    },
+    'telegram': {
+        'prefixes': ['telegram_', 'tg_'],
+        'keywords': ['telegram'],
+        'characteristics': ['formatted_text', 'bot_commands']
+    },
+    'web': {
+        'prefixes': ['web-', 'website_', 'web_'],
+        'keywords': ['website', 'web chat'],
+        'characteristics': ['detailed_messages', 'button_clicks']
+    }
+}
+
+# Platform-specific response characteristics
+PLATFORM_CHARACTERISTICS = {
+    'whatsapp': {
+        'max_message_length': 1000,
+        'supports_buttons': False,
+        'supports_lists': True,
+        'emoji_friendly': True,
+        'informal_tone': True,
+        'response_style': 'concise',
+        'preferred_cta': 'WhatsApp üzərindən əlaqə'
+    },
+    'facebook': {
+        'max_message_length': 2000,
+        'supports_buttons': True,
+        'supports_lists': False,
+        'emoji_friendly': True,
+        'informal_tone': True,
+        'response_style': 'balanced',
+        'preferred_cta': 'Messenger ilə yaz'
+    },
+    'instagram': {
+        'max_message_length': 1000,
+        'supports_buttons': False,
+        'supports_lists': False,
+        'emoji_friendly': True,
+        'informal_tone': True,
+        'response_style': 'visual_friendly',
+        'preferred_cta': 'DM göndər'
+    },
+    'telegram': {
+        'max_message_length': 4000,
+        'supports_buttons': True,
+        'supports_lists': True,
+        'emoji_friendly': True,
+        'informal_tone': False,
+        'response_style': 'detailed',
+        'preferred_cta': 'Telegram bot'
+    },
+    'web': {
+        'max_message_length': 2000,
+        'supports_buttons': True,
+        'supports_lists': True,
+        'emoji_friendly': True,
+        'informal_tone': False,
+        'response_style': 'professional',
+        'preferred_cta': 'Müayinəyə yazıl'
+    }
+}
 
 class UserProfiler:
     """Profiles users based on their messages and conversation history"""
     
     def __init__(self):
         self.user_profiles = {}
-    
-    def analyze_user(self, user_id: str, message: str, conversation_history: list) -> dict:
-        """
-        Analyze user and create/update profile
-        
-        Returns:
-            dict: {
-                'knowledge_level': str,  # beginner/intermediate/expert
-                'intent': str,  # symptom_inquiry/surgery_info/booking/general
-                'confidence_level': str,  # lost/uncertain/confident
-                'conversation_stage': str  # greeting/questioning/deciding/ready_to_book
-            }
-        """
-        
-        # Detect knowledge level
-        knowledge_level = detect_knowledge_level(message)
-        
-        # Detect intent
-        intent = self._detect_intent(message)
-        
-        # Detect confidence level
-        confidence = self._detect_confidence(message)
-        
-        # Detect conversation stage
-        stage = self._detect_conversation_stage(message, conversation_history)
-        
-        profile = {
-            'user_id': user_id,
-            'knowledge_level': knowledge_level,
-            'intent': intent,
-            'confidence_level': confidence,
-            'conversation_stage': stage,
-            'needs_guidance': confidence in ['lost', 'uncertain']
-        }
-        
-        # Store profile
-        self.user_profiles[user_id] = profile
-        
-        return profile
     
     def _detect_intent(self, message: str) -> str:
         """Detect what the user is trying to accomplish"""
@@ -171,6 +211,94 @@ class UserProfiler:
             profile.get('confidence_level') in ['lost', 'uncertain']
         )
     
+    def detect_platform(self, user_id: str, metadata: dict = None) -> str:
+        """
+        Detect the platform from which the user is messaging
+        
+        Args:
+            user_id: The sender ID (may contain platform prefix)
+            metadata: Optional metadata dict with 'platform' key
+        
+        Returns:
+            str: Detected platform name (whatsapp, facebook, instagram, telegram, web)
+        """
+        # First check metadata (most reliable)
+        if metadata and 'platform' in metadata:
+            platform = metadata['platform'].lower()
+            if platform in PLATFORM_PATTERNS:
+                return platform
+        
+        # Check user_id prefix
+        user_id_lower = user_id.lower()
+        for platform, patterns in PLATFORM_PATTERNS.items():
+            for prefix in patterns['prefixes']:
+                if user_id_lower.startswith(prefix):
+                    return platform
+        
+        # Default to web if no pattern matched
+        return 'web'
+    
+    def get_platform_characteristics(self, platform: str) -> dict:
+        """
+        Get platform-specific response characteristics
+        
+        Args:
+            platform: Platform name
+        
+        Returns:
+            dict: Platform characteristics for response adaptation
+        """
+        return PLATFORM_CHARACTERISTICS.get(platform, PLATFORM_CHARACTERISTICS['web'])
+    
+    def analyze_user(self, user_id: str, message: str, conversation_history: list, metadata: dict = None) -> dict:
+        """
+        Analyze user and create/update profile with platform detection
+        
+        Args:
+            user_id: Unique user identifier
+            message: User's message text
+            conversation_history: List of previous messages
+            metadata: Optional metadata containing platform info
+        
+        Returns:
+            dict: Complete user profile including platform info
+        """
+        
+        # Detect platform first
+        platform = self.detect_platform(user_id, metadata)
+        platform_chars = self.get_platform_characteristics(platform)
+        
+        # Detect knowledge level
+        knowledge_level = detect_knowledge_level(message)
+        
+        # Detect intent
+        intent = self._detect_intent(message)
+        
+        # Detect confidence level
+        confidence = self._detect_confidence(message)
+        
+        # Detect conversation stage
+        stage = self._detect_conversation_stage(message, conversation_history)
+        
+        profile = {
+            'user_id': user_id,
+            'platform': platform,
+            'platform_characteristics': platform_chars,
+            'knowledge_level': knowledge_level,
+            'intent': intent,
+            'confidence_level': confidence,
+            'conversation_stage': stage,
+            'needs_guidance': confidence in ['lost', 'uncertain'],
+            'is_mobile_platform': platform in ['whatsapp', 'instagram', 'telegram'],
+            'supports_buttons': platform_chars['supports_buttons'],
+            'preferred_response_style': platform_chars['response_style']
+        }
+        
+        # Store profile
+        self.user_profiles[user_id] = profile
+        
+        return profile
+    
     def should_recommend_booking(self, profile: dict) -> bool:
         """Determine if bot should recommend scheduling appointment"""
         return (
@@ -191,6 +319,55 @@ def generate_adaptive_prompt(profile: dict, symptom_analysis: dict = None) -> st
         str: Customized prompt instructions for LLM
     """
     prompt_parts = []
+    
+    # Platform-specific adaptation (NEW!)
+    platform = profile.get('platform', 'web')
+    platform_chars = profile.get('platform_characteristics', PLATFORM_CHARACTERISTICS['web'])
+    
+    if platform == 'whatsapp':
+        prompt_parts.append("""
+**PLATFORM: WhatsApp 📱**
+- QISA və MOBIL-dostu cavablar yaz (maksimum 1000 xarakter)
+- Emoji istifadə et ✅ 👁️ 🏥
+- Düymələr YOXDUR - əvəzinə nömrələnmiş siyahı yaz (1️⃣ 2️⃣ 3️⃣)
+- Sərbəst, rahat dil istifadə et
+- WhatsApp linkləri ver: wa.me/994555512400
+- Qısa mesajlar → daha çox interaction
+        """)
+    elif platform == 'facebook':
+        prompt_parts.append("""
+**PLATFORM: Facebook Messenger 💬**
+- Düymələr mövcuddur (maksimum 3)
+- Emoji istifadə et 👍
+- Balanslaşdırılmış uzunluq (1000-1500 xarakter)
+- Messenger üçün optimizasiya et
+        """)
+    elif platform == 'instagram':
+        prompt_parts.append("""
+**PLATFORM: Instagram DM 📸**
+- QISA cavablar (maksimum 1000 xarakter)
+- Düymələr YOXDUR - sadə mətn yaz
+- Emoji çox istifadə et ✨ 👁️ 💜
+- Vizual dostu dil
+- DM üçün optimizasiya et
+        """)
+    elif platform == 'telegram':
+        prompt_parts.append("""
+**PLATFORM: Telegram 📨**
+- ƏTRAFLI cavablar verilə bilər (4000 xarakterə qədər)
+- Düymələr və siyahılar mövcuddur
+- Formatlaşdırma istifadə et (bold, italic)
+- Daha rəsmi və profesionall ton
+        """)
+    else:  # web
+        prompt_parts.append("""
+**PLATFORM: Website Chat 💻**
+- Profesional və ətraflı cavablar
+- Düymələr mövcuddur
+- Strukturlaşdırılmış məlumat ver
+- Website üçün optimizasiya et
+- Call-to-action düymələri tövsiyə et
+        """)
     
     # Knowledge level adaptation
     if profile.get('knowledge_level') == 'beginner':

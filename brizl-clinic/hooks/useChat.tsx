@@ -109,7 +109,7 @@ export function ChatProvider({ children }: { children: ReactNode }) {
   }, [])
 
   // Send message to Vera
-  const sendMessage = useCallback(async (message: string) => {
+  const sendMessage = useCallback(async (message: string, isButtonClick: boolean = false) => {
     if (!message.trim() || isLoading) return
 
     // Add user message
@@ -124,8 +124,12 @@ export function ChatProvider({ children }: { children: ReactNode }) {
     setIsLoading(true)
 
     try {
-      // Send to Rasa
-      const responses = await sendMessageToRasa(sessionId, message)
+      // Send to Rasa with platform metadata
+      const responses = await sendMessageToRasa(sessionId, message, {
+        platform: 'web',
+        source: 'website_chat',
+        is_button_click: isButtonClick,
+      })
 
       // Add bot responses
       responses.forEach((response: RasaMessage, index: number) => {
