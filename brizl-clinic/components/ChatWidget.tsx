@@ -357,8 +357,8 @@ export default function ChatWidget() {
             transition={{ type: 'spring', damping: 30, stiffness: 300 }}
             className="fixed inset-0 z-50 flex flex-col bg-gradient-to-b from-gray-50 to-white"
             style={{
-              paddingBottom: keyboardHeight > 0 ? `${keyboardHeight}px` : 'env(safe-area-inset-bottom)',
-              height: keyboardHeight > 0 ? `calc(100vh - ${keyboardHeight}px)` : '100vh',
+              paddingBottom: 'env(safe-area-inset-bottom)',
+              height: '100dvh',
             }}
             role="dialog"
             aria-modal="true"
