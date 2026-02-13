@@ -30,3 +30,7 @@ Thumbs.db
 
 # Logs
 *.log
+
+# Node.js / Next.js
+node_modules/
+.next/
