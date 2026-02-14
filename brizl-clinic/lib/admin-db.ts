@@ -20,6 +20,19 @@ export interface LeadStats {
   converted: number;
 }
 
+export interface ConversationMessage {
+  timestamp: string;
+  message: string;
+  sender: 'user' | 'bot';
+  items?: {
+    surgeries?: string[];
+    symptoms?: string[];
+    doctors?: string[];
+    booking_intent?: boolean;
+    [key: string]: any;
+  };
+}
+
 export interface Lead {
   user_id: string;
   first_contact: Date;
@@ -31,7 +44,7 @@ export interface Lead {
   lead_score: number;
   lead_status: string;
   booking_intent_detected: boolean;
-  conversation_history: any[];
+  conversation_history: ConversationMessage[];
 }
 
 export interface DailyStats {

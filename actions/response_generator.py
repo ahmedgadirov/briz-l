@@ -309,6 +309,13 @@ AĞILLI cavabını yaz:"""
             
             dispatcher.utter_message(text=bot_message)
             
+            # Save bot response to conversation history
+            if lead_tracker:
+                try:
+                    lead_tracker.save_bot_response(user_id, bot_message)
+                except Exception as e:
+                    print(f"⚠️ Error saving bot response: {e}")
+            
         except Exception as e:
             print(f"❌ LLM Error: {e}")
             # Fallback response

@@ -2,12 +2,13 @@
 
 import { useState, useEffect } from 'react';
 import { useParams, useRouter } from 'next/navigation';
-import { ArrowLeft, User, MessageSquare, Calendar, Phone, Mail } from 'lucide-react';
+import { ArrowLeft, User, MessageSquare, Bot, UserCircle } from 'lucide-react';
 import Link from 'next/link';
 
 interface Message {
   timestamp: string;
   message: string;
+  sender: 'user' | 'bot';
   items?: any;
 }
 
@@ -218,22 +219,43 @@ export default function ConversationDetailPage() {
               </h2>
             </div>
             
-            <div className="p-5 space-y-4 max-h-[600px] overflow-y-auto">
+            <div className="p-5 space-y-4 max-h-[600px] overflow-y-auto bg-gray-50">
               {lead.conversation_history?.length > 0 ? (
                 lead.conversation_history.map((msg, index) => (
-                  <div key={index} className="space-y-3">
-                    {/* User Message */}
-                    <div className="flex justify-end">
-                      <div className="max-w-[80%] bg-blue-600 text-white rounded-2xl rounded-br-md px-4 py-2">
-                        <p className="text-sm">{msg.message}</p>
-                        <p className="text-xs text-blue-200 mt-1">{formatTime(msg.timestamp)}</p>
+                  <div key={index} className={`flex ${msg.sender === 'user' ? 'justify-end' : 'justify-start'}`}>
+                    <div className={`flex items-end gap-2 max-w-[85%] ${msg.sender === 'user' ? 'flex-row-reverse' : ''}`}>
+                      {/* Avatar */}
+                      <div className={`flex-shrink-0 w-8 h-8 rounded-full flex items-center justify-center ${
+                        msg.sender === 'user' 
+                          ? 'bg-blue-600 text-white' 
+                          : 'bg-gray-200 text-gray-600'
+                      }`}>
+                        {msg.sender === 'user' ? (
+                          <UserCircle className="w-5 h-5" />
+                        ) : (
+                          <Bot className="w-5 h-5" />
+                        )}
+                      </div>
+                      
+                      {/* Message Bubble */}
+                      <div className={`rounded-2xl px-4 py-2 ${
+                        msg.sender === 'user'
+                          ? 'bg-blue-600 text-white rounded-br-md'
+                          : 'bg-white text-gray-900 rounded-bl-md shadow-sm border border-gray-100'
+                      }`}>
+                        <p className="text-sm whitespace-pre-wrap">{msg.message}</p>
+                        <p className={`text-xs mt-1 ${
+                          msg.sender === 'user' ? 'text-blue-200' : 'text-gray-400'
+                        }`}>
+                          {formatTime(msg.timestamp)}
+                        </p>
                       </div>
                     </div>
                     
-                    {/* Detected Items */}
-                    {msg.items && Object.keys(msg.items).length > 0 && (
-                      <div className="flex justify-end">
-                        <div className="max-w-[80%] bg-gray-100 rounded-lg px-3 py-2 text-xs text-gray-600">
+                    {/* Detected Items (only for user messages) */}
+                    {msg.sender === 'user' && msg.items && Object.keys(msg.items).length > 0 && (
+                      <div className="w-full mt-1 ml-10">
+                        <div className="max-w-[85%] bg-gray-100 rounded-lg px-3 py-2 text-xs text-gray-600">
                           {msg.items.surgeries?.length > 0 && (
                             <span>Surgeries: {msg.items.surgeries.join(', ')} | </span>
                           )}

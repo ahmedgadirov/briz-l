@@ -62,6 +62,7 @@ class LeadTracker:
         conversation = [{
             'timestamp': datetime.now().isoformat(),
             'message': message,
+            'sender': 'user',
             'items': detected_items
         }]
         
@@ -119,6 +120,7 @@ class LeadTracker:
         conversation.append({
             'timestamp': datetime.now().isoformat(),
             'message': message,
+            'sender': 'user',
             'items': detected_items
         })
         
@@ -313,6 +315,41 @@ class LeadTracker:
         """, fetch=False)
         
         print(f"🎉 CONVERSION: {user_id} marked as converted!")
+    
+    def save_bot_response(self, user_id: str, bot_message: str) -> bool:
+        """Save bot response to conversation history"""
+        try:
+            existing_lead = self.get_lead(user_id)
+            if not existing_lead:
+                print(f"⚠️ Cannot save bot response: Lead {user_id} not found")
+                return False
+            
+            # Get existing conversation
+            conversation = existing_lead.get('conversation_history', [])
+            if isinstance(conversation, str):
+                conversation = json.loads(conversation)
+            
+            # Append bot response
+            conversation.append({
+                'timestamp': datetime.now().isoformat(),
+                'message': bot_message,
+                'sender': 'bot'
+            })
+            
+            # Update in database
+            query = """
+                UPDATE marketing_leads
+                SET conversation_history = %s
+                WHERE user_id = %s;
+            """
+            self.db.execute_query(query, (json.dumps(conversation), user_id), fetch=False)
+            
+            print(f"💾 Bot response saved for {user_id}")
+            return True
+            
+        except Exception as e:
+            print(f"⚠️ Error saving bot response: {e}")
+            return False
     
     def get_lead_stats(self) -> Dict[str, Any]:
         """Get overall lead statistics"""
