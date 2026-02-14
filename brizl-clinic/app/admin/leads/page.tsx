@@ -136,7 +136,7 @@ export default function LeadsPage() {
             placeholder="Search by ID or surgery..."
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            className="w-full pl-10 pr-4 py-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none"
+            className="w-full pl-10 pr-4 py-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-mint focus:border-transparent outline-none"
           />
         </div>
         <div className="flex items-center gap-2">
@@ -147,7 +147,7 @@ export default function LeadsPage() {
               setStatusFilter(e.target.value);
               setPage(1);
             }}
-            className="px-4 py-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none"
+            className="px-4 py-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-mint focus:border-transparent outline-none"
           >
             <option value="all">All Status</option>
             <option value="new">New</option>
@@ -184,7 +184,7 @@ export default function LeadsPage() {
               {loading ? (
                 <tr>
                   <td colSpan={7} className="px-6 py-8 text-center">
-                    <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600 mx-auto"></div>
+                    <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-mint mx-auto"></div>
                   </td>
                 </tr>
               ) : filteredLeads.length > 0 ? (
@@ -224,7 +224,7 @@ export default function LeadsPage() {
                       <div className="flex flex-wrap gap-1 max-w-xs">
                         {lead.surgeries_interested?.length > 0 ? (
                           lead.surgeries_interested.slice(0, 3).map((s, i) => (
-                            <span key={i} className="inline-block px-2 py-0.5 bg-blue-50 text-blue-700 rounded text-xs">
+                            <span key={i} className="inline-block px-2 py-0.5 bg-mint/10 text-mint rounded text-xs">
                               {s}
                             </span>
                           ))
@@ -243,7 +243,7 @@ export default function LeadsPage() {
                       <div className="flex items-center gap-2">
                         <Link
                           href={`/admin/conversations/${lead.user_id}`}
-                          className="p-1.5 text-gray-400 hover:text-blue-600 hover:bg-blue-50 rounded"
+                          className="p-1.5 text-gray-400 hover:text-mint hover:bg-mint/10 rounded"
                           title="View conversation"
                         >
                           <Eye className="w-4 h-4" />
@@ -252,7 +252,7 @@ export default function LeadsPage() {
                           href={`https://wa.me/${lead.user_id.replace(/\D/g, '')}`}
                           target="_blank"
                           rel="noopener noreferrer"
-                          className="p-1.5 text-gray-400 hover:text-green-600 hover:bg-green-50 rounded"
+                          className="p-1.5 text-gray-400 hover:text-mint hover:bg-mint/10 rounded"
                           title="Contact on WhatsApp"
                         >
                           <MessageSquare className="w-4 h-4" />

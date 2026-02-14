@@ -61,10 +61,10 @@ export default function AdminLayout({
 
   if (!isAuthenticated) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-blue-900 via-blue-800 to-indigo-900 flex items-center justify-center p-4">
+      <div className="min-h-screen bg-gradient-to-br from-clinic-accent via-mint-dark to-mint flex items-center justify-center p-4">
         <div className="bg-white rounded-2xl shadow-2xl p-8 w-full max-w-md">
           <div className="text-center mb-8">
-            <div className="w-16 h-16 bg-blue-600 rounded-xl flex items-center justify-center mx-auto mb-4">
+            <div className="w-16 h-16 bg-mint rounded-xl flex items-center justify-center mx-auto mb-4">
               <Eye className="w-8 h-8 text-white" />
             </div>
             <h1 className="text-2xl font-bold text-gray-900">Briz-L Admin</h1>
@@ -78,7 +78,7 @@ export default function AdminLayout({
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 placeholder="Admin password"
-                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none pr-12"
+                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-mint focus:border-transparent outline-none pr-12"
               />
               <button
                 type="button"
@@ -95,7 +95,7 @@ export default function AdminLayout({
 
             <button
               type="submit"
-              className="w-full bg-blue-600 text-white py-3 rounded-lg font-semibold hover:bg-blue-700 transition-colors"
+              className="w-full bg-mint text-white py-3 rounded-lg font-semibold hover:bg-mint-dark transition-colors"
             >
               Login
             </button>
@@ -119,7 +119,7 @@ export default function AdminLayout({
       {/* Mobile menu button */}
       <div className="lg:hidden fixed top-0 left-0 right-0 bg-white border-b border-gray-200 z-50 px-4 py-3 flex items-center justify-between">
         <div className="flex items-center gap-2">
-          <div className="w-8 h-8 bg-blue-600 rounded-lg flex items-center justify-center">
+          <div className="w-8 h-8 bg-mint rounded-lg flex items-center justify-center">
             <Eye className="w-5 h-5 text-white" />
           </div>
           <span className="font-bold text-gray-900">Briz-L Admin</span>
@@ -141,7 +141,7 @@ export default function AdminLayout({
         {/* Logo */}
         <div className="h-16 flex items-center justify-between px-4 border-b border-gray-200">
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 bg-blue-600 rounded-xl flex items-center justify-center flex-shrink-0">
+            <div className="w-10 h-10 bg-mint rounded-xl flex items-center justify-center flex-shrink-0">
               <Eye className="w-6 h-6 text-white" />
             </div>
             {sidebarOpen && (
@@ -170,7 +170,7 @@ export default function AdminLayout({
                 onClick={() => setMobileMenuOpen(false)}
                 className={`flex items-center gap-3 px-3 py-2.5 rounded-lg transition-colors ${
                   isActive
-                    ? 'bg-blue-50 text-blue-600'
+                    ? 'bg-mint/10 text-mint'
                     : 'text-gray-600 hover:bg-gray-50'
                 }`}
               >

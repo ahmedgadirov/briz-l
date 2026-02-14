@@ -105,7 +105,7 @@ export default function AdminDashboard() {
   if (loading) {
     return (
       <div className="flex items-center justify-center h-64">
-        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
+        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-mint"></div>
       </div>
     );
   }
@@ -141,12 +141,12 @@ export default function AdminDashboard() {
               <p className="text-sm text-gray-500">Total Leads</p>
               <p className="text-3xl font-bold text-gray-900">{stats?.total_leads || 0}</p>
             </div>
-            <div className="w-12 h-12 bg-blue-100 rounded-xl flex items-center justify-center">
-              <Users className="w-6 h-6 text-blue-600" />
+            <div className="w-12 h-12 bg-mint/10 rounded-xl flex items-center justify-center">
+              <Users className="w-6 h-6 text-mint" />
             </div>
           </div>
           <div className="mt-4 flex items-center text-sm">
-            <span className="text-green-600 font-medium">+{stats?.today_leads || 0}</span>
+            <span className="text-mint font-medium">+{stats?.today_leads || 0}</span>
             <span className="text-gray-500 ml-1">today</span>
           </div>
         </div>
@@ -205,11 +205,11 @@ export default function AdminDashboard() {
           {funnel && (
             <div className="space-y-4">
               {[
-                { label: 'Total Leads', value: funnel.funnel.total_leads, color: 'bg-blue-500', width: 100 },
-                { label: 'Engaged (3+ msgs)', value: funnel.funnel.engaged_leads, color: 'bg-blue-400', width: Math.max(10, (funnel.funnel.engaged_leads / funnel.funnel.total_leads) * 100) || 10 },
+                { label: 'Total Leads', value: funnel.funnel.total_leads, color: 'bg-mint', width: 100 },
+                { label: 'Engaged (3+ msgs)', value: funnel.funnel.engaged_leads, color: 'bg-mint-light', width: Math.max(10, (funnel.funnel.engaged_leads / funnel.funnel.total_leads) * 100) || 10 },
                 { label: 'Hot Leads', value: funnel.funnel.hot_leads, color: 'bg-orange-500', width: Math.max(10, (funnel.funnel.hot_leads / funnel.funnel.total_leads) * 100) || 10 },
-                { label: 'Booking Intent', value: funnel.funnel.booking_intents, color: 'bg-purple-500', width: Math.max(10, (funnel.funnel.booking_intents / funnel.funnel.total_leads) * 100) || 10 },
-                { label: 'Converted', value: funnel.funnel.converted, color: 'bg-green-500', width: Math.max(10, (funnel.funnel.converted / funnel.funnel.total_leads) * 100) || 10 },
+                { label: 'Booking Intent', value: funnel.funnel.booking_intents, color: 'bg-clinic-accent', width: Math.max(10, (funnel.funnel.booking_intents / funnel.funnel.total_leads) * 100) || 10 },
+                { label: 'Converted', value: funnel.funnel.converted, color: 'bg-mint-dark', width: Math.max(10, (funnel.funnel.converted / funnel.funnel.total_leads) * 100) || 10 },
               ].map((item, idx) => (
                 <div key={idx}>
                   <div className="flex justify-between text-sm mb-1">
@@ -236,7 +236,7 @@ export default function AdminDashboard() {
               topSurgeries.slice(0, 5).map((surgery, idx) => (
                 <div key={idx} className="flex items-center justify-between">
                   <div className="flex items-center gap-3">
-                    <span className="w-6 h-6 bg-blue-100 text-blue-600 rounded-full flex items-center justify-center text-xs font-medium">
+                    <span className="w-6 h-6 bg-mint/10 text-mint rounded-full flex items-center justify-center text-xs font-medium">
                       {idx + 1}
                     </span>
                     <span className="text-gray-700 text-sm">{surgery.surgery}</span>
@@ -257,7 +257,7 @@ export default function AdminDashboard() {
           <h2 className="text-lg font-semibold text-gray-900">🔥 Hot Leads</h2>
           <Link
             href="/admin/leads?status=hot"
-            className="text-blue-600 hover:text-blue-700 text-sm font-medium flex items-center gap-1"
+            className="text-mint hover:text-mint-dark text-sm font-medium flex items-center gap-1"
           >
             View all <ChevronRight className="w-4 h-4" />
           </Link>
@@ -305,7 +305,7 @@ export default function AdminDashboard() {
                       <div className="flex items-center gap-2">
                         <Link
                           href={`/admin/conversations/${lead.user_id}`}
-                          className="p-1.5 text-gray-400 hover:text-blue-600 hover:bg-blue-50 rounded"
+                          className="p-1.5 text-gray-400 hover:text-mint hover:bg-mint/10 rounded"
                         >
                           <Eye className="w-4 h-4" />
                         </Link>
@@ -313,7 +313,7 @@ export default function AdminDashboard() {
                           href={`https://wa.me/${lead.user_id.replace(/\D/g, '')}`}
                           target="_blank"
                           rel="noopener noreferrer"
-                          className="p-1.5 text-gray-400 hover:text-green-600 hover:bg-green-50 rounded"
+                          className="p-1.5 text-gray-400 hover:text-mint hover:bg-mint/10 rounded"
                         >
                           <MessageSquare className="w-4 h-4" />
                         </a>

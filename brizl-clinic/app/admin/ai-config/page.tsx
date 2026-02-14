@@ -191,7 +191,7 @@ export default function AIConfigPage() {
           <button
             onClick={handleSave}
             disabled={saving}
-            className="flex items-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
+            className="flex items-center gap-2 px-4 py-2 bg-mint text-white rounded-lg hover:bg-mint-dark transition-colors"
           >
             <Save className="w-4 h-4" />
             {saving ? 'Saving...' : 'Save Changes'}
@@ -223,7 +223,7 @@ export default function AIConfigPage() {
               value={systemPrompt}
               onChange={(e) => setSystemPrompt(e.target.value)}
               rows={20}
-              className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none font-mono text-sm"
+              className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-mint focus:border-transparent outline-none font-mono text-sm"
               placeholder="Enter system prompt..."
             />
           </div>
@@ -286,7 +286,7 @@ export default function AIConfigPage() {
             ))}
             <button
               onClick={addDoctor}
-              className="flex items-center gap-2 px-4 py-2 text-blue-600 hover:bg-blue-50 rounded-lg"
+              className="flex items-center gap-2 px-4 py-2 text-mint hover:bg-mint/10 rounded-lg"
             >
               <Plus className="w-4 h-4" />
               Add Doctor
