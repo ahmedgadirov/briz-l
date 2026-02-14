@@ -169,8 +169,6 @@ services:
       - "traefik.http.routers.brizl-admin.entrypoints=websecure"
       - "traefik.http.routers.brizl-admin.tls.certresolver=letsencrypt"
       - "traefik.http.services.brizl-admin.loadbalancer.server.port=3000"
-      - "traefik.http.middlewares.brizl-admin-stripprefix.stripprefix.prefixes=/admin"
-      - "traefik.http.routers.brizl-admin.middlewares=brizl-admin-stripprefix"
     healthcheck:
       test: ["CMD", "wget", "-q", "--spider", "http://localhost:3000"]
       interval: 30s
