@@ -90,16 +90,28 @@ export async function runMigrations(): Promise<{ success: boolean; message: stri
     `);
     createdTables.push('ai_config');
     
-    // Create indexes for performance
-    await client.query(`
-      CREATE INDEX IF NOT EXISTS idx_leads_status ON marketing_leads(lead_status);
-      CREATE INDEX IF NOT EXISTS idx_leads_score ON marketing_leads(lead_score DESC);
-      CREATE INDEX IF NOT EXISTS idx_leads_last_interaction ON marketing_leads(last_interaction);
-      CREATE INDEX IF NOT EXISTS idx_leads_platform ON marketing_leads(platform);
-      CREATE INDEX IF NOT EXISTS idx_events_user ON conversion_events(user_id);
-      CREATE INDEX IF NOT EXISTS idx_events_type ON conversion_events(event_type);
-      CREATE INDEX IF NOT EXISTS idx_followups_user ON follow_ups(user_id);
+    // Add missing columns to existing tables (for migrations from older versions)
+    // Check and add platform column to marketing_leads if it doesn't exist
+    const platformColumnCheck = await client.query(`
+      SELECT column_name FROM information_schema.columns 
+      WHERE table_name = 'marketing_leads' AND column_name = 'platform'
     `);
+    if (platformColumnCheck.rows.length === 0) {
+      await client.query(`ALTER TABLE marketing_leads ADD COLUMN platform TEXT DEFAULT 'web'`);
+    }
+    
+    // Create indexes for performance
+    await client.query(`CREATE INDEX IF NOT EXISTS idx_leads_status ON marketing_leads(lead_status)`);
+    await client.query(`CREATE INDEX IF NOT EXISTS idx_leads_score ON marketing_leads(lead_score DESC)`);
+    await client.query(`CREATE INDEX IF NOT EXISTS idx_leads_last_interaction ON marketing_leads(last_interaction)`);
+    await client.query(`CREATE INDEX IF NOT EXISTS idx_events_user ON conversion_events(user_id)`);
+    await client.query(`CREATE INDEX IF NOT EXISTS idx_events_type ON conversion_events(event_type)`);
+    await client.query(`CREATE INDEX IF NOT EXISTS idx_followups_user ON follow_ups(user_id)`);
+    
+    // Only create platform index if column exists
+    if (platformColumnCheck.rows.length > 0 || true) {
+      await client.query(`CREATE INDEX IF NOT EXISTS idx_leads_platform ON marketing_leads(platform)`).catch(() => {});
+    }
     
     // Seed default AI config if not exists
     const configCheck = await client.query('SELECT COUNT(*) as count FROM ai_config');
