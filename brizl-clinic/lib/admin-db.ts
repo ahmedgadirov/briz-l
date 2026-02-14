@@ -2,7 +2,7 @@ import { Pool } from 'pg';
 
 // Database connection
 const pool = new Pool({
-  host: process.env.DB_HOST || 'localhost',
+  host: process.env.DB_HOST || 'rasa-brizl-tbycs9',
   port: parseInt(process.env.DB_PORT || '5432'),
   database: process.env.DB_NAME || 'briz-l',
   user: process.env.DB_USER || 'postgres',
