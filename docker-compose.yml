@@ -140,6 +140,42 @@ services:
       - "traefik.http.routers.webhooks.tls.certresolver=letsencrypt"
       - "traefik.http.services.webhooks.loadbalancer.server.port=5000"
 
+  # Admin Panel (Briz-L Clinic)
+  brizl-admin:
+    build:
+      context: ./brizl-clinic
+      dockerfile: Dockerfile
+    container_name: brizl-admin
+    restart: unless-stopped
+    ports:
+      - "3002:3000"
+    depends_on:
+      postgres:
+        condition: service_healthy
+    environment:
+      - NODE_ENV=production
+      - DB_HOST=postgres
+      - DB_PORT=5432
+      - DB_NAME=briz-l
+      - DB_USER=postgres
+      - DB_PASSWORD=herahera
+      - NEXT_PUBLIC_RASA_URL=https://brizl.baysart.com
+    networks:
+      - dokploy-network
+    labels:
+      - "com.dokploy.project=rasa-brizl"
+      - "traefik.enable=true"
+      - "traefik.http.routers.brizl-admin.rule=Host(`admin-brizl.baysart.com`)"
+      - "traefik.http.routers.brizl-admin.entrypoints=websecure"
+      - "traefik.http.routers.brizl-admin.tls.certresolver=letsencrypt"
+      - "traefik.http.services.brizl-admin.loadbalancer.server.port=3000"
+    healthcheck:
+      test: ["CMD", "wget", "-q", "--spider", "http://localhost:3000"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+
 networks:
   dokploy-network:
     external: true

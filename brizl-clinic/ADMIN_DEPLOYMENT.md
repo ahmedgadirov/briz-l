@@ -1,164 +1,115 @@
 # Admin Panel Deployment Guide
 
-## Admin Panel for Briz-L Clinic
+## Overview
 
-The admin panel is accessible at `/admin` route and provides comprehensive management features.
+The admin panel is now integrated into the main `docker-compose.yml` for the Rasa project. This ensures the admin panel can connect to the PostgreSQL database.
 
-### Features
+## Architecture
 
-1. **Dashboard** (`/admin`)
-   - Lead statistics overview
-   - Today's leads count
-   - Hot leads requiring attention
-   - Conversion rates
+```
+┌─────────────────────────────────────────────────────────────┐
+│                     dokploy-network                          │
+│                                                              │
+│  ┌─────────────┐  ┌─────────────┐  ┌─────────────────────┐  │
+│  │  postgres   │  │    rasa     │  │    brizl-admin      │  │
+│  │   :5432     │  │   :3001     │  │      :3002          │  │
+│  │             │  │             │  │                     │  │
+│  │  Database   │  │  Chatbot    │  │  Admin Panel        │  │
+│  └─────────────┘  └─────────────┘  └─────────────────────┘  │
+│        ▲                                    │                │
+│        │                                    │                │
+│        └────────────────────────────────────┘                │
+│                   Shared Database                            │
+└─────────────────────────────────────────────────────────────┘
+```
 
-2. **Leads Management** (`/admin/leads`)
-   - View all leads with pagination
-   - Filter by status (new, cold, warm, hot, converted)
-   - Search functionality
-   - Update lead status
-   - View conversation history
+## Quick Deploy
 
-3. **Conversations** (`/admin/conversations`)
-   - Browse all conversations
-   - View detailed chat history
-   - See detected symptoms, surgeries, booking intent
-   - Quick WhatsApp contact link
+```bash
+# On your server
+cd /path/to/rasa-brizl
 
-4. **Analytics** (`/admin/analytics`)
-   - Conversion funnel visualization
-   - Daily leads chart
-   - Top surgery inquiries
-   - Daily breakdown table
-   - Date range filtering (7, 14, 30 days)
+# Pull latest changes
+git pull
 
-5. **AI Configuration** (`/admin/ai-config`)
-   - Edit system prompt for Vera AI
-   - Manage doctors database
-   - Manage surgeries/procedures
-   - Adjust lead scoring weights
+# Rebuild and restart all services
+docker-compose down
+docker-compose up -d --build
 
-6. **Settings** (`/admin/settings`)
-   - Admin password management
-   - Domain configuration info
-   - Database connection status
+# Check logs
+docker-compose logs -f brizl-admin
+```
 
-### Domain Setup for admin-brizl.baysart.com
+## Services
 
-#### Option 1: Subdomain with Reverse Proxy (Recommended)
+| Service | Port | URL |
+|---------|------|-----|
+| PostgreSQL | 5432 | Internal only |
+| Rasa Chatbot | 3001 | https://brizl.baysart.com |
+| Admin Panel | 3002 | https://admin-brizl.baysart.com |
+| Action Server | 5055 | Internal only |
+| Social Media Webhook | 5000 | https://selmedia.net/webhooks |
 
-1. **DNS Configuration:**
-   ```
-   Type: CNAME
-   Name: admin-brizl
-   Value: baysart.com (or your server IP)
-   TTL: 3600
-   ```
+## Environment Variables
 
-2. **Nginx Configuration:**
-   ```nginx
-   server {
-       listen 443 ssl;
-       server_name admin-brizl.baysart.com;
-       
-       ssl_certificate /path/to/ssl/cert.pem;
-       ssl_certificate_key /path/to/ssl/key.pem;
-       
-       location / {
-           proxy_pass http://localhost:3000;
-           proxy_http_version 1.1;
-           proxy_set_header Upgrade $http_upgrade;
-           proxy_set_header Connection 'upgrade';
-           proxy_set_header Host $host;
-           proxy_cache_bypass $http_upgrade;
-       }
-   }
-   ```
-
-#### Option 2: Path-based Routing
-
-If you want the admin panel on the main domain:
-
-1. **Nginx Configuration:**
-   ```nginx
-   location /admin {
-       proxy_pass http://localhost:3000;
-       proxy_http_version 1.1;
-       proxy_set_header Upgrade $http_upgrade;
-       proxy_set_header Connection 'upgrade';
-       proxy_set_header Host $host;
-   }
-   ```
-
-### Environment Variables
-
-Add these to your `.env` or deployment environment:
+The admin panel uses these environment variables (set in docker-compose.yml):
 
 ```env
-# Database
-DB_HOST=your-postgres-host
+DB_HOST=postgres
 DB_PORT=5432
 DB_NAME=briz-l
 DB_USER=postgres
-DB_PASSWORD=your-secure-password
-
-# Admin Authentication
-ADMIN_PASSWORD=brizl2024admin
-
-# Optional: OpenAI for AI features
-OPENAI_API_KEY=your-openai-api-key
+DB_PASSWORD=herahera
+NEXT_PUBLIC_RASA_URL=https://brizl.baysart.com
 ```
 
-### Database Tables Required
+## Database Migration
 
-The admin panel uses these PostgreSQL tables:
+After deployment, run migrations to create tables:
 
-1. **marketing_leads** - Stores all lead information
-2. **marketing_analytics** - Daily analytics data
-3. **ai_config** - AI configuration storage
+1. Go to **Settings** page: `https://admin-brizl.baysart.com/admin/settings`
+2. Click **"Run Database Migrations"**
+3. Tables will be created automatically:
+   - `marketing_leads`
+   - `follow_ups`
+   - `conversion_events`
+   - `marketing_analytics`
+   - `ai_config`
 
-These tables are created automatically by the marketing system.
+## DNS Configuration
 
-### Security Notes
+Make sure these DNS records are configured:
 
-1. **Change the default password** immediately after deployment
-2. The admin panel uses cookie-based authentication
-3. All API routes are protected with authentication middleware
-4. Consider adding IP whitelisting for additional security
+```
+Type: CNAME
+Name: admin-brizl
+Value: baysart.com (or your server)
+```
 
-### Building and Running
+## Troubleshooting
 
+### Check PostgreSQL Connection
 ```bash
-# Install dependencies
-cd brizl-clinic
-npm install
-
-# Build for production
-npm run build
-
-# Start production server
-npm run start
+docker exec -it brizl-postgres psql -U postgres -d briz-l
 ```
 
-### Docker Deployment
-
-The admin panel is included in the main brizl-clinic Docker image:
-
+### Check Admin Panel Logs
 ```bash
-docker build -t brizl-clinic .
-docker run -p 3000:3000 \
-  -e DB_HOST=postgres \
-  -e DB_PASSWORD=your-password \
-  brizl-clinic
+docker-compose logs -f brizl-admin
 ```
 
-### Access
+### Restart Services
+```bash
+docker-compose restart brizl-admin
+docker-compose restart postgres
+```
 
-- **Local:** http://localhost:3000/admin
-- **Production:** https://admin-brizl.baysart.com (after DNS setup)
+### Check Network Connectivity
+```bash
+docker network inspect dokploy-network
+```
 
-### Default Credentials
+## Access
 
-- **Password:** `brizl2024admin`
-
-**⚠️ Important:** Change this password in production!
+- **Admin Panel URL:** https://admin-brizl.baysart.com
+- **Default Password:** `brizl2024admin`
