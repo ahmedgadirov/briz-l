@@ -111,5 +111,5 @@ docker network inspect dokploy-network
 
 ## Access
 
-- **Admin Panel URL:** https://admin-brizl.baysart.com
+- **Admin Panel URL:** https://briz-l.baysart.com/admin
 - **Default Password:** `brizl2024admin`
